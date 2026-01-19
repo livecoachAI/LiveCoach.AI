@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "frontend",
+    "name": "LiveCoach.AI",
     "slug": "frontend",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/LiveCoach.AI-logonew.png",
     "scheme": "frontend",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
