@@ -1,0 +1,24 @@
+# --------------------
+# Backend (Node.js/Express)
+# --------------------
+/backend/node_modules/
+/backend/.env
+/backend/dist/
+/backend/build/
+backend/npm-debug.log*
+backend/yarn-debug.log*
+backend/yarn-error.log*
+
+# --------------------
+# Frontend (React Native)
+# --------------------
+/frontend/node_modules/
+/frontend/.env
+/frontend/build/
+/frontend/dist/
+/frontend/.expo/
+/frontend/.idea/
+/frontend/.vscode/
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
