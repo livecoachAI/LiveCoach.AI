@@ -5,11 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="86692b86-8169-428f-9ee9-1830c5225a6a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend/assets/images/LiveCoach.AI-logonew.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/app/(auth)/_layout.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/app/(auth)/createAccount.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/app/(auth)/getVerified.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/app/(auth)/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/app/(auth)/landing.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/app/(auth)/signIn.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/app/(screens)/(browseCoach)/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/app/(screens)/(profile)/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/app/(screens)/(profile)/sessions.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/app/(screens)/(social)/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/app/(screens)/(tutorials)/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/app/(screens)/(tutorials)/viewVideo.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/app/(screens)/(videoAnalyze)/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/app/(screens)/_layout.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/app/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/app/onboarding.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/onboarding.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/app/(tabs)/_layout.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/app/(tabs)/home.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/app/(tabs)/index.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/app/(tabs)/profile.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/app/_layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/app/login.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/app/onboarding.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/app/signup.tsx" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +69,10 @@
     &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Projects/LiveCoach.AI&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;AndroidSdkUpdater&quot;,
     &quot;ts.external.directory.path&quot;: &quot;C:\\Projects\\LiveCoach.AI\\frontend\\node_modules\\typescript\\lib&quot;,
@@ -81,6 +105,10 @@
       <workItem from="1767934347116" duration="13247000" />
       <workItem from="1768274649249" duration="102000" />
       <workItem from="1768275380115" duration="17000" />
+      <workItem from="1769176799828" duration="5510000" />
+      <workItem from="1769264262641" duration="6491000" />
+      <workItem from="1769285031283" duration="73000" />
+      <workItem from="1769285650504" duration="8397000" />
     </task>
     <servers />
   </component>
