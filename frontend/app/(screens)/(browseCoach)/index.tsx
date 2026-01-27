@@ -1,14 +1,9 @@
 import {View, Text} from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import SportTabs from '../../components/SportTabs';
-import CoachCard from '../../components/CoachCard';
-
+import SportTabs from './SportTabs';
 
 const Index = () => {
-
-    
-
 
     return (
         <SafeAreaView className="flex-1 bg-white">
@@ -19,13 +14,9 @@ const Index = () => {
 
                 <View className="mt-4">
                     <SportTabs />
-                </View>
-
-                
+                </View>     
             </View>
         </SafeAreaView>
-
-        
     )
 }
 export default Index
