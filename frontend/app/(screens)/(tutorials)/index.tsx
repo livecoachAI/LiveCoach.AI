@@ -1,32 +1,22 @@
-import React, {useState} from 'react';
-import {View, Text, SafeAreaViewBase} from 'react-native';
-import Dropdown from "../../components/Dropdown";
+import {View, Text} from 'react-native'
+import React from 'react'
+import { SafeAreaView } from 'react-native-safe-area-context';
+import ViewVideo from './viewVideo';
 
+const Index = () => {
 
-const Tutorial = () => {
-  const [currentStep, setCurrentStep] = useState('cricket');
+    return (
+        <SafeAreaView className="flex-1 bg-white">
+            <View className="px-4 py-4 pt-6 flex-1">
+                <Text className="text-2xl font-bold text-black">
+                    TUTORIAL
+                </Text>
 
-  const cricketTutorial = [
-    'COVER DRIVE',
-    'LEG GLANCE',
-    'STRAIGHT DRIVE',
-    'SQUARE CUT',
-    'PULL SHOT',
-    'LATE CUT',
-    'PADDLE SWEEP',
-    'SLOG SWEEP',
-  ];
-
-  const bandmintonTutorial = [
-    'SMASH',
-    'CLEAR',
-    'DROP',
-    'NET SHOT'
-  ];
-
-  const techniques = currentStep === 'cricket' ? cricketTutorial : bandmintonTutorial;
-
-
-};
-
-export default Tutorial;
+                <View className="mt-4 flex-1">
+                    <ViewVideo />
+                </View>     
+            </View>
+        </SafeAreaView>
+    )
+}
+export default Index
