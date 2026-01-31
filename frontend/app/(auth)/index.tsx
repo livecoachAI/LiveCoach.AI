@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { Image, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Button from "@/app/components/button";
+import ButtonYellow from "@/app/components/buttonYellow";
 
 export default function Index() {
     return (
@@ -54,9 +54,6 @@ export default function Index() {
                             CREATE ACCOUNT
                         </Text>
                     </Pressable>
-
-
-
                 </View>
             </SafeAreaView>
         </View>

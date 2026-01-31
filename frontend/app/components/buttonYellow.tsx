@@ -6,7 +6,7 @@ type ButtonProps = {
     onPress?: () => void;
 };
 
-export default function Button({title, onPress}: ButtonProps) {
+export default function ButtonYellow({title, onPress}: ButtonProps) {
 
     const router = useRouter();
 
@@ -15,17 +15,17 @@ export default function Button({title, onPress}: ButtonProps) {
             className="mt-7 w-full flex-row items-center active:opacity-80"
         >
             {/* Left Tip */}
-            <View className="w-0 h-0 border-t-[26px] border-t-transparent border-b-[26px] border-b-transparent border-r-[20px] border-r-[#E6F20D]" />
+            <View className="w-0 h-0 border-t-[26px] border-t-transparent border-b-[26px] border-b-transparent border-r-[20px] border-r-accent-yellow" />
 
             {/* Center Body (flex-1 ensures it fills the w-full) */}
-            <View className="flex-1 h-[52px] bg-[#E6F20D] justify-center items-center">
-                <Text className="text-center font-bold tracking-widest text-black text-lg">
+            <View className="flex-1 h-[52px] bg-accent-yellow justify-center items-center">
+                <Text className="text-center font-bebas tracking-widest text-black text-lg">
                     {title}
                 </Text>
             </View>
 
             {/* Right Tip */}
-            <View className="w-0 h-0 border-t-[26px] border-t-transparent border-b-[26px] border-b-transparent border-l-[20px] border-l-[#E6F20D]" />
+            <View className="w-0 h-0 border-t-[26px] border-t-transparent border-b-[26px] border-b-transparent border-l-[20px] border-l-accent-yellow" />
         </Pressable>
     );
 }
