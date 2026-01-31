@@ -9,14 +9,6 @@ export default function ScreensTabsLayout() {
                 options={{ title: "Home" }}
             />
             <Tabs.Screen
-                name="(browseCoach)/index"
-                options={{ title: "Coach Browse" }}
-            />
-            <Tabs.Screen
-                name="(profile)/index"
-                options={{ title: "Profile" }}
-            />
-            <Tabs.Screen
                 name="(tutorials)/index"
                 options={{ title: "Tutorials" }}
             />
@@ -24,9 +16,18 @@ export default function ScreensTabsLayout() {
                 name="(videoAnalyze)/index"
                 options={{ title: "Analyze video" }}
             />
+            <Tabs.Screen
+                name="(browseCoach)/index"
+                options={{ title: "Coach Browse" }}
+            />
+            <Tabs.Screen
+                name="(profile)/index"
+                options={{ title: "Profile" }}
+            />
             {/* Hidden routes inside tab groups */}
             <Tabs.Screen name="(profile)/sessions" options={{ href: null }} />
             <Tabs.Screen name="(tutorials)/viewVideo" options={{ href: null }} />
+            <Tabs.Screen name="(browseCoach)/SportTabs" options={{ href: null }} />
         </Tabs>
     );
 }
