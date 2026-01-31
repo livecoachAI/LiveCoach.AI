@@ -8,7 +8,7 @@ const Index = () => {
     return (
         <SafeAreaView className="flex-1 bg-white">
             <View className="px-4 py-4 pt-6">
-                <Text className="text-2xl font-bold text-black">
+                <Text className="font-bebas text-2xl font-bold text-black">
                     COACH GIGS
                 </Text>
 
