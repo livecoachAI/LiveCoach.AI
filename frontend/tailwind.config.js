@@ -5,6 +5,11 @@ module.exports = {
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
+      fontFamily:{
+        abeezee: ["abeezee-regular"],
+        bebas: ["bebasNeue-regular"]
+      },
+
       colors: {
         // Primary brand colors
         primary: {
