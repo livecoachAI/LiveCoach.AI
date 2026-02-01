@@ -10,7 +10,7 @@ const SignIn = () => {
                 title="Login (temporary)"
                 onPress={() => {
                     //signIn();
-                    router.replace("/");
+                    router.push("/(screens)/(social)");
                 }}
             />
         </View>
