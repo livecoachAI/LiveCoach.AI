@@ -12,7 +12,7 @@ export default function ButtonYellow({title, onPress}: ButtonProps) {
 
     return (
         <Pressable
-            className="mt-7 w-full flex-row items-center active:opacity-80"
+            className="mt-7 w-full flex-row items-center active:opacity-80" onPress={onPress}
         >
             {/* Left Tip */}
             <View className="w-0 h-0 border-t-[26px] border-t-transparent border-b-[26px] border-b-transparent border-r-[20px] border-r-accent-yellow" />
