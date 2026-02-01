@@ -6,7 +6,7 @@ type ButtonProps = {
     onPress?: () => void;
 };
 
-export default function ButtonYellow({title, onPress}: ButtonProps) {
+export default function ButtonBlack({title, onPress}: ButtonProps) {
 
     const router = useRouter();
 
