@@ -2,6 +2,7 @@ import { router } from "expo-router";
 import { Image, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonYellow from "@/app/components/buttonYellow";
+import ButtonGray from "@/app/components/buttonGray";
 
 export default function Index() {
     return (
@@ -15,23 +16,23 @@ export default function Index() {
                     />
                 </View>
 
-                <View className="pl-10">
+                <View className="pl-10 mt-20">
                     <View className="relative w-full aspect-square">
                         <Image
                             source={require("../../assets/onboarding/bg-1.png")}
-                            className="absolute w-[377px] h-[580px] -left-[30px] -top-[60px] z-10"
+                            className="absolute w-[487px] h-[580px] -left-[30px] -top-[60px] z-10"
                             resizeMode="cover"
                         />
                         <Image
                             source={require("../../assets/onboarding/Vector.png")}
-                            className="absolute w-[580px] h-[450px] z-0"
+                            className="absolute w-[620px] h-[560px] z-0 -left-[0px] -top-[70px] "
                             resizeMode="contain"
                         />
                     </View>
                 </View>
 
-                <View className="pt-12 pb-6">
-                    <Text className="text-5xl font-extrabold leading-[45px] text-[#1A0E0E] z-20">
+                <View className="pt-12 pb-6 mt-4 ml-4">
+                    <Text className="text-5xl font-bebas  leading-[45px] text-[#1A0E0E] z-20">
                         TRAIN SMARTER{"\n"}WITH AI POWERED{"\n"}COACHING
                     </Text>
 
@@ -39,29 +40,11 @@ export default function Index() {
                         Track. Improve. Dominate.
                     </Text>
 
-                    <Pressable
-                        onPress={() => router.push("/(auth)/signIn")}
-                        className="mt-1 self-center w-4/5 rounded-md bg-[#E6F20D] py-3">
-                        <Text className="text-center font-bold tracking-widest text-black">
-                            LOGIN
-                        </Text>
-                    </Pressable>
+                </View>
+                <View className="px-6 space-y-4 mt-4 mb-6">
+                    <ButtonYellow title="LOGIN" onPress={() => router.push("/(auth)/signIn")} />
 
-                    <Pressable
-                        onPress={() => router.push("/(auth)/landing")}
-                        className="mt-3 self-center w-4/5 rounded-md bg-[#E9E9E9] py-3">
-                        <Text className="text-center font-bold tracking-widest text-black">
-                            CREATE ACCOUNT
-                        </Text>
-                    </Pressable>
-
-                    <Pressable
-                        onPress={() => router.push("/(auth)/getVerified")}
-                        className="mt-3 self-center w-4/5 rounded-md bg-[#E9E9E9] py-3">
-                        <Text className="text-center font-bold tracking-widest text-black">
-                            VERFIY
-                        </Text>
-                    </Pressable>
+                    <ButtonGray title="CREATE ACCOUNT" onPress={() => router.push("/(auth)/createAccount")} />
                 </View>
             </SafeAreaView>
         </View>
