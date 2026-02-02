@@ -23,7 +23,7 @@ const Profile = ({ athleteData = {} }: { athleteData?: AthleteData }) => {
   } = athleteData;
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <View className="flex-1 bg-white">
       <ScrollView bounces={false}>
         {/* Header Section */}
         <View className="h-[400px] w-full relative">
@@ -59,7 +59,7 @@ const Profile = ({ athleteData = {} }: { athleteData?: AthleteData }) => {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
