@@ -17,16 +17,11 @@ const dummyAthlete = {
 const TestScreen = () => {
   return (
     // Pass the dummy data to the Profile component via the athleteData prop
-    <SafeAreaView className="flex-1 bg-white">
-        <View className="px-4 py-4 pt-6 flex-1">
-            <Text className="font-bebas text-4xl font-bold text-black">
-                 Profile
-            </Text>
-            <View className="mt-4 flex-1">
-                 <Profile/>
-            </View>     
-        </View>
-    </SafeAreaView>
+      <View className="flex-1">
+          <View className="flex-1">
+              <Profile/>
+          </View>     
+      </View>
   );
 };
 
