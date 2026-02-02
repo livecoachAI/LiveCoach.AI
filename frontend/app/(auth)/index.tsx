@@ -48,7 +48,7 @@ export default function Index() {
                     </Pressable>
 
                     <Pressable
-                        onPress={() => router.push("/(auth)/createAccount")}
+                        onPress={() => router.push("/(auth)/landing")}
                         className="mt-3 self-center w-4/5 rounded-md bg-[#E9E9E9] py-3">
                         <Text className="text-center font-bold tracking-widest text-black">
                             CREATE ACCOUNT
