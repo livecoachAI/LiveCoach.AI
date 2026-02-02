@@ -18,16 +18,16 @@ const CoachCard = ({ name, location, image }: CoachCardProps) => {
   
       <View className="mt-3 flex-row items-center">  
         <View className="flex-1">
-          <Text className="text-base font-bold text-black">
+          <Text className="font-manrope text-base font-bold text-black">
             {name}
           </Text>
-          <Text className="text-sm text-gray-500 mt-1">
+          <Text className="font-manrope text-sm text-gray-500 mt-1">
             {location}
           </Text>
         </View>
 
       <Pressable className="bg-[#E6F20D] px-4 py-2 rounded-md ml-3">
-          <Text className="text-sm font-semibold text-black">
+          <Text className="font-manrope text-sm font-semibold text-black">
             Contact
           </Text>
       </Pressable>
