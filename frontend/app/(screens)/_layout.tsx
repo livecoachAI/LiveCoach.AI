@@ -31,6 +31,7 @@ export default function ScreensTabsLayout() {
             <Tabs.Screen name="(browseCoach)/CoachCard" options={{ href: null }} />
             <Tabs.Screen name="(videoAnalyze)/upload" options={{ href: null }} />
             <Tabs.Screen name="(profile)/profile" options={{ href: null }} />
+            <Tabs.Screen name="(social)/social" options={{href: null}}/>
         </Tabs>
     );
 }
