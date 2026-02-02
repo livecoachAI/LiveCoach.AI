@@ -63,7 +63,7 @@ const Index = () => {
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView>
         <View className="px-4 py-4 pt-6">
-          <Text className="text-2xl font-bold text-black">
+          <Text className="font-bebas text-4xl font-bold text-black">
             COACH GIGS
           </Text>
 

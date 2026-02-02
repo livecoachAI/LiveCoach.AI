@@ -29,6 +29,8 @@ export default function ScreensTabsLayout() {
             <Tabs.Screen name="(tutorials)/viewVideo" options={{ href: null }} />
             <Tabs.Screen name="(browseCoach)/SportTabs" options={{ href: null }} />
             <Tabs.Screen name="(browseCoach)/CoachCard" options={{ href: null }} />
+            <Tabs.Screen name="(videoAnalyze)/upload" options={{ href: null }} />
+            <Tabs.Screen name="(profile)/profile" options={{ href: null }} />
         </Tabs>
     );
 }
