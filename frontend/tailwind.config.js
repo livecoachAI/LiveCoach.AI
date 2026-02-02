@@ -7,7 +7,8 @@ module.exports = {
     extend: {
       fontFamily:{
         abeezee: ["abeezee-regular"],
-        bebas: ["bebasNeue-regular"]
+        bebas: ["bebasNeue-regular"],
+        manrope: ["manrope-regular"]
       },
 
       colors: {

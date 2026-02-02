@@ -14,11 +14,11 @@ export default function ScreensTabsLayout() {
             />
             <Tabs.Screen
                 name="(videoAnalyze)/index"
-                options={{ title: "Analyze video" }}
+                options={{ title: "Upload" }}
             />
             <Tabs.Screen
                 name="(browseCoach)/index"
-                options={{ title: "Coach Browse" }}
+                options={{ title: "Coach Find" }}
             />
             <Tabs.Screen
                 name="(profile)/index"

@@ -36,7 +36,7 @@ const ViewVideo = () => {
             className={`px-5 py-2.5 rounded-full ${currentStep === 'cricket' ? 'bg-[#F8FE11]' : 'bg-gray-100'}`}
           >
             <Text 
-              className={`text-sm font-semibold ${currentStep === 'cricket' ? 'text-[#150000]' : 'text-gray-600'}`}>
+              className={`font-manrope text-sm font-semibold ${currentStep === 'cricket' ? 'text-[#150000]' : 'text-gray-600'}`}>
               Cricket
             </Text>
           </TouchableOpacity>
@@ -46,7 +46,7 @@ const ViewVideo = () => {
             className={`px-5 py-2.5 rounded-full ${currentStep === 'badminton' ? 'bg-[#F8FE11]' : 'bg-gray-100'}`}
           >
             <Text 
-              className={`text-sm font-semibold ${currentStep === 'badminton' ? 'text-[#150000]' : 'text-gray-600'}`}>
+              className={`font-manrope text-sm font-semibold ${currentStep === 'badminton' ? 'text-[#150000]' : 'text-gray-600'}`}>
               Badminton
             </Text>
           </TouchableOpacity>
@@ -62,7 +62,7 @@ const ViewVideo = () => {
           >
             <Text 
             numberOfLines={1}
-            className="text-sm font-medium text-[#150000]">{technique}</Text>
+            className="font-manrope text-sm font-medium text-[#150000]">{technique}</Text>
             <Text className="text-xl text-gray-300">›</Text>
           </TouchableOpacity>
         ))}
