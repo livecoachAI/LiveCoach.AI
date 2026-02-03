@@ -20,19 +20,19 @@ export default function Index() {
                     <View className="relative w-full aspect-square">
                         <Image
                             source={require("../../assets/onboarding/bg-1.png")}
-                            className="absolute w-[487px] h-[580px] -left-[30px] -top-[60px] z-10"
+                            className="absolute w-[390px] h-[500px] -left-[20px] -top-[70px] z-10"
                             resizeMode="cover"
                         />
                         <Image
                             source={require("../../assets/onboarding/Vector.png")}
-                            className="absolute w-[620px] h-[560px] z-0 -left-[0px] -top-[70px] "
+                            className="absolute w-[500px] h-[570px] z-0 -top-[80px] "
                             resizeMode="contain"
                         />
                     </View>
                 </View>
 
-                <View className="pt-12 pb-6 mt-4 ml-4">
-                    <Text className="text-5xl font-bebas  leading-[45px] text-[#1A0E0E] z-20">
+                <View className="pt-2 pb-6 ml-4">
+                    <Text className="text-6xl font-bebas text-[#1A0E0E] z-20">
                         TRAIN SMARTER{"\n"}WITH AI POWERED{"\n"}COACHING
                     </Text>
 
@@ -41,10 +41,10 @@ export default function Index() {
                     </Text>
 
                 </View>
-                <View className="px-6 space-y-4 mt-4 mb-6">
+                <View className="px-6 space-y-4 mb-4">
                     <ButtonYellow title="LOGIN" onPress={() => router.push("/(auth)/signIn")} />
 
-                    <ButtonGray title="CREATE ACCOUNT" onPress={() => router.push("/(auth)/createAccount")} />
+                    <ButtonGray title="CREATE ACCOUNT" onPress={() => router.push("/(auth)/landing")} />
                 </View>
             </SafeAreaView>
         </View>
