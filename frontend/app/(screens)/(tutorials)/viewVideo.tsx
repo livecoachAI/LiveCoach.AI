@@ -1,5 +1,28 @@
-import React, {useState} from 'react';
-import {View, Text, StatusBar, TouchableOpacity, ScrollView} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+
+//TabButton props
+type TabButtonProps = {
+  label: string;
+  isActive: boolean;
+  onPress: () => void;
+};
+
+//TabButton
+const TabButton = ({ label, isActive, onPress }: TabButtonProps) => (
+  <TouchableOpacity onPress={onPress} className="flex-row items-center active:opacity-80">
+    {isActive && (
+      <View className="w-0 h-0 border-t-[18px] border-t-transparent border-b-[18px] border-b-transparent border-r-[12px] border-r-accent-yellow" />
+    )}
+    <View className={`h-[36px] justify-center items-center px-5 ${isActive ? 'bg-accent-yellow' : 'bg-transparent'}`}>
+      <Text className="font-manrope font-semibold text-primary-dark">{label}</Text>
+    </View>
+    {isActive && (
+      <View className="w-0 h-0 border-t-[18px] border-t-transparent border-b-[18px] border-b-transparent border-l-[12px] border-l-accent-yellow" />
+    )}
+  </TouchableOpacity>
+);
 
 const ViewVideo = () => {
   const [currentStep, setCurrentStep] = useState('cricket');
@@ -9,7 +32,6 @@ const ViewVideo = () => {
     'LEG GLANCE',
     'STRAIGHT DRIVE',
     'SQUARE CUT',
-    'PULL SHOT',
     'LATE CUT',
     'PADDLE SWEEP',
     'SLOG SWEEP',
@@ -19,51 +41,55 @@ const ViewVideo = () => {
     'SMASH',
     'CLEAR',
     'DROP',
-    'NET SHOT'
+    'NET SHOT',
   ];
 
-  const techniques = currentStep === 'cricket' ? cricketTutorial : badmintonTutorial;
+  const techniques =
+    currentStep === 'cricket'
+      ? cricketTutorial
+      : badmintonTutorial;
 
   return (
-    <View className="flex-1"> 
-      <StatusBar barStyle="dark-content"/>
+    <View className="flex-1">
+      <View className="bg-neutral-50 pt-6 pb-4 px-4 -mx-4">
+        {/* Header with Search */}
+        <View className="flex-row items-center justify-between mb-6">
+          <Text className="font-bebas text-4xl font-bold text-primary-dark">
+            TUTORIALS
+          </Text>
+          <TouchableOpacity className="p-2">
+            <Ionicons name="search" size={28} color="#150000" />
+          </TouchableOpacity>
+        </View>
 
-      {/* Tabs Container */}
-      <View className="pb-3 border-b border-gray-100">
-        <View className="flex-row gap-2">
-          <TouchableOpacity
+        {/* Tabs */}
+        <View className="flex-row gap-3">
+          <TabButton 
+            label="Cricket" 
+            isActive={currentStep === 'cricket'}
             onPress={() => setCurrentStep('cricket')}
-            className={`px-5 py-2.5 rounded-full ${currentStep === 'cricket' ? 'bg-[#F8FE11]' : 'bg-gray-100'}`}
-          >
-            <Text 
-              className={`font-manrope text-sm font-semibold ${currentStep === 'cricket' ? 'text-[#150000]' : 'text-gray-600'}`}>
-              Cricket
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
+          />
+          
+          <TabButton 
+            label="Badminton" 
+            isActive={currentStep === 'badminton'}
             onPress={() => setCurrentStep('badminton')}
-            className={`px-5 py-2.5 rounded-full ${currentStep === 'badminton' ? 'bg-[#F8FE11]' : 'bg-gray-100'}`}
-          >
-            <Text 
-              className={`font-manrope text-sm font-semibold ${currentStep === 'badminton' ? 'text-[#150000]' : 'text-gray-600'}`}>
-              Badminton
-            </Text>
-          </TouchableOpacity>
+          />
         </View>
       </View>
 
-      {/* Techniques List */}
-      <ScrollView className="flex-1">
+      {/* List */}
+      <ScrollView showsVerticalScrollIndicator={false} className="mt-6">
         {techniques.map((technique, index) => (
           <TouchableOpacity
             key={index}
-            className="flex-row justify-between items-center px-4 py-4 border-b border-gray-50"
+            className="flex-row items-center justify-between py-5 border-b border-neutral-100"
           >
-            <Text 
-            numberOfLines={1}
-            className="font-manrope text-sm font-medium text-[#150000]">{technique}</Text>
-            <Text className="text-xl text-gray-300">›</Text>
+            <Text className="text-base font-manrope font-medium text-primary-dark">
+              {technique}
+            </Text>
+
+            <Ionicons name="chevron-forward" size={24} color="#ADABAB" />
           </TouchableOpacity>
         ))}
       </ScrollView>
