@@ -78,7 +78,7 @@ const CreateAccount = () => {
 
                 {/* --- FORM SECTION --- */}
                 <View className="bg-white rounded-t-[30px] pt-10 px-6 flex-1 shadow-sm z-20">
-                    <View className="space-y-4">
+                    <View className="gap-y-4">
                         {/* First Name */}
                         <View className="bg-gray-100 rounded-lg px-4 py-4">
                             <TextInput
