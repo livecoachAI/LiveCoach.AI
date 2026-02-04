@@ -11,12 +11,7 @@ type CoachCardProps = {
 const CoachCard = ({ name, location, image, onContactPress }: CoachCardProps) => {
   return (
     <View className="bg-white rounded-lg mt-8">
-      <Image
-        source={image}
-        className="w-full h-32 rounded-lg bg-gray-200"
-        resizeMode="contain"
-      />
-
+      <Image source={image} className="w-full h-32 rounded-lg bg-gray-200" resizeMode="contain"/>
       <View className="mt-3 flex-row items-start">
         <View className="flex-1">
           <Text className="font-manrope text-base font-bold text-black">
@@ -27,11 +22,7 @@ const CoachCard = ({ name, location, image, onContactPress }: CoachCardProps) =>
           </Text>
         </View>
 
-        <TouchableOpacity
-          className="flex-row items-center self-start active:opacity-80"
-          accessibilityRole="button"
-          onPress={onContactPress}   // ← added
-        >
+        <TouchableOpacity className="flex-row items-center self-start active:opacity-80" accessibilityRole="button" onPress={onContactPress}>
           <View className="w-0 h-0 border-t-[18px] border-t-transparent border-b-[18px] border-b-transparent border-r-[12px] border-r-accent-yellow" />
           <View className="h-[36px] justify-center items-center px-5 bg-accent-yellow">
             <Text className="font-manrope font-semibold text-primary-dark">
