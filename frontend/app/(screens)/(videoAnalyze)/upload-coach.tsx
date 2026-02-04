@@ -1,6 +1,5 @@
 import {View, Text, TouchableOpacity, TextInput} from 'react-native'
 import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { ChevronDown } from 'lucide-react-native';
 import ButtonYellow from '@/app/components/buttonYellow';
 
