@@ -2,6 +2,7 @@ import {View, Text} from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Upload from './upload';
+import UploadCoach from './upload-coach';
 
 const Index = () => {
 
@@ -13,7 +14,8 @@ const Index = () => {
                 </Text>
 
                 <View className="mt-4 flex-1">
-                    <Upload />
+                    {/* <Upload /> */}
+                    <UploadCoach/>
                 </View>     
             </View>
         </SafeAreaView>
