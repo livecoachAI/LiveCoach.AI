@@ -2,6 +2,8 @@ import {View, TextInput} from 'react-native'
 import React, {useState, useEffect} from 'react'
 import ButtonYellow from '@/app/components/buttonYellow';
 import DropDownPicker from 'react-native-dropdown-picker';
+import UploadResultModal from './upload-result';
+
 
 const SPORTS_DATA = [
   { label: 'Cricket', value: 'cricket' },
@@ -22,6 +24,8 @@ const SHOTS_DATA = {
 };
 
 const Upload = () => {
+    //State for Pop up
+    const [showResult, setShowResult] = useState(false);
     // State for Sport Dropdown
     const [openSport, setOpenSport] = useState(false);
     const [sportValue, setSportValue] = useState(null);
@@ -97,9 +101,20 @@ const Upload = () => {
                 <View className="my-8">
                     <ButtonYellow
                         title="UPLOAD VIDEO"
+                        onPress={() => setShowResult(true)}
                     />
                 </View>   
             </View>
+
+            {/* Upload Result Popup */}
+            <UploadResultModal
+                visible={showResult}
+                onClose={() => setShowResult(false)}
+                onAnalyze={() => {
+                    // later → navigate to analytics screen
+                    // router.push('/videoAnalyse/result'); // example path
+            }}
+            />
         </View>    
     )
 }
@@ -122,3 +137,5 @@ const styles = {
     backgroundColor: '#E5E7EB',
   }
 };
+
+
