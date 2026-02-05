@@ -14,8 +14,8 @@ const Index = () => {
                 </Text>
 
                 <View className="mt-4 flex-1">
-                    {/* <Upload /> */}
-                    <UploadCoach/>
+                    <Upload />
+                    {/* <UploadCoach/> */}
                 </View>     
             </View>
         </SafeAreaView>
