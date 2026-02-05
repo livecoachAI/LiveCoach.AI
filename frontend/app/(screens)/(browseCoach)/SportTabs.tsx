@@ -1,45 +1,47 @@
-import React, { useState } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+
+
+type TabButtonProps = {
+  label: string;
+  isActive: boolean;
+  onPress: () => void;
+};
+
+const TabButton = ({ label, isActive, onPress }: TabButtonProps) => (
+  <TouchableOpacity onPress={onPress} className="flex-row items-center active:opacity-80">
+    {isActive && (
+      <View className="w-0 h-0 border-t-[18px] border-t-transparent border-b-[18px] border-b-transparent border-r-[12px] border-r-accent-yellow" />
+    )}
+    <View className={`h-[36px] justify-center items-center px-5 ${isActive ? 'bg-accent-yellow' : 'bg-transparent'}`}>
+      <Text className="font-manrope font-semibold text-primary-dark">{label}</Text>
+    </View>
+    {isActive && (
+      <View className="w-0 h-0 border-t-[18px] border-t-transparent border-b-[18px] border-b-transparent border-l-[12px] border-l-accent-yellow" />
+    )}
+  </TouchableOpacity>
+);
 
 type Props = {
+  value: 'Cricket' | 'Badminton';
   onSportChange: (sport: 'Cricket' | 'Badminton') => void;
 };
 
-const SportTabs = ({ onSportChange }: Props) => {
-  const [selectedSport, setSelectedSport] =
-    useState<'Cricket' | 'Badminton'>('Cricket');
-
-  const tabClass = (sport: 'Cricket' | 'Badminton') =>
-    selectedSport === sport
-      ? 'px-5 py-2 rounded-md mr-6 bg-[#E6F20D]'
-      : 'px-5 py-2 rounded-md mr-6 bg-gray-200';
-
-  const textClass = (sport: 'Cricket' | 'Badminton') =>
-    selectedSport === sport
-      ? 'font-semibold text-black'
-      : 'font-semibold text-gray-600';
-
-  const handlePress = (sport: 'Cricket' | 'Badminton') => {
-    setSelectedSport(sport);
-    onSportChange(sport);
-  };
-
+const SportTabs = ({ value, onSportChange }: Props) => {
   return (
     <View className="pt-2.5">
-      <View className="flex-row">
-        <Pressable
-          onPress={() => handlePress('Cricket')}
-          className={tabClass('Cricket')}
-        >
-          <Text className={textClass('Cricket')}>Cricket</Text>
-        </Pressable>
+      <View className="flex-row gap-3">
+        <TabButton
+          label="Cricket"
+          isActive={value === 'Cricket'}
+          onPress={() => onSportChange('Cricket')}
+        />
 
-        <Pressable
-          onPress={() => handlePress('Badminton')}
-          className={tabClass('Badminton')}
-        >
-          <Text className={textClass('Badminton')}>Badminton</Text>
-        </Pressable>
+        <TabButton
+          label="Badminton"
+          isActive={value === 'Badminton'}
+          onPress={() => onSportChange('Badminton')}
+        />
       </View>
     </View>
   );
