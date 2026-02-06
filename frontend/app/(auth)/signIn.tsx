@@ -93,7 +93,7 @@ const SignIn = () => {
                     <View>
                         <ButtonGray
                             title="SIGN UP"
-                            //onPress={handleCreateAccount}
+                            onPress={()=> router.push("/(auth)/landing")}
                         />
                     </View>
 
