@@ -1,30 +1,42 @@
 import React from 'react';
-// Import the Profile component from its file path
-import Profile from './profile'; 
-import { View, SafeAreaView, Text } from 'react-native';
+import { View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+// Note: If you move these to a components folder, update the paths below
+import ProfileAthlete from './profile'; 
+import ProfileCoach from './profile-coach';
 
-// Define the data here or fetch it from an API
-const dummyAthlete = {
-  name: "JOHN DOE",
-  role: "Athlete",
-  profileImage: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?q=80&w=2067",
-  sections: [
-    { title: "SESSIONS" },
-    { title: "PROGRESS CHART" }
-  ]
-};
+const Index = () => {
 
-const TestScreen = () => {
+  /* DEMO COACH Coach */
+  const coachData = {
+    role: 'Coach' as const,
+    name: 'BENNY FILLER',
+    isVerified: true,
+    players: [
+      { id: '1', name: 'PLAYER 1' },
+      { id: '2', name: 'PLAYER 2' },
+      { id: '3', name: 'PLAYER 3' },
+      { id: '4', name: 'PLAYER 4' }
+    ]
+  };
+
+  /* DEMO Athlete Data*/
+  const athleteData = {
+    role: 'Athlete' as const,
+    name: 'JOHN DOE'
+  };
+
   return (
-    // Pass the dummy data to the Profile component via the athleteData prop
+    <SafeAreaView className="flex-1 bg-white" edges={['top']}>
       <View className="flex-1">
-          <View className="flex-1">
-              <Profile/>
-          </View>     
+        {/* Coach */}
+        <ProfileCoach data={coachData} />
+        
+        {/* Athelete */}
+        {/* <ProfileAthlete data={athleteData} /> */}
       </View>
+    </SafeAreaView>
   );
 };
 
-export default TestScreen;
-
-<Profile athleteData={dummyAthlete} />
+export default Index;
