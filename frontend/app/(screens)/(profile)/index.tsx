@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 // Note: If you move these to a components folder, update the paths below
 import ProfileAthlete from './profile'; 
 import ProfileCoach from './profile-coach';
+import SessionsScreen from './sessions'
 
 const Index = () => {
 
@@ -26,11 +27,15 @@ const Index = () => {
     name: 'JOHN DOE'
   };
 
+
+
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
       <View className="flex-1">
         {/* Coach */}
-        <ProfileCoach data={coachData} />
+        {/* <ProfileCoach data={coachData} /> */}
+        
+        <SessionsScreen/>
         
         {/* Athelete */}
         {/* <ProfileAthlete data={athleteData} /> */}
