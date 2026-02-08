@@ -3,7 +3,7 @@
 # --------------------
 /backend/node_modules/
 /backend/.env
-/backend/src/livecoachai-374ba-firebase-adminsdk-fbsvc-873796eeef.json
+/backend/livecoachai-374ba-firebase-adminsdk-fbsvc-873796eeef.json
 /backend/dist/
 /backend/build/
 backend/npm-debug.log*
