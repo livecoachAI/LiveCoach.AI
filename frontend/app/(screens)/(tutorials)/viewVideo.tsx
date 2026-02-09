@@ -10,33 +10,49 @@ type TabButtonProps = {
 };
 
 //TabButton
-const TabButton = ({ label, isActive, onPress }: TabButtonProps) => ( 
-  <Pressable
-    onPress={onPress}
-    className="flex-row items-center"
-    style={({ pressed }) => ({
-      opacity: pressed ? 0. : 1,
-    })}
-  >
-    {isActive && (
-      <View className="w-0 h-0 border-t-[18px] border-t-transparent border-b-[18px] border-b-transparent border-r-[12px] border-r-accent-yellow" />
-    )}
-
-    <View
-      className={`h-[36px] justify-center items-center px-5 ${
-        isActive ? 'bg-accent-yellow' : 'bg-white'
-      }`}
+const TabButton = ({ label, isActive, onPress }: TabButtonProps) => {
+  return (
+    <Pressable
+      onPress={onPress}
+      className="flex-row items-center"
+      style={({ pressed }) => ({
+        opacity: pressed ? 0.8 : 1,
+      })}
     >
-      <Text className="font-manrope font-semibold text-primary-dark">
-        {label}
-      </Text>
-    </View>
+      {/* Left triangle */}
+      <View
+        className={`w-0 h-0
+          border-t-[14px] border-t-transparent
+          border-b-[14px] border-b-transparent
+          border-r-[10px]
+          ${isActive ? 'border-r-accent-yellow' : 'border-r-white'}
+        `}
+      />
 
-    {isActive && (
-      <View className="w-0 h-0 border-t-[18px] border-t-transparent border-b-[18px] border-b-transparent border-l-[12px] border-l-accent-yellow" />
-    )}
-  </Pressable>
-);
+      {/* Body */}
+      <View
+        className={`h-[35px] px-4 justify-center items-center
+          ${isActive ? 'bg-accent-yellow' : 'bg-white'}
+        `}
+      >
+        <Text className="font-manrope font-semibold text-primary-dark">
+          {label}
+        </Text>
+      </View>
+
+      {/* Right triangle */}
+      <View
+        className={`w-0 h-0
+          border-t-[14px] border-t-transparent
+          border-b-[14px] border-b-transparent
+          border-l-[10px]
+          ${isActive ? 'border-l-accent-yellow' : 'border-l-white'}
+        `}
+      />
+    </Pressable>
+  );
+};
+
 
 
 const ViewVideo = () => {
@@ -68,7 +84,7 @@ const ViewVideo = () => {
     <View className="flex-1">
       <View className="bg-neutral-50 pt-6 pb-4 px-4 -mx-4">
         {/* Header with Search */}
-        <View className="flex-row items-center justify-between mb-6">
+        <View className="flex-row items-center justify-between mb-4">
           <Text className="font-bebas text-4xl font-bold text-primary-dark">
             TUTORIALS
           </Text>
