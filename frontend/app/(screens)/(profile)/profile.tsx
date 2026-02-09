@@ -7,7 +7,13 @@ export interface AthleteData {
   role: 'Athlete';
 }
 
-const ProfileAthlete = ({ data }: { data: AthleteData }) => {
+// Ensure the interface includes the onPressSessions function
+interface ProfileAthleteProps {
+  data: AthleteData;
+  onPressSessions: () => void; 
+}
+
+const ProfileAthlete = ({ data, onPressSessions }: ProfileAthleteProps) => {
   return (
     <ScrollView bounces={false} showsVerticalScrollIndicator={false} className="flex-1 bg-white">
       {/* Header Section */}
@@ -17,7 +23,6 @@ const ProfileAthlete = ({ data }: { data: AthleteData }) => {
           className="w-full h-full"
           resizeMode="cover"
         />
-        {/* Athelte Text Overlay */}
         <View className="absolute bottom-0 left-0 right-0 bg-black/40 p-6">
           <Text className="text-white text-xs font-bold uppercase tracking-widest opacity-80">
             {data.role}
@@ -28,9 +33,12 @@ const ProfileAthlete = ({ data }: { data: AthleteData }) => {
         </View>
       </View>
 
-      {/* Sessions and Progress Chart */}
       <View className="mt-1 px-4">
-        <Pressable className="px-4 py-6 border-b border-neutral-100 flex-row justify-between items-center active:opacity-50 ">
+        {/* CRITICAL: Ensure onPress={onPressSessions} is present here */}
+        <Pressable 
+          onPress={onPressSessions} 
+          className="px-4 py-6 border-b border-neutral-100 flex-row justify-between items-center active:opacity-50"
+        >
           <Text className="text-xl font-manrope text-black uppercase">SESSIONS</Text>
           <Entypo name="chevron-right" size={20} color="#ADABAB" />
         </Pressable>
