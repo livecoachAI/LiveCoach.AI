@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 //TabButton props
@@ -10,19 +10,34 @@ type TabButtonProps = {
 };
 
 //TabButton
-const TabButton = ({ label, isActive, onPress }: TabButtonProps) => (
-  <TouchableOpacity onPress={onPress} className="flex-row items-center active:opacity-80">
+const TabButton = ({ label, isActive, onPress }: TabButtonProps) => ( 
+  <Pressable
+    onPress={onPress}
+    className="flex-row items-center"
+    style={({ pressed }) => ({
+      opacity: pressed ? 0. : 1,
+    })}
+  >
     {isActive && (
       <View className="w-0 h-0 border-t-[18px] border-t-transparent border-b-[18px] border-b-transparent border-r-[12px] border-r-accent-yellow" />
     )}
-    <View className={`h-[36px] justify-center items-center px-5 ${isActive ? 'bg-accent-yellow' : 'bg-transparent'}`}>
-      <Text className="font-manrope font-semibold text-primary-dark">{label}</Text>
+
+    <View
+      className={`h-[36px] justify-center items-center px-5 ${
+        isActive ? 'bg-accent-yellow' : 'bg-white'
+      }`}
+    >
+      <Text className="font-manrope font-semibold text-primary-dark">
+        {label}
+      </Text>
     </View>
+
     {isActive && (
       <View className="w-0 h-0 border-t-[18px] border-t-transparent border-b-[18px] border-b-transparent border-l-[12px] border-l-accent-yellow" />
     )}
-  </TouchableOpacity>
+  </Pressable>
 );
+
 
 const ViewVideo = () => {
   const [currentStep, setCurrentStep] = useState('cricket');
