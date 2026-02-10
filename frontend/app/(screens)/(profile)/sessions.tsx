@@ -1,8 +1,7 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native';
-import { ChevronLeft, ChevronRight, ClipboardList } from 'lucide-react-native';
+import { View, Text, FlatList, TouchableOpacity, StatusBar } from 'react-native';
+import { ChevronLeft, ChevronRight, ClipboardList, Plus } from 'lucide-react-native';
 
-// 1. Define the interface for the props
 interface SessionsScreenProps {
   onBackPress: () => void;
 }
@@ -22,11 +21,7 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
       
       {/* Header */}
       <View className="flex-row items-center px-4 py-5 border-b border-gray-100">
-        <TouchableOpacity 
-          className="p-2" 
-          onPress={onBackPress} // 2. Attach the prop to the button
-          activeOpacity={0.7}
-        >
+        <TouchableOpacity onPress={onBackPress} className="p-2" activeOpacity={0.7}>
           <ChevronLeft size={32} color="black" strokeWidth={2} />
         </TouchableOpacity>
         <Text className="ml-2 text-2xl font-black tracking-tighter text-black">
@@ -42,7 +37,6 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
           <TouchableOpacity 
             className="flex-row items-center justify-between px-6 py-7 bg-white"
             activeOpacity={0.6}
-            onPress={() => console.log(`Selected: ${item.title}`)}
           >
             <View className="flex-row items-center">
               <View className="mr-5">
@@ -56,7 +50,19 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
           </TouchableOpacity>
         )}
         ItemSeparatorComponent={() => <View className="h-[1px] bg-gray-100 mx-4" />}
+        contentContainerStyle={{ paddingBottom: 100 }} // Extra space so button doesn't hide last item
       />
+
+      {/* --- FLOATING PLUS BUTTON --- */}
+      <View className="absolute bottom-10 left-0 right-0 items-center">
+        <TouchableOpacity 
+          className="bg-black w-16 h-16 rounded-full items-center justify-center shadow-lg shadow-black/50"
+          activeOpacity={0.8}
+          onPress={() => console.log("Add new session")}
+        >
+          <Plus size={32} color="white" strokeWidth={3} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

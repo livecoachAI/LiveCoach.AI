@@ -1,12 +1,22 @@
-import React, { useState } from 'react'; // Import useState
+import React, { useState, useLayoutEffect } from 'react';
 import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from 'expo-router'; // Add this import
 import ProfileAthlete from './profile';
 import SessionsScreen from './sessions';
 
 const Index = () => {
-  // Use state to track which "view" to show
-  const [currentView, setCurrentView] = useState<'profile' | 'sessions'>('profile');
+  const [view, setView] = useState<'profile' | 'sessions'>('profile');
+  const navigation = useNavigation(); // Initialize navigation
+
+  // This logic hides the bottom navbar dynamically
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      tabBarStyle: { 
+        display: view === 'sessions' ? 'none' : 'flex', // Hide bar if view is sessions
+      },
+    });
+  }, [navigation, view]);
 
   const athleteData = {
     role: 'Athlete' as const,
@@ -14,16 +24,19 @@ const Index = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={['top']}>
+    <SafeAreaView 
+      className="flex-1 bg-white" 
+      edges={view === 'sessions' ? ['top'] : ['bottom']}
+    >
       <View className="flex-1">
-        {currentView === 'profile' ? (
+        {view === 'profile' ? (
           <ProfileAthlete 
             data={athleteData} 
-            onPressSessions={() => setCurrentView('sessions')} // Switch to sessions
+            onPressSessions={() => setView('sessions')} 
           />
         ) : (
           <SessionsScreen 
-            onBackPress={() => setCurrentView('profile')} // Switch back to profile
+            onBackPress={() => setView('profile')} 
           />
         )}
       </View>
