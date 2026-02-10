@@ -24,7 +24,7 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
         <TouchableOpacity onPress={onBackPress} className="p-2" activeOpacity={0.7}>
           <ChevronLeft size={32} color="black" strokeWidth={2} />
         </TouchableOpacity>
-        <Text className="ml-2 text-2xl font-black tracking-tighter text-black">
+        <Text className="ml-2 text-2xl font-abeezee text-black">
           SESSIONS
         </Text>
       </View>
@@ -42,7 +42,7 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
               <View className="mr-5">
                 <ClipboardList size={40} color="black" strokeWidth={1.2} />
               </View>
-              <Text className="text-lg font-bold tracking-widest text-black">
+              <Text className="text-lg font-abeezee  text-black">
                 {item.title}
               </Text>
             </View>
@@ -56,11 +56,11 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
       {/* --- FLOATING PLUS BUTTON --- */}
       <View className="absolute bottom-10 left-0 right-0 items-center">
         <TouchableOpacity 
-          className="bg-black w-16 h-16 rounded-full items-center justify-center shadow-lg shadow-black/50"
+          className="bg-[yellow] w-16 h-16 rounded-full items-center justify-center shadow-lg shadow-black/15"
           activeOpacity={0.8}
           onPress={() => console.log("Add new session")}
         >
-          <Plus size={32} color="white" strokeWidth={3} />
+          <Plus size={32} color="black" strokeWidth={3} />
         </TouchableOpacity>
       </View>
     </View>
