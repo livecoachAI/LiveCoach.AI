@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Pressable, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-// TabButton remains the same...
+// TabButtons
 type TabButtonProps = {
   label: string;
   isActive: boolean;
@@ -28,56 +28,56 @@ const ViewVideo = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchText, setSearchText] = useState('');
 
-  const cricketTutorial = ['FUNDAMENTALS', 'BODY ALIGNMENT', 'COVER DRIVE', 'ON DRIVE', 'CUT', 'LATE CUT', 'SWEEP', 'REVERSE SWEEP', 'HOOK SHOT', 'SCOOP SHOT', 'DOWN THE GROUND'];
+  const cricketTutorial = ['FUNDAMENTALS', 'BODY ALIGNMENT', 'COVER DRIVE', 'ON DRIVE', 'CUT SHOT', 'LATE CUT', 'SWEEP', 'REVERSE SWEEP', 'HOOK SHOT', 'SCOOP SHOT', 'DOWN THE GROUND'];
   const badmintonTutorial = ['SMASH', 'CLEAR', 'DROP', 'NET SHOT'];
 
-  // base list
   const baseTechniques = currentStep === 'cricket' ? cricketTutorial : badmintonTutorial;
 
-  // Filtering the list
   const filteredTechniques = baseTechniques.filter(item =>
     item.toLowerCase().includes(searchText.toLowerCase())
   );
 
   const toggleSearch = () => {
     setIsSearching(!isSearching);
-    setSearchText(''); // Clear search text when closing search
+    if (isSearching) setSearchText(''); 
   };
 
   return (
     <View className="flex-1 bg-white">
-      <View className="bg-neutral-50 pt-6 pb-2 px-4 -mx-4 ">
+      {/*header*/}
+      <View className="bg-neutral-50 pt-8 pb-4 px-4 -mx-4">
 
-        {/* Header */}
-        <View className="flex-row items-center justify-between mb-4">
-          {!isSearching ? (
-            <>
-              <Text className="font-bebas text-4xl font-bold text-primary-dark px-4">
-                TUTORIALS
-              </Text>
-              <TouchableOpacity onPress={() => setIsSearching(true)} className="p-2">
-                <Ionicons name="search" size={28} color="#150000" />
-              </TouchableOpacity>
-            </>
-          ) : (
-            <View className="flex-1 flex-row items-center bg-white border border-neutral-200 rounded-full px-4 h-10">
-              <Ionicons name="search" size={20} color="#ADABAB" />
-              <TextInput
-                autoFocus
-                placeholder="Search techniques..."
-                value={searchText}
-                onChangeText={setSearchText}
-                className="flex-1 ml-2 font-manrope text-primary-dark"
-              />
-              <TouchableOpacity onPress={toggleSearch}>
-                <Ionicons name="close-circle" size={20} color="#ADABAB" />
-              </TouchableOpacity>
-            </View>
-          )}
+        {/* Top Row*/}
+        <View className="flex-row items-center justify-between mb-2 px-4">
+          <Text className="font-bebas text-4xl font-bold text-primary-dark">
+            TUTORIALS
+          </Text>
+          <TouchableOpacity onPress={toggleSearch} className="p-1">
+            <Ionicons 
+              name={isSearching ? "close" : "search"} 
+              size={28} 
+              color="#150000" 
+            />
+          </TouchableOpacity>
         </View>
 
-        {/* Tabs */}
-        <View className="flex-row gap-3 px-2 pb-4">
+        {/*Search Row */}
+        {isSearching && (
+          <View className="mx-4 mb-4 flex-row items-center bg-white border border-neutral-200 rounded-full px-4 h-10">
+            <Ionicons name="search" size={20} color="#ADABAB" />
+            <TextInput
+              autoFocus
+              placeholder="Search shots..."
+              placeholderTextColor="#ADABAB" 
+              value={searchText}
+              onChangeText={setSearchText}
+              className="flex-1 ml-2 font-manrope text-primary-dark"
+            />
+          </View>
+        )}
+
+        {/* Tabs Row */}
+        <View className="flex-row gap-3 px-4">
           <TabButton 
             label="Cricket" 
             isActive={currentStep === 'cricket'}
