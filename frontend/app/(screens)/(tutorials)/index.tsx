@@ -6,8 +6,8 @@ import ViewVideo from './viewVideo';
 const Index = () => {
 
     return (
-        <SafeAreaView className="flex-1 bg-neutral-400">
-            <View className="px-4 flex-1">
+        <SafeAreaView className="flex-1 bg-neutral-50">
+            <View className="flex-1">
                 <ViewVideo />
             </View>
         </SafeAreaView>
