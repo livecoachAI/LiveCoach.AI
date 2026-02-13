@@ -9,14 +9,20 @@ const Index = () => {
   const [view, setView] = useState<'profile' | 'sessions'>('profile');
   const navigation = useNavigation(); // Initialize navigation
 
-  // This logic hides the bottom navbar dynamically
   useLayoutEffect(() => {
-    navigation.setOptions({
-      tabBarStyle: { 
-        display: view === 'sessions' ? 'none' : 'flex', // Hide bar if view is sessions
+  navigation.setOptions({
+    tabBarStyle: [
+      {
+        height: 65,
+        paddingBottom: 10,
+        paddingTop: 10,
       },
-    });
-  }, [navigation, view]);
+      {
+        display: view === "sessions" ? "none" : "flex",
+      },
+    ],
+  });
+}, [navigation, view]);
 
   const athleteData = {
     role: 'Athlete' as const,
