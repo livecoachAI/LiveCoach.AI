@@ -14,7 +14,12 @@ export interface CoachData {
   players: Player[];
 }
 
-const ProfileCoach = ({ data }: { data: CoachData }) => {
+interface ProfileCoachProps {
+  data: CoachData;
+  onPressPlayer: () => void; 
+}
+
+const ProfileCoach = ({ data, onPressPlayer }: ProfileCoachProps) => {
   return (
     <ScrollView bounces={false} showsVerticalScrollIndicator={false} className="flex-1 bg-white">
       {/* Header Section */}
@@ -24,7 +29,6 @@ const ProfileCoach = ({ data }: { data: CoachData }) => {
           className="w-full h-full"
           resizeMode="cover"
         />
-        {/* Text Overlay with Verification Badge */}
         <View className="absolute bottom-0 left-0 right-0 bg-black/40 p-6">
           <Text className="text-white text-xs font-bold uppercase tracking-widest opacity-80">
             {data.role}
@@ -40,17 +44,19 @@ const ProfileCoach = ({ data }: { data: CoachData }) => {
         </View>
       </View>
 
-      {/* Coach Specific Content: Players List */}
+      {/* Coach Content: Players List */}
       <View className="px-8 py-4 bg-neutral-100 border-b border-neutral-100">
-          <Text className="font-bebas text-3xl text-black">PLAYERS</Text>
-        </View>
+        <Text className="font-bebas text-3xl text-black">PLAYERS</Text>
+      </View>
       <View className='px-4'>
-        
-        
         {data.players.map((player) => (
-          <Pressable key={player.id} className="px-4 py-5 border-b border-neutral-100 flex-row justify-between items-center active:opacity-50 ">
+          <Pressable 
+            key={player.id} 
+            onPress={onPressPlayer}
+            className="px-4 py-5 border-b border-neutral-100 flex-row justify-between items-center active:opacity-50"
+          >
             <View className="flex-1">
-              <Text className=" text-primary-dark uppercase">{player.name}</Text>
+              <Text className="text-xl font-manrope text-black uppercase">{player.name}</Text>
             </View>
             <Entypo name="chevron-right" size={20} color="#ADABAB" />
           </Pressable>
@@ -59,5 +65,6 @@ const ProfileCoach = ({ data }: { data: CoachData }) => {
     </ScrollView>
   );
 };
+
 
 export default ProfileCoach;
