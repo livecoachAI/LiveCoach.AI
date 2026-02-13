@@ -102,6 +102,7 @@ export default function ScreensTabsLayout() {
         />
         <Tabs.Screen name="(profile)/profile" options={{ href: null }} />
         <Tabs.Screen name="(profile)/profile-coach" options={{ href: null }} />
+        <Tabs.Screen name="(profile)/add-note" options={{ href: null }} />
         <Tabs.Screen name="(social)/social" options={{ href: null }} />
       </Tabs>
     </>
