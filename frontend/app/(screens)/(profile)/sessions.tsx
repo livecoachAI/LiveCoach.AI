@@ -55,11 +55,11 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
       <StatusBar barStyle="dark-content" />
       
       {/* Header */}
-      <View className="flex-row items-center px-4 py-5 border-b border-gray-100">
-        <TouchableOpacity onPress={onBackPress} className="p-2">
+      <View className="flex-row items-center px-4 py-5 border-b border-neutral-50">
+        <TouchableOpacity onPress={onBackPress} className="p-1">
           <ChevronLeft size={32} color="black" strokeWidth={2} />
         </TouchableOpacity>
-        <Text className="ml-2 text-2xl font-black tracking-tighter text-black uppercase">Sessions</Text>
+        <Text className="font-bebas pt-2 text-4xl font-black tracking-tighter text-primary-dark uppercase">Sessions</Text>
       </View>
 
       <FlatList
@@ -77,7 +77,7 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
           >
             <View className="flex-row items-center">
               <ClipboardList size={40} color="black" strokeWidth={1.2} className="mr-5" />
-              <Text className="text-lg font-bold tracking-widest text-black">{item.title}</Text>
+              <Text className="font-abeezee text-lg font-bold tracking-widest text-black">{item.title}</Text>
             </View>
             <ChevronRight size={24} color="black" strokeWidth={1.5} />
           </TouchableOpacity>
@@ -85,10 +85,10 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
         ItemSeparatorComponent={() => <View className="h-[1px] bg-gray-100 mx-4" />}
       />
 
-      {/* Floating Yellow FAB */}
+      {/* Yellow Floating Plus Button */}
       <View className="absolute bottom-10 left-0 right-0 items-center">
         <TouchableOpacity 
-          className="bg-[#FFED00] w-16 h-16 rounded-full items-center justify-center shadow-lg"
+          className="bg-[#FAFAFA] w-16 h-16 rounded-full items-center justify-center shadow-lg"
           onPress={() => {
             setSessionInput("");
             setIsRenameVisible(false);
@@ -99,7 +99,7 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
         </TouchableOpacity>
       </View>
 
-      {/* --- OPTIONS MODAL (White Background) --- */}
+      {/* --- RENAME & DELETE OPTIONS MODAL (White Background) --- */}
       <Modal visible={isOptionsVisible} transparent animationType="fade">
         <TouchableOpacity 
           className="flex-1 justify-center items-center bg-black/40 px-8"
@@ -109,7 +109,7 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
           <View className="bg-white w-full rounded-[40px] p-10 items-center shadow-2xl">
             {/* Rename Button */}
             <TouchableOpacity 
-              className="bg-[#FFED00] w-full rounded-2xl py-4 flex-row items-center justify-center mb-2" // Smaller gap (mb-2)
+              className="bg-[#FFED00] w-full rounded-2xl py-4 flex-row items-center justify-center mb-5"
               onPress={() => {
                 setIsOptionsVisible(false);
                 setIsRenameVisible(true);
@@ -150,12 +150,12 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
                   placeholderTextColor="#D1D5DB"
                   value={sessionInput}
                   onChangeText={setSessionInput}
-                  className="text-lg font-bold text-center text-black uppercase"
+                  className="text-lg font-bold text-center text-black"
                   autoFocus
                 />
               </View>
 
-              <View className="flex-row w-full space-x-2"> {/* Smaller gap between Cancel and Create */}
+              <View className="flex-row w-full space-x-4">
                 <TouchableOpacity 
                   onPress={() => setIsAddModalVisible(false)}
                   className="flex-1 py-4 bg-gray-100 rounded-2xl"
