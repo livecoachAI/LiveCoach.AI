@@ -3,7 +3,8 @@ import {
   View, Text, TextInput, TouchableOpacity, SafeAreaView, 
   KeyboardAvoidingView, Platform, ScrollView 
 } from 'react-native';
-import { ChevronLeft, Share2, MoreHorizontal } from 'lucide-react-native';
+// Updated imports with new icon choices
+import { ChevronLeft, ExternalLink, SlidersHorizontal } from 'lucide-react-native';
 
 interface AddNoteProps {
   onClose: () => void;
@@ -25,34 +26,45 @@ const AddNoteScreen: React.FC<AddNoteProps> = ({ onClose, sessionTitle }) => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
         className="flex-1"
       >
-        <View className="flex-row items-center justify-between px-4 py-2 border-b border-gray-50">
+        {/* Header - Maintaining your requested spacing */}
+        <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-100">
           <TouchableOpacity onPress={onClose} className="flex-row items-center">
-            <ChevronLeft size={30} color="#EAB308" strokeWidth={2.5} />
-            <Text className="text-[#EAB308] text-lg font-medium">Notes</Text>
+            <ChevronLeft size={28} color="#000000" strokeWidth={2.5} />
+            <Text className="font-bebas text-lg text-[#000000] text-lg font-semibold ml-[-2px]">Notes</Text>
           </TouchableOpacity>
 
-          <View className="flex-row items-center space-x-5">
-            <Share2 size={24} color="#EAB308" />
-            <View className="border border-[#EAB308] rounded-full p-0.5">
-              <MoreHorizontal size={16} color="#EAB308" />
-            </View>
-            <TouchableOpacity onPress={onClose}>
-              <Text className="text-[#EAB308] text-lg font-bold">Done</Text>
+          {/* Spacing kept exactly as you liked it */}
+          <View className="flex-row items-center"> 
+            <TouchableOpacity activeOpacity={0.6} className="mr-6">
+              {/* New 'ExternalLink' icon instead of iOS Share */}
+              <ExternalLink size={24} color="#000000" strokeWidth={2} />
+            </TouchableOpacity>
+            
+            <TouchableOpacity activeOpacity={0.6} className="mr-6">
+              {/* New 'SlidersHorizontal' icon for a modern 'More' action */}
+              <SlidersHorizontal size={22} color="#000000" strokeWidth={2} />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={onClose} activeOpacity={0.6}>
+              <Text className="font-bebas text-[#000000] text-lg font-bold">Done</Text>
             </TouchableOpacity>
           </View>
         </View>
 
-        <ScrollView className="flex-1 px-5 pt-4">
-          <Text className="text-gray-400 text-xs mb-2 uppercase tracking-widest font-bold">
+        {/* Note Content Area */}
+        <ScrollView className="flex-1 px-6 pt-5">
+          <Text className="text-gray-400 text-xs mb-3 uppercase tracking-[1.5px] font-black italic">
             {sessionTitle}
           </Text>
           <TextInput
             ref={inputRef}
             multiline
             placeholder="Start typing..."
-            className="text-lg text-black leading-6"
+            placeholderTextColor="#D1D5DB"
+            className="text-[18px] text-black leading-7 font-medium"
             value={note}
             onChangeText={setNote}
+            textAlignVertical="top"
           />
         </ScrollView>
       </KeyboardAvoidingView>
