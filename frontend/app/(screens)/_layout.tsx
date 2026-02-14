@@ -83,13 +83,14 @@ export default function ScreensTabsLayout() {
         />
 
         {/* Hidden routes */}
+        <Tabs.Screen name="(splash)/index" options={{ href: null }} />
+        <Tabs.Screen name="(splash)/splash" options={{ href: null }} />
         <Tabs.Screen name="(profile)/sessions" options={{ href: null }} />
         <Tabs.Screen name="(tutorials)/viewVideo" options={{ href: null }} />
         <Tabs.Screen name="(tutorials)/sportOverview" options={{ href: null }} />
         <Tabs.Screen name="(browseCoach)/SportTabs" options={{ href: null }} />
         <Tabs.Screen name="(browseCoach)/CoachCard" options={{ href: null }} />
-        <Tabs.Screen
-          name="(browseCoach)/CoachContactModel"
+        <Tabs.Screen name="(browseCoach)/CoachContactModel"
           options={{ href: null }}
         />
         <Tabs.Screen name="(videoAnalyze)/upload" options={{ href: null }} />
