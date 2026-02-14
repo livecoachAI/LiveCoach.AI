@@ -87,6 +87,7 @@ export default function ScreensTabsLayout() {
         <Tabs.Screen name="(splash)/splash" options={{ href: null }} />
         <Tabs.Screen name="(profile)/sessions" options={{ href: null }} />
         <Tabs.Screen name="(tutorials)/viewVideo" options={{ href: null }} />
+        <Tabs.Screen name="(tutorials)/sportOverview" options={{ href: null }} />
         <Tabs.Screen name="(browseCoach)/SportTabs" options={{ href: null }} />
         <Tabs.Screen name="(browseCoach)/CoachCard" options={{ href: null }} />
         <Tabs.Screen name="(browseCoach)/CoachContactModel"
@@ -101,6 +102,7 @@ export default function ScreensTabsLayout() {
           name="(videoAnalyze)/upload-result"
           options={{ href: null }}
         />
+        <Tabs.Screen name="(videoAnalyze)/analyze-result" options={{href: null}}/>
         <Tabs.Screen name="(profile)/profile" options={{ href: null }} />
         <Tabs.Screen name="(profile)/profile-coach" options={{ href: null }} />
         <Tabs.Screen name="(profile)/add-note" options={{ href: null }} />

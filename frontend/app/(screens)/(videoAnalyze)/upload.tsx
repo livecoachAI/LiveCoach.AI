@@ -3,6 +3,8 @@ import React, {useState, useEffect} from 'react'
 import ButtonYellow from '@/app/components/buttonYellow';
 import DropDownPicker from 'react-native-dropdown-picker';
 import UploadResultModal from './upload-result';
+import { router } from "expo-router";
+
 
 
 const SPORTS_DATA = [
@@ -111,8 +113,8 @@ const Upload = () => {
                 visible={showResult}
                 onClose={() => setShowResult(false)}
                 onAnalyze={() => {
-                    // later → navigate to analytics screen
-                    // router.push('/videoAnalyse/result'); // example path
+                    setShowResult(false);
+                    router.push("/analyze-result");
             }}
             />
         </View>    
