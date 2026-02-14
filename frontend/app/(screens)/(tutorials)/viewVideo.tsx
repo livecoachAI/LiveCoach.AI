@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Pressable, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams } from 'expo-router';
 
-// TabButtons
 type TabButtonProps = {
   label: string;
   isActive: boolean;
@@ -16,19 +16,30 @@ const TabButton = ({ label, isActive, onPress }: TabButtonProps) => (
     style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1 })}
   >
     <View className={`w-0 h-0 border-t-[18px] border-t-transparent border-b-[18px] border-b-transparent border-r-[12px] ${isActive ? 'border-r-accent-yellow' : 'border-r-white'}`} />
-    <View className={`h-[35px] px-2 justify-center items-center ${isActive ? 'bg-accent-yellow' : 'bg-white'}`}>
-      <Text className="font-manrope font-semibold text-primary-dark">{label}</Text>
+    <View className={`h-[36px] px-2 justify-center items-center ${isActive ? 'bg-accent-yellow' : 'bg-white'}`}>
+      <Text className="font-manrope font-semibold text-primary-dark uppercase">{label}</Text>
     </View>
     <View className={`w-0 h-0 border-t-[18px] border-t-transparent border-b-[18px] border-b-transparent border-l-[12px] ${isActive ? 'border-l-accent-yellow' : 'border-l-white'}`} />
   </Pressable>
 );
 
 const ViewVideo = () => {
-  const [currentStep, setCurrentStep] = useState('cricket');
+  //Get params using Expo Router hook
+  const params = useLocalSearchParams<{ defaultTab?: 'cricket' | 'badminton' }>();
+  
+  // Initialize state
+  const [currentStep, setCurrentStep] = useState<'cricket' | 'badminton'>('cricket');
   const [isSearching, setIsSearching] = useState(false);
   const [searchText, setSearchText] = useState('');
 
-  const cricketTutorial = ['FUNDAMENTALS', 'BODY ALIGNMENT', 'COVER DRIVE', 'ON DRIVE', 'CUT SHOT', 'LATE CUT', 'SWEEP', 'REVERSE SWEEP', 'HOOK SHOT', 'SCOOP SHOT', 'DOWN THE GROUND'];
+  //Sync state when navigation parameters change
+  useEffect(() => {
+    if (params.defaultTab) {
+      setCurrentStep(params.defaultTab);
+    }
+  }, [params.defaultTab]);
+
+  const cricketTutorial = ['FUNDAMENTALS', 'COVER DRIVE', 'ON DRIVE', 'CUT SHOT', 'LATE CUT', 'SWEEP', 'REVERSE SWEEP', 'HOOK SHOT', 'SCOOP SHOT', 'DOWN THE GROUND'];
   const badmintonTutorial = ['SMASH', 'CLEAR', 'DROP', 'NET SHOT'];
 
   const baseTechniques = currentStep === 'cricket' ? cricketTutorial : badmintonTutorial;
@@ -43,12 +54,9 @@ const ViewVideo = () => {
   };
 
   return (
-    <View className="flex-1 bg-white">
-      {/*header*/}
-      <View className="bg-neutral-50 pt-8 pb-4 px-4 -mx-4">
-
-        {/* Top Row*/}
-        <View className="flex-row items-center justify-between mb-2 px-4">
+    <View className="flex-1 bg-white pt-8">
+      <View className="bg-neutral-50 pt-8 pb-4 px-4">
+        <View className="flex-row items-center justify-between mb-4">
           <Text className="font-bebas text-4xl font-bold text-primary-dark">
             TUTORIALS
           </Text>
@@ -61,9 +69,8 @@ const ViewVideo = () => {
           </TouchableOpacity>
         </View>
 
-        {/*Search Row */}
         {isSearching && (
-          <View className="mx-4 mb-4 flex-row items-center bg-white border border-neutral-200 rounded-full px-4 h-10">
+          <View className="mb-4 flex-row items-center bg-white border border-neutral-200 rounded-full px-4 h-10">
             <Ionicons name="search" size={20} color="#ADABAB" />
             <TextInput
               autoFocus
@@ -76,8 +83,7 @@ const ViewVideo = () => {
           </View>
         )}
 
-        {/* Tabs Row */}
-        <View className="flex-row gap-3 px-4">
+        <View className="flex-row gap-4">
           <TabButton 
             label="Cricket" 
             isActive={currentStep === 'cricket'}
@@ -91,7 +97,6 @@ const ViewVideo = () => {
         </View>
       </View>
 
-      {/* List */}
       <ScrollView showsVerticalScrollIndicator={false} className="px-4">
         {filteredTechniques.length > 0 ? (
           filteredTechniques.map((technique, index) => (
