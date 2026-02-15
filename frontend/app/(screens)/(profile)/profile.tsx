@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, Image, Pressable } from 'react-native';
-import { Entypo } from '@expo/vector-icons';
+import { Entypo, MaterialIcons } from '@expo/vector-icons';
 
 export interface AthleteData {
   name: string;
@@ -30,6 +30,13 @@ const ProfileAthlete = ({ data, onPressSessions }: ProfileAthleteProps) => {
           <Text className="text-white text-5xl font-bebas uppercase tracking-tighter">
             {data.name}
           </Text>
+
+          <Pressable
+              onPress={() => console.log("open options")}
+              className="absolute bottom-2 right-[-12] bg-white p-2 rounded-full shadow-md active:scale-95"
+            >
+              <MaterialIcons name="photo-camera" size={20} color="black" />
+            </Pressable>
         </View>
       </View>
 
