@@ -32,7 +32,7 @@ const SportOverview = () => {
   };
 
   return (
-      <View className="flex-1 ">
+      <View className="flex-1">
         
         {/* Header */}
         <View className="flex-row items-center gap-4 px-6 mb-8 pt-6">
