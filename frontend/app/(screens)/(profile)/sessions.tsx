@@ -1,11 +1,56 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StatusBar, Modal, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { 
+  View, Text, FlatList, TouchableOpacity, StatusBar, 
+  Modal, TextInput, KeyboardAvoidingView, Platform 
+} from 'react-native';
 import { ChevronLeft, ChevronRight, ClipboardList, Plus, RotateCw, Trash2 } from 'lucide-react-native';
 import AddNoteScreen from './add-note'; 
 
 interface SessionsScreenProps {
   onBackPress: () => void;
 }
+
+// --- PERFECT HEXAGON BUTTON COMPONENT ---
+const HexButton = ({ title, onPress, color, textColor = "black", icon: Icon }: any) => {
+  const pointSize = 24; // Controls the sharpness of the point
+  
+  return (
+    <TouchableOpacity onPress={onPress} activeOpacity={0.8} className="my-2 w-full items-center">
+      <View className="flex-row items-center justify-center">
+        {/* Left Triangle Point */}
+        <View 
+          style={{ 
+            width: 0, height: 0, 
+            borderTopWidth: pointSize, borderTopColor: 'transparent',
+            borderBottomWidth: pointSize, borderBottomColor: 'transparent',
+            borderRightWidth: pointSize, borderRightColor: color,
+          }} 
+        />
+        
+        {/* Middle Body */}
+        <View 
+          style={{ backgroundColor: color, height: pointSize * 2 }} 
+          className="flex-row items-center justify-center px-4 min-w-[180px]"
+        >
+          <Text className={`font-bebas text-2xl font-black tracking-tighter text-${textColor} uppercase`}>
+            {title}
+          </Text>
+          {Icon && <View className="ml-3"><Icon size={22} color={textColor} strokeWidth={3} /></View>}
+        </View>
+
+        {/* Right Triangle Point */}
+        <View 
+          style={{ 
+            width: 0, height: 0, 
+            borderTopWidth: pointSize, borderTopColor: 'transparent',
+            borderBottomWidth: pointSize, borderBottomColor: 'transparent',
+            borderLeftWidth: pointSize, borderLeftColor: color,
+          }} 
+        />
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
   const [isNoteVisible, setIsNoteVisible] = useState(false);
@@ -59,7 +104,7 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
         <TouchableOpacity onPress={onBackPress} className="p-1">
           <ChevronLeft size={32} color="black" strokeWidth={2} />
         </TouchableOpacity>
-        <Text className="font-bebas pt-2 text-4xl font-black tracking-tighter text-primary-dark uppercase">Sessions</Text>
+        <Text className="font-bebas pt-2 text-4xl font-black tracking-tighter text-black uppercase">Sessions</Text>
       </View>
 
       <FlatList
@@ -85,10 +130,10 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
         ItemSeparatorComponent={() => <View className="h-[1px] bg-gray-100 mx-4" />}
       />
 
-      {/* Yellow Floating Plus Button */}
+      {/* Floating Plus Button */}
       <View className="absolute bottom-10 left-0 right-0 items-center">
         <TouchableOpacity 
-          className="bg-[#FAFAFA] w-16 h-16 rounded-full items-center justify-center shadow-lg"
+          className="bg-[#F0F0F0] w-16 h-16 rounded-full items-center justify-center shadow-lg"
           onPress={() => {
             setSessionInput("");
             setIsRenameVisible(false);
@@ -99,85 +144,74 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
         </TouchableOpacity>
       </View>
 
-      {/* --- RENAME & DELETE OPTIONS MODAL (White Background) --- */}
+      {/* --- OPTIONS MODAL --- */}
       <Modal visible={isOptionsVisible} transparent animationType="fade">
         <TouchableOpacity 
-          className="flex-1 justify-center items-center bg-black/40 px-8"
+          className="flex-1 justify-center items-center bg-black/50 px-8"
           activeOpacity={1}
           onPress={() => setIsOptionsVisible(false)}
         >
           <View className="bg-white w-full rounded-[40px] p-10 items-center shadow-2xl">
-            {/* Rename Button */}
-            <TouchableOpacity 
-              className="bg-[#FFED00] w-full rounded-2xl py-4 flex-row items-center justify-center mb-5"
+            <HexButton 
+              title="RENAME" 
+              color="#EAFF00" // Precise Neon Yellow
+              icon={RotateCw}
               onPress={() => {
                 setIsOptionsVisible(false);
                 setIsRenameVisible(true);
                 setSessionInput(selectedSession?.title || "");
                 setIsAddModalVisible(true);
-              }}
-            >
-              <Text className="text-xl font-black mr-3 italic">RENAME</Text>
-              <RotateCw size={24} color="black" strokeWidth={2.5} />
-            </TouchableOpacity>
-
-            {/* Delete Button */}
-            <TouchableOpacity 
-              className="bg-[#FFED00] w-full rounded-2xl py-4 flex-row items-center justify-center"
-              onPress={handleDelete}
-            >
-              <Text className="text-xl font-black mr-3 italic">DELETE SESSION</Text>
-              <Trash2 size={24} color="black" strokeWidth={2.5} />
-            </TouchableOpacity>
+              }} 
+            />
+            <HexButton 
+              title="DELETE SESSION" 
+              color="#EAFF00" 
+              icon={Trash2}
+              onPress={handleDelete} 
+            />
           </View>
         </TouchableOpacity>
       </Modal>
 
-      {/* --- NAME YOUR SESSION MODAL --- */}
+      {/* --- ADD/RENAME MODAL --- */}
       <Modal visible={isAddModalVisible} transparent animationType="slide">
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
           <TouchableOpacity 
-            className="flex-1 justify-center items-center bg-black/40 px-6"
+            className="flex-1 justify-center items-center bg-black/50 px-6"
             activeOpacity={1}
             onPress={() => setIsAddModalVisible(false)}
           >
             <View className="bg-white w-full rounded-[35px] p-8 shadow-2xl items-center">
-              <Text className="text-2xl font-black mb-6 text-black italic">NAME YOUR SESSION</Text>
+              <Text className="font-abeezee text-2xl font-black mb-6 italic">NAME YOUR SESSION</Text>
               
-              <View className="border-2 border-[#FFED00] rounded-2xl w-full px-4 py-4 mb-8">
+              <View className="border-2 border-[#EAFF00] rounded-2xl w-full px-4 py-4 mb-8">
                 <TextInput
                   placeholder="ADD NEW SESSION"
-                  placeholderTextColor="#D1D5DB"
                   value={sessionInput}
                   onChangeText={setSessionInput}
-                  className="text-lg font-bold text-center text-black"
+                  className="text-lg font-bold text-center uppercase"
                   autoFocus
                 />
               </View>
 
-              <View className="flex-row w-full space-x-4">
-                <TouchableOpacity 
-                  onPress={() => setIsAddModalVisible(false)}
-                  className="flex-1 py-4 bg-gray-100 rounded-2xl"
-                >
-                  <Text className="text-center font-black text-gray-400 italic">CANCEL</Text>
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  onPress={handleCreateOrRename}
-                  className="flex-1 py-4 bg-[#FFED00] rounded-2xl"
-                >
-                  <Text className="text-center font-black text-black italic">
-                    {isRenameVisible ? "SAVE" : "CREATE"}
-                  </Text>
-                </TouchableOpacity>
+              <View className="w-full">
+                <HexButton 
+                  title={isRenameVisible ? "SAVE" : "CREATE"} 
+                  color="#EAFF00" 
+                  onPress={handleCreateOrRename} 
+                />
+                <HexButton 
+                  title="CANCEL" 
+                  color="#9E9E9E" // Solid Gray
+                  textColor="white"
+                  onPress={() => setIsAddModalVisible(false)} 
+                />
               </View>
             </View>
           </TouchableOpacity>
         </KeyboardAvoidingView>
       </Modal>
 
-      {/* Note Screen Modal */}
       <Modal visible={isNoteVisible} animationType="slide" presentationStyle="fullScreen">
         <AddNoteScreen 
           onClose={() => setIsNoteVisible(false)} 
