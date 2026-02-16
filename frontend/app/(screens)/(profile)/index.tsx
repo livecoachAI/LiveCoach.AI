@@ -42,7 +42,7 @@ const Index = () => {
   };
 
   //User change (Athlete or Coach)
-  const currentUser = coachData; // Change to coachData to test coach view
+  const currentUser = athleteData; // Change to coachData to test coach view
 
   // This logic hides the bottom navbar dynamically
   useLayoutEffect(() => {
