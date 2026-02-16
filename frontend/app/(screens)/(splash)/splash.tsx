@@ -52,7 +52,7 @@ const Splash: FC = () => {
 
     // Navigate after 2 seconds
     const navigationTimer = setTimeout(() => {
-      router.replace('/(screens)/(social)')
+      router.replace('/(screens)/(profile)')
     }, 2000)
 
     return () => clearTimeout(navigationTimer)
