@@ -9,11 +9,15 @@ const dummyAnalytics: AnalyticsData = {
   distanceValue: 1.369,
   distanceProgress: 26,
   similarityScore: 0.062,
+  overallFeedback: "Overall : Form needs improvement, but joint control is solid.",
   feedbackPositive: [
     'All joints showing smooth, controlled movement!',
+    'Great balance maintained during the follow-through.',
+    'Consistent tempo throughout most of the motion.',
   ],
   feedbackNegative: [
     'Significant deviations from expert form detected.',
+    'Front knee collapsing slightly at impact.',
   ],
   recommendations: [
     'Watch expert videos to understand proper form',
