@@ -6,9 +6,8 @@ import { Entypo } from '@expo/vector-icons';
 
 type SportType = 'cricket' | 'badminton';
 
-const SportOverview = () => {
-  const navigation = useNavigation<any>();
-  const [activeSport, setActiveSport] = useState<SportType>('cricket');
+const SportOverview = ({ onNavigate }: any) => {
+const [activeSport, setActiveSport] = useState<SportType>('cricket');
 
   const content = {
     cricket: {
@@ -25,15 +24,13 @@ const SportOverview = () => {
     }
   };
 
-  const goToTutorial = () => {
-    navigation.navigate('(tutorials)/viewVideo', {
-      defaultTab: activeSport,
-    });
+const goToTutorial = () => {
+    //tell the parent to switch
+    onNavigate(activeSport);
   };
 
   return (
       <View className="flex-1">
-        
         {/* Header */}
         <View className="flex-row items-center gap-4 px-6 mb-8 pt-6">
           <Pressable onPress={() => setActiveSport('cricket')}>

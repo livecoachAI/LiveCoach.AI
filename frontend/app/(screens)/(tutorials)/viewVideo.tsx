@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Pressable, TextInput, StyleSheet } from 'react-native';
 import { Ionicons, Entypo } from '@expo/vector-icons';
-import { useLocalSearchParams, useRouter } from 'expo-router';
 
 type TabButtonProps = {
   label: string;
@@ -34,31 +33,23 @@ const TabButton = ({ label, isActive, onPress }: TabButtonProps) => (
   </Pressable>
 );
 
-const ViewVideo = () => {
-  const router = useRouter();
-  const params = useLocalSearchParams<{ defaultTab?: 'cricket' | 'badminton' }>();
-  const [currentStep, setCurrentStep] = useState<'cricket' | 'badminton'>('cricket');
+const ViewVideo = ({ activeSport, onBack, onSelect, setSport }: any) => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchText, setSearchText] = useState('');
 
-  useEffect(() => {
-    if (params.defaultTab) {
-      setCurrentStep(params.defaultTab);
-    }
-  }, [params.defaultTab]);
 
   const cricketTutorial = ['FUNDAMENTALS', 'COVER DRIVE', 'ON DRIVE', 'CUT SHOT', 'LATE CUT', 'SWEEP', 'REVERSE SWEEP', 'HOOK SHOT', 'SCOOP SHOT', 'DOWN THE GROUND'];
   const badmintonTutorial = ['SMASH', 'CLEAR', 'DROP', 'NET SHOT'];
 
-  const baseTechniques = currentStep === 'cricket' ? cricketTutorial : badmintonTutorial;
+  const baseTechniques = activeSport === 'cricket' ? cricketTutorial : badmintonTutorial;
   const filteredTechniques = baseTechniques.filter(item => item.toLowerCase().includes(searchText.toLowerCase()));
-
+  
   return (
-    <View className="flex-1 bg-white pt-8">
-      <View className="bg-neutral-50 pt-10 pb-4 px-4">
+    <View className="flex-1 bg-white">
+      <View className="bg-neutral-50 py-4 pb-4 px-4">
         <View className="flex-row items-center justify-between mb-2">
           <View className="flex-row items-center">
-            <TouchableOpacity onPress={() => router.push('/')} className="p-1 -ml-2">
+            <TouchableOpacity onPress={onBack} className="p-1 -ml-2">
               <Ionicons name="chevron-back" size={40} color="black" />
             </TouchableOpacity>
             <Text className="font-bebas text-4xl text-black pt-1">TUTORIALS</Text>
@@ -81,8 +72,8 @@ const ViewVideo = () => {
         )}
 
         <View className="flex-row gap-2 mb-4">
-          <TabButton label="Cricket" isActive={currentStep === 'cricket'} onPress={() => { setCurrentStep('cricket'); setSearchText(''); }} />
-          <TabButton label="Badminton" isActive={currentStep === 'badminton'} onPress={() => { setCurrentStep('badminton'); setSearchText(''); }} />
+          <TabButton label="Cricket" isActive={activeSport === 'cricket'} onPress={() => { setSport('cricket'); setSearchText(''); }} />
+          <TabButton label="Badminton" isActive={activeSport === 'badminton'} onPress={() => { setSport('badminton'); setSearchText(''); }} />
         </View>
       </View>
 
@@ -91,10 +82,7 @@ const ViewVideo = () => {
           <TouchableOpacity
             key={index}
             className="flex-row items-center justify-between py-5 border-b border-neutral-100"
-            onPress={() => {
-              const path = currentStep === 'cricket' ? './technique-detailsCricket' : './technique-detailsBadminton';
-              router.push({ pathname: path as any, params: { techniqueName: technique } });
-            }}
+            onPress={() => onSelect(technique)} // Use onSelect prop
           >
             <Text className="text-base font-manrope font-medium text-primary-dark">{technique}</Text>
             <Entypo name="chevron-right" size={20} color="#ADABAB" />
