@@ -34,6 +34,14 @@ export default function ScreensTabsLayout() {
             { name: "(profile)/index", Icon: ProfileIcon },
           ];
 
+          // Hide tab bar for splash screen
+          const currentRoute = props.state.routeNames[props.state.index];
+          const isSplashScreen = currentRoute && currentRoute.includes("splash");
+          
+          if (isSplashScreen) {
+            return null;
+          }
+
           return (
             <View className="bg-white px-3 pb-8 pt-2">
               <View className="flex-row items-center justify-center">
@@ -72,8 +80,14 @@ export default function ScreensTabsLayout() {
         <Tabs.Screen name="(browseCoach)/index" />
         <Tabs.Screen name="(profile)/index" />
 
-        {/* Hidden Routes */}
-        <Tabs.Screen name="(splash)/index" options={{ href: null }} />
+        {/* Splash Screen - Hide tab bar */}
+        <Tabs.Screen 
+          name="(splash)/index" 
+          options={{ 
+            href: null,
+            tabBarStyle: { display: "none" }
+          }} 
+        />
         <Tabs.Screen name="(splash)/splash" options={{ href: null }} />
         <Tabs.Screen name="(profile)/sessions" options={{ href: null }} />
         <Tabs.Screen name="(tutorials)/viewVideo" options={{ href: null }} />
