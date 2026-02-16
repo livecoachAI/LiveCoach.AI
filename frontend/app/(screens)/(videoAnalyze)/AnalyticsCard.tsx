@@ -9,7 +9,7 @@ export type AnalyticsData = {
   distanceValue: number;       // e.g. 1.369
   distanceProgress: number;    // 0–100
   similarityScore: number;     // e.g. 0.062
-
+  overallFeedback?: string;
   feedbackPositive: string[];      // ✅ list of good points
   feedbackNegative: string[];      // ✅ list of issues
   recommendations: string[];       // ✅ list of suggestions
@@ -58,16 +58,15 @@ const AnalyticsCard = ({ data }: Props) => {
     <View className="flex-1">
       {/* Overall Score */}
       {/* <View className="mt-10 bg-white rounded-2xl p-8 border border-gray-100 shadow-lg shadow-black/5"> */}
-      <View
-  className="mt-10 bg-white rounded-2xl p-8 border border-gray-100"
-  style={{
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
-  }}
->
+      <View className="mt-10 bg-white rounded-2xl p-8 border border-gray-100"
+          style={{
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 6 },
+            shadowOpacity: 0.06,
+            shadowRadius: 12,
+            elevation: 4,
+          }}
+      >
         <View className="flex-row items-center">
           {/* Circle */}
           <View className="mr-5">
@@ -112,19 +111,19 @@ const AnalyticsCard = ({ data }: Props) => {
         </View>
       </View>
 
+      
       {/* Distance to Expert */}
-      <View
-  className="mt-6 bg-white rounded-2xl p-4 border border-gray-100"
-  style={{
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
-  }}
->
+      <View className="mt-6 bg-white rounded-2xl p-4 border border-gray-100"
+          style={{
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 6 },
+            shadowOpacity: 0.06,
+            shadowRadius: 12,
+            elevation: 4,
+          }}
+      >
         <View className="flex-row items-center justify-between mb-6">
-          <Text className="text-2xl font-semibold text-gray-700">
+          <Text className="text-2xl font-semibold text-gray-900">
             Distance to Expert
           </Text>
           <Text className="text-lg font-medium text-gray-700">
@@ -133,91 +132,80 @@ const AnalyticsCard = ({ data }: Props) => {
         </View>
 
         {/* Progress Section */}
-  <View className="relative pt-6 pb-4">
+        <View className="relative pt-6 pb-4">
+          <View className="h-4 bg-gray-200 rounded-full overflow-visible">
+            <View className="h-4 rounded-full bg-accent-yellow"
+                style={{
+                  width: `${distanceProgress}%`,
+                }}
+            />
 
-    {/* Track */}
-    <View className="h-4 bg-gray-200 rounded-full overflow-visible">
-
-      {/* Gradient Fill */}
-      <View
-        className="h-4 rounded-full"
-        style={{
-          width: `${distanceProgress}%`,
-          backgroundColor: '#8B5CF6', // purple (simple version)
-        }}
-      />
-
-      {/* Animated Avatar */}
-            <View
-  className="absolute -top-4 w-10 h-10 rounded-full items-center justify-center border-4"
-  style={{
-    left: `${distanceProgress}%`,
-    transform: [{ translateX: -20 }],
-    backgroundColor: 'white',
-    borderColor: '#EC4899',
-  }}
->
-  <Animated.Text
-    style={{
-      fontSize: 16,
-      color: '#EC4899',
-      transform: [
-        { translateY: bounceAnim },
-        {
-          rotate: bounceAnim.interpolate({
-            inputRange: [-3, 0],
-            outputRange: ['-3deg', '0deg'],
-          }),
-        },
-      ],
-    }}
-  >
-    <MaterialIcons name="directions-run" size={22} color="black" />
-  </Animated.Text>
-</View>
-
+            {/* Animated Avatar */}
+            <View className="absolute -top-4 w-10 h-10 rounded-full items-center justify-center border-4 "
+                style={{
+                  left: `${distanceProgress}%`,
+                  transform: [{ translateX: -20 }],
+                  backgroundColor: 'white',
+                  borderColor: '#E6F20D',
+                }}
+            >
+              <Animated.View
+                style={{
+                  transform: [
+                    { translateY: bounceAnim },
+                      {
+                        rotate: bounceAnim.interpolate({
+                        inputRange: [-3, 0],
+                        outputRange: ['-3deg', '0deg'],
+                        }),
+                      },
+                  ],
+                }}
+              >
+              <MaterialIcons name="directions-run" size={22} color="#111827" />
+              </Animated.View>
+            </View>
           </View>
 
-    {/* Labels */}
-    <View className="flex-row justify-between mt-6">
-      <View>
-        <Text className="text-[10px] font-black text-blue-500 uppercase">
-          YOU
-        </Text>
-        <Text className="text-xs font-bold text-gray-400">
-          Starting Point
-        </Text>
-      </View>
+            {/* Labels */}
+          <View className="flex-row justify-between mt-6">
+            <View>
+              <Text className="text-[10px] font-black text-green-500 uppercase">
+              YOU
+              </Text>
+              <Text className="text-xs font-bold text-gray-400">
+              Starting Point
+             </Text>
+            </View>
 
-      <View className="items-end">
-        <Text className="text-[10px] font-black text-pink-500 uppercase">
-          EXPERT
-        </Text>
-        <Text className="text-xs font-bold text-gray-400">
-          Finish Line
-        </Text>
+            <View className="items-end">
+              <Text className="text-[10px] font-black text-red-500 uppercase">
+               EXPERT
+              </Text>
+              <Text className="text-xs font-bold text-gray-400">
+              Finish Line
+              </Text>
+            </View>
+          </View>
+        </View>
       </View>
-    </View>
-  </View>
-</View>
 
       {/* Similarity Score */}
-      <View
-  className="mt-10 bg-white rounded-2xl p-8 border border-gray-100"
-  style={{
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
-  }}
->
-        <Text className="text-2xl font-semibold text-black mb-4">
+      <View className="mt-10 bg-white rounded-2xl p-4 border border-gray-100"
+        style={{
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 6 },
+          shadowOpacity: 0.06,
+          shadowRadius: 12,
+          elevation: 4,
+        }}
+      >
+        <Text className="text-2xl font-semibold text-gray-900 mb-4">
           Similarity Score
         </Text>
 
         <View className="items-center mb-6">
-          <Text className="text-4xl font-semibold" style={{ color: '#1976D2' }}>
+          <Text className="text-4xl font-semibold" style={{ color: '#FACC15' }}>
             {similarityScore}
           </Text>
         </View>
@@ -225,16 +213,16 @@ const AnalyticsCard = ({ data }: Props) => {
         {/* Dotted line + Dynamic Blue dot */}
         <View className="relative">
              {/* Dotted line */}
-            <View className="flex-row justify-between mb-1">
-                <View className="flex-1 border-t border-dotted border-gray-300" />
+            <View className="flex-row justify-between mb-2">
+                <View className="flex-1 border-t-2 border-dotted border-gray-400" />
             </View>
     
         {/*  DYNAMIC BLUE DOT - moves based on similarityScore */}
         <View 
-            className="absolute top-[-4px] w-2 h-2 rounded-full" 
+            className="absolute top-[-5px] w-3 h-3 rounded-full shadow-md" 
             style={{ 
                 left: `${similarityScore * 100}%`,  // 0.062 → 6.2% from left
-                backgroundColor: '#1976D2',
+                backgroundColor: '#FACC15',
                 transform: [{ translateX: -6 }] // center the dot
             }}
         />
@@ -248,84 +236,121 @@ const AnalyticsCard = ({ data }: Props) => {
         </View>
       </View>
 
+      
+      
       {/* Feedback */}
+      {/* Feedback – Coach Notes timeline style */}
 <View
-  className="mt-10 bg-white rounded-2xl p-8 border border-gray-100"
+  className="mt-10 bg-white rounded-2xl p-5 border border-gray-100"
   style={{
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.06,
     shadowRadius: 12,
     elevation: 4,
   }}
 >
-  <Text className="text-2xl font-semibold text-black mb-4">Feedback</Text>
-
-  <View className="space-y-3">
-    {feedbackPositive.map((item, index) => (
-      <View key={`pos-${index}`} className="flex-row items-start space-x-3">
-        <View
-          className="w-2 h-2 rounded-full mt-1.5"
-          style={{ backgroundColor: '#43A047' }}
-        />
-        <Text className="text-sm text-gray-700 flex-1">
-          {item}
-        </Text>
-      </View>
-    ))}
-
-    {feedbackNegative.map((item, index) => (
-      <View key={`neg-${index}`} className="flex-row items-start space-x-3">
-        <View
-          className="w-2 h-2 rounded-full mt-1.5"
-          style={{ backgroundColor: '#EF5350' }}
-        />
-        <Text className="text-sm text-gray-600 flex-1">
-          {item}
-        </Text>
-      </View>
-    ))}
-  </View>
-</View>
-
-
-      {/* Recommendations */}
-<View
-  className="mt-10 bg-white rounded-2xl p-8 border border-gray-100"
-  style={{
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
-  }}
->
-  <Text className="text-2xl font-semibold text-black mb-4">
-    Recommendations
+  {/* Title */}
+  <Text className="text-2xl font-semibold text-gray-900 mb-6">
+    Feedback
   </Text>
 
-  <View className="space-y-3">
-    {recommendations.map((item, index) => (
-      <View
-        key={`rec-${index}`}
-        className="flex-row items-center px-4 py-3 rounded-full border-2"
-        style={{
-          borderColor: index === 0 ? '#1976D2' : '#9CA3AF',
-        }}
-      >
-        <Text
-          className="mr-3 text-lg"
-          style={{ color: index === 0 ? '#1976D2' : '#6B7280' }}
+  {/* Summary Box */}
+          <View className="bg-yellow-50 rounded-xl p-5 mb-8">
+            <Text className="text-gray-800 leading-relaxed">
+              {data.overallFeedback}
+            </Text>
+          </View>
+
+  {/* Timeline container */}
+  <View className="relative">
+    {/* Vertical line */}
+    <View className="absolute left-5 top-0 bottom-0 w-[1px] bg-gray-200" />
+
+    {/* Combined notes */}
+    <View>
+      {/* 1) Positive notes */}
+      {feedbackPositive.map((item, index) => (
+        <View
+          key={`pos-${index}`}
+          className="relative flex-row items-start mb-6"
         >
-          {index === 0 ? '▶' : '⏪'}
-        </Text>
-        <Text className="text-sm text-gray-800 flex-1">
-          {item}
-        </Text>
-      </View>
-    ))}
+          {/* Yellow circle with green check */}
+          <View className="z-10 mr-4 ml-1">
+            <View className="w-8 h-8 rounded-full bg-accent-yellow items-center justify-center">
+              <MaterialIcons name="check" size={18} color="#16A34A" />
+            </View>
+          </View>
+
+          {/* Text */}
+          <View className="flex-1 pt-1">
+            <Text className="text-sm text-gray-800 leading-relaxed">
+              {item}
+            </Text>
+          </View>
+        </View>
+      ))}
+
+      {/* 2) Negative notes */}
+      {feedbackNegative.map((item, index) => (
+        <View
+          key={`neg-${index}`}
+          className="relative flex-row items-start mb-6"
+        >
+          {/* Yellow circle with red alert */}
+          <View className="z-10 mr-4 ml-1">
+            <View className="w-8 h-8 rounded-full bg-accent-yellow items-center justify-center">
+              <MaterialIcons name="error-outline" size={18} color="#DC2626" />
+            </View>
+          </View>
+
+          {/* Text */}
+          <View className="flex-1 pt-1">
+            <Text className="text-sm text-gray-800 leading-relaxed">
+              {item}
+            </Text>
+          </View>
+        </View>
+      ))}
+    </View>
   </View>
 </View>
+
+
+       
+
+
+      
+      {/* Recommendations */}
+      <View className="mt-10 bg-white rounded-2xl p-4 border border-gray-100"
+        style={{
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 6 },
+          shadowOpacity: 0.06,
+          shadowRadius: 12,
+          elevation: 4,
+        }}
+      >
+        <Text className="text-2xl font-semibold text-gray-700 mb-4">
+          Recommendations
+        </Text>
+
+        <View className="space-y-3">
+          {recommendations.map((item, index) => (
+            <View
+              key={`rec-${index}`}
+              className="flex-row items-center px-4 py-3 rounded-full bg-yellow-50 mb-2"
+            >
+              <View className="w-9 h-9 rounded-full bg-amber-100 items-center justify-center mr-3">
+                <MaterialIcons name="tips-and-updates" size={20} color="#FACC15" />
+              </View>
+              <Text className="text-sm text-gray-800 flex-1 ">
+                {item}
+              </Text>
+            </View>
+          ))}
+        </View>
+      </View>
 
     </View>
   );
