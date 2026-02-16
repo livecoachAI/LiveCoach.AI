@@ -103,6 +103,7 @@ export default function ScreensTabsLayout() {
           options={{ href: null }}
         />
         <Tabs.Screen name="(videoAnalyze)/analyze-result" options={{href: null}}/>
+        <Tabs.Screen name="(videoAnalyze)/AnalyticsCard" options={{href: null}}/>
         <Tabs.Screen name="(profile)/profile" options={{ href: null }} />
         <Tabs.Screen name="(profile)/profile-coach" options={{ href: null }} />
         <Tabs.Screen name="(profile)/add-note" options={{ href: null }} />
