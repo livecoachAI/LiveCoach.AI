@@ -174,7 +174,7 @@ const AnalyticsCard = ({ data }: Props) => {
               YOU
               </Text>
               <Text className="text-xs font-bold text-gray-400">
-              Starting Point
+                0%
              </Text>
             </View>
 
@@ -183,7 +183,7 @@ const AnalyticsCard = ({ data }: Props) => {
                EXPERT
               </Text>
               <Text className="text-xs font-bold text-gray-400">
-              Finish Line
+              100%
               </Text>
             </View>
           </View>
