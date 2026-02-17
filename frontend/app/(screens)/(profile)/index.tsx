@@ -63,7 +63,7 @@ const Index = () => {
 
   return (
     <SafeAreaView 
-      className="flex-1 bg-white" 
+      className="flex-1 bg-primary" 
       edges={view === 'sessions' ? ['top'] : ['bottom']}
     >
       <View className="flex-1">

@@ -21,7 +21,7 @@ const AddNoteScreen: React.FC<AddNoteProps> = ({ onClose, sessionTitle }) => {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-primary">
       {/* HEADER SECTION */}
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 

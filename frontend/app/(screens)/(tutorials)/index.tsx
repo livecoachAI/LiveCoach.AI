@@ -7,7 +7,7 @@ import SportOverview from './sportOverview';
 const Index = () => {
 
     return (
-        <SafeAreaView edges={['top']} className="flex-1 bg-neutral-50">
+        <SafeAreaView edges={['top']} className="flex-1 bg-primary">
             <View className="flex-1">
                 <SportOverview />
                 {/* <ViewVideo /> */}

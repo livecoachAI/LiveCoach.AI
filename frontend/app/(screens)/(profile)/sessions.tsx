@@ -96,7 +96,7 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
   };
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-primary">
       <StatusBar barStyle="dark-content" />
       
       {/* Header */}
@@ -112,7 +112,7 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity 
-            className="flex-row items-center justify-between px-6 py-7 bg-white"
+            className="flex-row items-center justify-between px-6 py-7 bg-primary"
             onPress={() => {
               setSelectedSession(item);
               setIsNoteVisible(true);

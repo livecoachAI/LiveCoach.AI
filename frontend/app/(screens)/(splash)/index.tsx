@@ -6,7 +6,7 @@ import Splash from '../(splash)/splash';
 const Index = () => {
 
     return (
-        <SafeAreaView className="flex-1 bg-neutral-50">
+        <SafeAreaView className="flex-1 bg-primary">
             <View className="flex-1">
                 <Splash/>
             </View>

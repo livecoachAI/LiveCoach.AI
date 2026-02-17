@@ -45,7 +45,7 @@ const CricketDetail = () => {
   );
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-primary">
       {/* Header */}
       <View className="pt-14 pb-4 px-4 bg-neutral-50 border-b border-gray-100 flex-row items-center">
         <TouchableOpacity 
