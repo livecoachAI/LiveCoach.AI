@@ -64,6 +64,14 @@ const userSchema = new mongoose.Schema(
             default: true,
         },
 
+        //Coach verification status
+        coachVerificationStatus: {
+            type: String,
+            enum: ["none", "pending", "approved", "rejected"],
+            default: "none",
+        },
+        coachVerificationSubmittedAt: { type: Date },
+
         // Authentication providers (email, google)
         authProviders: [{
             type: String,

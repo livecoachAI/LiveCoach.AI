@@ -26,7 +26,8 @@ const createUser = async (userData) => {
             newUser = new Athlete({
                 firebaseUid,
                 email,
-                fullName,
+                firstName,
+                lastName,
                 role: 'athlete',
                 authProviders: authProviders || ['email'],
                 ...userData.athleteData,
@@ -36,7 +37,8 @@ const createUser = async (userData) => {
             newUser = new Coach({
                 firebaseUid,
                 email,
-                fullName,
+                firstName,
+                lastName,
                 role: 'coach',
                 authProviders: authProviders || ['email'],
                 ...userData.coachData,
@@ -101,7 +103,8 @@ const updateUserProfile = async (firebaseUid, updateData) => {
 
         // Update allowed fields
         const allowedUpdates = [
-            'fullName',
+            'firstName',
+            'lastName',
             'phoneNumber',
             'profilePicture',
             'isFirstTimeUser',

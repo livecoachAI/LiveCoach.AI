@@ -33,6 +33,6 @@ const athleteSchema = new mongoose.Schema({
 });
 
 // Create Athlete model as a discriminator of User
-const Athlete = User.discriminator('athlete', athleteSchema);
+const Athlete = User.discriminator('Athlete', athleteSchema, 'athlete');
 
 module.exports = Athlete;
