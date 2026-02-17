@@ -25,7 +25,7 @@ const ProfileAthlete = ({ data, onPressSessions }: ProfileAthleteProps) => {
 
   return (
     <>
-      <ScrollView bounces={false} showsVerticalScrollIndicator={false} className="flex-1 bg-white">
+      <ScrollView bounces={false} showsVerticalScrollIndicator={false} className="flex-1 bg-primary">
         {/* Header Section */}
         <View className="h-[400px] w-full relative">
           <Image 

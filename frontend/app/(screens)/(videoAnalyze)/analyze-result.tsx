@@ -25,10 +25,9 @@ const dummyAnalytics: AnalyticsData = {
   ],
 };
 
-
 const AnalyzeResult = () => {
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-primary">
       <View className="px-4 pt-6 pb-2">
         <Text className="font-bebas text-4xl font-bold text-black">
           ANALYTICS AND FEEDBACK

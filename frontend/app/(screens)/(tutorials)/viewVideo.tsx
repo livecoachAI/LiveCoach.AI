@@ -54,8 +54,8 @@ const ViewVideo = () => {
   const filteredTechniques = baseTechniques.filter(item => item.toLowerCase().includes(searchText.toLowerCase()));
 
   return (
-    <View className="flex-1 bg-white pt-8">
-      <View className="bg-neutral-50 pt-10 pb-4 px-4">
+    <View className="flex-1 bg-primary pt-8">
+      <View className="bg-primary pt-10 pb-4 px-4">
         <View className="flex-row items-center justify-between mb-2">
           <View className="flex-row items-center">
             <TouchableOpacity onPress={() => router.push('/')} className="p-1 -ml-2">
@@ -69,7 +69,7 @@ const ViewVideo = () => {
         </View>
 
         {isSearching && (
-          <View className="mb-4 flex-row items-center bg-white border border-neutral-200 rounded-full px-4 h-10">
+          <View className="mb-4 flex-row items-center bg-primary border border-neutral-200 rounded-full px-4 h-10">
             <TextInput
               autoFocus
               placeholder="Search shots..."

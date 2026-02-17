@@ -22,34 +22,34 @@ export default function ScreensTabsLayout() {
           tabBarShowLabel: false,
           animation: "fade",
           tabBarStyle: {
-            display: "none", 
+            display: "none",
           },
         }}
         tabBar={(props) => {
           const tabs = [
-            { name: "(social)/index", Icon: HomeIcon },
-            { name: "(tutorials)/index", Icon: TutorialsIcon },
-            { name: "(videoAnalyze)/index", Icon: UploadIcon },
-            { name: "(browseCoach)/index", Icon: CoachIcon },
-            { name: "(profile)/index", Icon: ProfileIcon },
+            { name: "(social)/index", Icon: HomeIcon, group: "(social)" },
+            { name: "(tutorials)/index", Icon: TutorialsIcon, group: "(tutorials)" },
+            { name: "(videoAnalyze)/index", Icon: UploadIcon, group: "(videoAnalyze)" },
+            { name: "(browseCoach)/index", Icon: CoachIcon, group: "(browseCoach)" },
+            { name: "(profile)/index", Icon: ProfileIcon, group: "(profile)" },
           ];
 
-          // Hide tab bar for splash screen
-          const currentRoute = props.state.routeNames[props.state.index];
-          const isSplashScreen = currentRoute && currentRoute.includes("splash");
-          
-          if (isSplashScreen) {
-            return null;
-          }
+          const currentRouteName = props.state.routes[props.state.index].name;
+
+          // Hide navbar on splash screens
+          const isSplashScreen = currentRouteName.includes("splash");
+          if (isSplashScreen) return null;
 
           return (
-            <View className="bg-white px-3 pb-8 pt-2">
+            <View className="bg-primary px-3 pb-8 pt-2 absolute bottom-0 left-0 right-0 z-50">
               <View className="flex-row items-center justify-center">
-                <View className="w-0 h-0 border-t-[26px] border-t-transparent border-b-[26px] border-b-transparent border-r-[20px] border-r-gray-100" />
+                <View className="w-0 h-0 border-t-[26px] border-t-transparent border-b-[26px] border-b-transparent border-r-[20px] border-r-neutral-400" />
 
-                <View className="flex-1 h-[52px] bg-gray-100 flex-row justify-between items-center px-6">
+                <View className="flex-1 h-[52px] bg-neutral-400 flex-row justify-between items-center px-6">
                   {tabs.map((tab, index) => {
-                    const isActive = props.state.index === index;
+                    const isActive =
+                      currentRouteName === tab.name ||
+                      currentRouteName.startsWith(tab.group + "/");
 
                     return (
                       <Pressable
@@ -60,14 +60,14 @@ export default function ScreensTabsLayout() {
                         <tab.Icon
                           width={26}
                           height={26}
-                          color={isActive ? "#F8FE11" : "#000000"}
+                          color={isActive ? ACTIVE_COLOR : INACTIVE_COLOR}
                         />
                       </Pressable>
                     );
                   })}
                 </View>
 
-                <View className="w-0 h-0 border-t-[26px] border-t-transparent border-b-[26px] border-b-transparent border-l-[20px] border-l-gray-100" />
+                <View className="w-0 h-0 border-t-[26px] border-t-transparent border-b-[26px] border-b-transparent border-l-[20px] border-l-neutral-400" />
               </View>
             </View>
           );
@@ -80,25 +80,19 @@ export default function ScreensTabsLayout() {
         <Tabs.Screen name="(browseCoach)/index" />
         <Tabs.Screen name="(profile)/index" />
 
-        {/* Splash Screen - Hide tab bar */}
-        <Tabs.Screen 
-          name="(splash)/index" 
-          options={{ 
-            href: null,
-            tabBarStyle: { display: "none" }
-          }} 
-        />
+        {/* Hidden Routes */}
+        <Tabs.Screen name="(splash)/index" options={{ href: null }} />
         <Tabs.Screen name="(splash)/splash" options={{ href: null }} />
         <Tabs.Screen name="(profile)/sessions" options={{ href: null }} />
         <Tabs.Screen name="(tutorials)/viewVideo" options={{ href: null }} />
-        <Tabs.Screen name="(tutorials)/sportOverview" options={{ href: null }}/>
+        <Tabs.Screen name="(tutorials)/sportOverview" options={{ href: null }} />
         <Tabs.Screen name="(browseCoach)/SportTabs" options={{ href: null }} />
         <Tabs.Screen name="(browseCoach)/CoachCard" options={{ href: null }} />
-        <Tabs.Screen name="(browseCoach)/CoachContactModel" options={{ href: null }}/>
+        <Tabs.Screen name="(browseCoach)/CoachContactModel" options={{ href: null }} />
         <Tabs.Screen name="(videoAnalyze)/upload" options={{ href: null }} />
-        <Tabs.Screen name="(videoAnalyze)/upload-coach" options={{ href: null }}/>
-        <Tabs.Screen name="(videoAnalyze)/upload-result" options={{ href: null }}/>
-        <Tabs.Screen name="(videoAnalyze)/analyze-result" options={{ href: null }}/>
+        <Tabs.Screen name="(videoAnalyze)/upload-coach" options={{ href: null }} />
+        <Tabs.Screen name="(videoAnalyze)/upload-result" options={{ href: null }} />
+        <Tabs.Screen name="(videoAnalyze)/analyze-result" options={{ href: null }} />
         <Tabs.Screen name="(profile)/profile" options={{ href: null }} />
         <Tabs.Screen name="(profile)/profile-coach" options={{ href: null }} />
         <Tabs.Screen name="(profile)/add-note" options={{ href: null }} />

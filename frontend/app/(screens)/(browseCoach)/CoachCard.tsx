@@ -10,7 +10,7 @@ type CoachCardProps = {
 
 const CoachCard = ({ name, location, image, onContactPress }: CoachCardProps) => {
   return (
-    <View className="bg-white rounded-lg mt-8">
+    <View className="bg-primary rounded-lg mt-8">
       <Image source={image} className="w-full h-32 rounded-lg bg-gray-200" resizeMode="contain"/>
       <View className="mt-3 flex-row items-start">
         <View className="flex-1">

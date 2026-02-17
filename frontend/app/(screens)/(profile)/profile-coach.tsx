@@ -33,7 +33,7 @@ const ProfileCoach = ({ data, onPressPlayer }: ProfileCoachProps) => {
       <ScrollView
         bounces={false}
         showsVerticalScrollIndicator={false}
-        className="flex-1 bg-white"
+        className="flex-1 bg-primary"
       >
         <View className="h-[400px] w-full relative">
           <Image
