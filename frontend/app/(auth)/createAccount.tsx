@@ -1,46 +1,97 @@
-import React, { useState } from 'react';
+import React, {useMemo, useState} from 'react';
 import {View, Text, TextInput, Image, TouchableOpacity, ScrollView, StatusBar, Alert} from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import ButtonBlack from "@/app/components/buttonBlack";
 import {router, useRouter} from "expo-router";
+import { useRequireSignupRole } from "@/app/hooks/useRequireSignupRole";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { api, authHeaders } from "@/lib/api";
+import { clearSignupRole } from "@/lib/storage";
 
 const CreateAccount = () => {
 
     const router = useRouter();
+
+    // Hook returns boolean
+    const loadingRole = useRequireSignupRole("athlete");
+
+    // all hooks BEFORE any return
     const [isChecked, setIsChecked] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: ''
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
     });
 
+    const emailRegex = useMemo(() => /\S+@\S+\.\S+/, []);
+    const passwordRegex = useMemo(() => /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/, []);
 
     const isFormValid = () => {
         const { firstName, lastName, email, password } = formData;
-
-
-        const emailRegex = /\S+@\S+\.\S+/;
-
-        const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
-
         return (
-            firstName.trim() !== '' &&
-            lastName.trim() !== '' &&
+            firstName.trim() !== "" &&
+            lastName.trim() !== "" &&
             emailRegex.test(email) &&
             passwordRegex.test(password) &&
             isChecked
         );
     };
 
-    const handleCreateAccount = () => {
-        if (isFormValid()) {
-            router.push("/(screens)/(social)");
-        } else {
+    const handleCreateAccount = async () => {
+        if (loading) return; // prevent double submit
+
+        if (!isFormValid()) {
             Alert.alert("Invalid Form", "Please ensure all fields are correct and you have agreed to the terms.");
+            return;
+        }
+
+        setLoading(true);
+        try {
+            // 1) Firebase create user
+            const cred = await createUserWithEmailAndPassword(auth, formData.email.trim(), formData.password);
+            await updateProfile(cred.user, { displayName: `${formData.firstName} ${formData.lastName}` });
+
+            // 2) Get Firebase ID token
+            const token = await cred.user.getIdToken(true);
+
+            // 3) Backend: register user (Mongo)
+            await api.post(
+                "/api/auth/register",
+                {
+                    email: formData.email.trim(),
+                    firstName: formData.firstName.trim(),
+                    lastName: formData.lastName.trim(),
+                    role: "athlete",
+                    authProvider: "email",
+                },
+                { headers: await authHeaders(token) }
+            );
+
+            // 4) Backend: complete onboarding
+            await api.post(
+                "/api/auth/complete-onboarding",
+                { role: "athlete" },
+                { headers: await authHeaders(token) }
+            );
+
+            // 5) Clear temporary signup role + go to app
+            await clearSignupRole();
+            router.replace("/(screens)/(profile)");
+        } catch (e: any) {
+            const msg = e?.response?.data?.message || e?.message || "Unknown error";
+            Alert.alert("Sign up failed", msg);
+        } finally {
+            setLoading(false);
         }
     };
+
+    // Safe return after hooks
+    if (loadingRole) return null;
+
     return (
         <View className="flex-1 bg-white">
 

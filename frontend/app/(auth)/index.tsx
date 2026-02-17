@@ -3,8 +3,20 @@ import { Image, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonYellow from "@/app/components/buttonYellow";
 import ButtonGray from "@/app/components/buttonGray";
+import { setHasSeenOnboarding, clearSignupRole } from "@/lib/storage";
 
 export default function Index() {
+    const goLogin = async () => {
+        await setHasSeenOnboarding();
+        await clearSignupRole();
+        router.push("/(auth)/signIn");
+    };
+
+    const goCreate = async () => {
+        await setHasSeenOnboarding();
+        await clearSignupRole();
+        router.push("/(auth)/landing");
+    };
     return (
         <View className="flex-1 bg-white relative">
             <SafeAreaView className="flex-1">
@@ -42,9 +54,9 @@ export default function Index() {
 
                 </View>
                 <View className="px-6 space-y-4 mb-4">
-                    <ButtonYellow title="LOGIN" onPress={() => router.push("/(auth)/signIn")} />
+                    <ButtonYellow title="LOGIN" onPress={goLogin} />
 
-                    <ButtonGray title="CREATE ACCOUNT" onPress={() => router.push("/(auth)/landing")} />
+                    <ButtonGray title="CREATE ACCOUNT" onPress={goCreate} />
                 </View>
             </SafeAreaView>
         </View>
