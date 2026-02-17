@@ -19,7 +19,7 @@ const coachSchema = new mongoose.Schema({
 
     // National Identity Card Number
     nic: {
-        type: Number,
+        type: String,
         required: true,
         min: 10,
         max: 10,
@@ -73,6 +73,6 @@ const coachSchema = new mongoose.Schema({
 });
 
 // Create Coach model as a discriminator of User
-const Coach = User.discriminator('coach', coachSchema);
+const Coach = User.discriminator('Coach', coachSchema, 'coach');
 
 module.exports = Coach;

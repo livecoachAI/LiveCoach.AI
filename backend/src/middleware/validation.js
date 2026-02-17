@@ -8,12 +8,19 @@ const registerValidationRules = () => {
       .normalizeEmail()
       .withMessage('Please provide a valid email address'),
 
-    body('firstname')
+    body('firstName')
       .trim()
       .notEmpty()
       .withMessage('Name is required')
       .isLength({ min: 2, max: 100 })
       .withMessage('Name must be between 2 and 100 characters'),
+
+    body('lastName')
+        .trim()
+        .notEmpty()
+        .withMessage('Name is required')
+        .isLength({ min: 2, max: 100 })
+        .withMessage('Name must be between 2 and 100 characters'),
 
     body('role')
       .notEmpty()
