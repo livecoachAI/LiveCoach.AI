@@ -34,8 +34,8 @@ const CricketDetail = ({ techniqueName, onBack }: any) => {
   // Reusable component for each section
   const DetailSection = ({ label, content }: { label: string, content: string }) => (
     <View className="mb-6">
-      <Text className="font-bebas text-xl text-black mb-1 opacity-90">{label}</Text>
-      <Text className="font-manrope text-base text-gray-600 leading-6 text-justify">
+      <Text className="font-abeezee text-2xl text-primary-dark mb-1 opacity-90 mt-2">{label}</Text>
+      <Text className="font-manrope text-base font-semibold text-neutral-900 leading-6 text-justify">
         {content}
       </Text>
     </View>
@@ -44,31 +44,31 @@ const CricketDetail = ({ techniqueName, onBack }: any) => {
   return (
     <View className="flex-1 bg-primary">
       {/* Header */}
-      <View className="py-4 pb-4 px-4 bg-neutral-50 border-b border-gray-100 flex-row items-center">
+      <View className="py-4 pb-4 px-4 border-b border-gray-100 flex-row items-center">
         <TouchableOpacity onPress={onBack} className="mr-3">
-          <Ionicons name="arrow-back" size={28} color="black" />
+          <Ionicons name="arrow-back" size={28} color="#150000" />
         </TouchableOpacity>
-        <Text className="font-bebas text-3xl text-black pt-1">{title}</Text>
+        <Text className="font-bebas text-4xl text-primary-dark pt-1">{title}</Text>
       </View>
 
       <ScrollView className="flex-1 px-6 pt-6" showsVerticalScrollIndicator={false}>
         {/* Difficulty Badge */}
         <View className="flex-row items-center mb-6">
-          <Text className="font-bebas text-xl text-black mr-2">DEGREE OF DIFFICULTY:</Text>
+          <Text className="font-bebas text-2xl text-black mr-2">DEGREE OF DIFFICULTY:</Text>
           <View className="bg-accent-yellow px-3 py-1 rounded-md">
-            <Text className="font-bold font-manrope text-sm">{data.difficulty}</Text>
+            <Text className="font-bold font-manrope text-base">{data.difficulty}</Text>
           </View>
         </View>
 
-        {/* All missing details are now here */}
+        {/* Content Sec */}
         <DetailSection label="DESCRIPTION" content={data.description} />
         <DetailSection label="RISKS" content={data.risks} />
         <DetailSection label="WHEN TO USE" content={data.whenToUse} />
 
-        {/* Exponents Box */}
-        <View className="mb-10 p-4 bg-gray-50 rounded-xl border border-gray-100">
-          <Text className="font-bebas text-xl text-black mb-2">BEST EXPONENTS</Text>
-          <Text className="font-manrope text-base text-gray-800 italic">
+        {/* Best Exponents */}
+        <View className="my-6 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+          <Text className="font-bebas text-xl text-primary-dark my-2">BEST EXPONENTS</Text>
+          <Text className="font-manrope text-base text-neutral-900 italic">
             {data.exponents}
           </Text>
         </View>

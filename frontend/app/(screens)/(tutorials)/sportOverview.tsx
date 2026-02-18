@@ -80,7 +80,7 @@ const goToTutorial = () => {
       </View>
 
         {/* --- Tutorial Link --- */}
-        <View className="absolute bottom-24 right-8 z-20">
+        <View className="absolute bottom-40 right-8 z-20">
           <Pressable 
             onPress={goToTutorial}
             className="flex-row items-center gap-1"
