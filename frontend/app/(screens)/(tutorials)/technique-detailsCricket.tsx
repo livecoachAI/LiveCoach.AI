@@ -1,9 +1,8 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
-// Data 
+// Data Structure 
 const CRICKET_DATA: Record<string, any> = {
   'COVER DRIVE': {
     difficulty: '4/10', 
@@ -21,11 +20,9 @@ const CRICKET_DATA: Record<string, any> = {
   }
 };
 
-const CricketDetail = () => {
-  const router = useRouter();
-  const { techniqueName } = useLocalSearchParams<{ techniqueName: string }>();
-  
+const CricketDetail = ({ techniqueName, onBack }: any) => {
   const title = techniqueName?.toUpperCase() || 'UNKNOWN';
+  
   const data = CRICKET_DATA[title] || { 
     difficulty: 'N/A', 
     description: 'Content coming soon...',
@@ -47,11 +44,8 @@ const CricketDetail = () => {
   return (
     <View className="flex-1 bg-primary">
       {/* Header */}
-      <View className="pt-14 pb-4 px-4 bg-neutral-50 border-b border-gray-100 flex-row items-center">
-        <TouchableOpacity 
-          onPress={() => router.push({ pathname: './viewVideo', params: { defaultTab: 'cricket' } })}
-          className="mr-3"
-        >
+      <View className="py-4 pb-4 px-4 bg-neutral-50 border-b border-gray-100 flex-row items-center">
+        <TouchableOpacity onPress={onBack} className="mr-3">
           <Ionicons name="arrow-back" size={28} color="black" />
         </TouchableOpacity>
         <Text className="font-bebas text-3xl text-black pt-1">{title}</Text>
