@@ -45,8 +45,8 @@ const ViewVideo = ({ activeSport, onBack, onSelect, setSport }: any) => {
   const filteredTechniques = baseTechniques.filter(item => item.toLowerCase().includes(searchText.toLowerCase()));
   
   return (
-    <View className="flex-1 bg-white">
-      <View className="bg-neutral-50 py-4 pb-4 px-4">
+    <View className="flex-1 bg-primary">
+      <View className="py-4 pb-4 px-4">
         <View className="flex-row items-center justify-between mb-2">
           <View className="flex-row items-center">
             <TouchableOpacity onPress={onBack} className="p-1 -ml-2">
@@ -60,10 +60,11 @@ const ViewVideo = ({ activeSport, onBack, onSelect, setSport }: any) => {
         </View>
 
         {isSearching && (
-          <View className="mb-4 flex-row items-center bg-primary border border-neutral-200 rounded-full px-4 h-10">
+          <View className="mb-4 flex-row items-center bg-primary border bg-white border-neutral-200 rounded-full px-4 h-10">
             <TextInput
               autoFocus
               placeholder="Search shots..."
+              placeholderTextColor={"#848181"}
               value={searchText}
               onChangeText={setSearchText}
               className="flex-1 font-manrope"
@@ -77,15 +78,15 @@ const ViewVideo = ({ activeSport, onBack, onSelect, setSport }: any) => {
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} className="px-4">
+      <ScrollView showsVerticalScrollIndicator={false} >
         {filteredTechniques.map((technique, index) => (
           <TouchableOpacity
             key={index}
-            className="flex-row items-center justify-between py-5 border-b border-neutral-100"
+            className="flex-row items-center justify-between py-5 border-b border-neutral-100 bg-neutral-50 mb-1 "
             onPress={() => onSelect(technique)} // Use onSelect prop
           >
-            <Text className="text-base font-manrope font-medium text-primary-dark">{technique}</Text>
-            <Entypo name="chevron-right" size={20} color="#ADABAB" />
+            <Text className="font-manrope font-base text-primary-dark px-6">{technique}</Text>
+            <Entypo name="chevron-right" size={20} color="#5B5757" style={{paddingRight:20}} />
           </TouchableOpacity>
         ))}
       </ScrollView>
