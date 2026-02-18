@@ -2,8 +2,20 @@ import { View, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import ButtonBlack from "@/app/components/buttonBlack";
+import { setSignupRole } from "@/lib/storage";
 
 export default function RoleSelect() {
+
+    const chooseAthlete = async () => {
+        await setSignupRole("athlete");
+        router.push("/(auth)/createAccount");
+    };
+
+    const chooseCoach = async () => {
+        await setSignupRole("coach");
+        router.push("/(auth)/getVerified");
+    };
+
     return (
         <SafeAreaView className="flex-1 bg-[#F8FE11]">
             <View className="flex-1 items-center px-10 pt-80">
@@ -15,12 +27,12 @@ export default function RoleSelect() {
 
                 <ButtonBlack
                     title="Athlete"
-                    onPress={() => router.push("/(auth)/createAccount")}
+                    onPress={chooseAthlete}
                 />
 
                 <ButtonBlack
                     title="Coach"
-                    onPress={() => router.push("/(auth)/getVerified")}
+                    onPress={chooseCoach}
                 />
 
             </View>

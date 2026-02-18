@@ -4,12 +4,15 @@ import { Feather } from '@expo/vector-icons';
 import ButtonBlack from "@/app/components/buttonBlack";
 import {router, useRouter} from "expo-router";
 import UploadSection from "@/app/components/uploadSection";
+import { useRequireSignupRole } from "@/app/hooks/useRequireSignupRole";
 
 const getVerified = () => {
 
     const router = useRouter();
-    const [isChecked, setIsChecked] = useState(false);
+    const loading = useRequireSignupRole("coach");
 
+
+    const [isChecked, setIsChecked] = useState(false);
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -20,10 +23,7 @@ const getVerified = () => {
 
     const isFormValid = () => {
         const { firstName, lastName, email, password } = formData;
-
-
         const emailRegex = /\S+@\S+\.\S+/;
-
         const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/;
 
         return (
@@ -33,7 +33,7 @@ const getVerified = () => {
             passwordRegex.test(password) &&
             isChecked
         );
-    };
+    }
 
     const handleCreateAccount = () => {
         if (isFormValid()) {
@@ -42,6 +42,9 @@ const getVerified = () => {
             Alert.alert("Invalid Form", "Please ensure all fields are correct and you have agreed to the terms.");
         }
     };
+
+    if (loading) return null;
+
     return (
         <View className="flex-1 bg-white">
 

@@ -60,7 +60,7 @@ const ViewVideo = ({ activeSport, onBack, onSelect, setSport }: any) => {
         </View>
 
         {isSearching && (
-          <View className="mb-4 flex-row items-center bg-white border border-neutral-200 rounded-full px-4 h-10">
+          <View className="mb-4 flex-row items-center bg-primary border border-neutral-200 rounded-full px-4 h-10">
             <TextInput
               autoFocus
               placeholder="Search shots..."

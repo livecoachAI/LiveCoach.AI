@@ -42,7 +42,7 @@ const CricketDetail = ({ techniqueName, onBack }: any) => {
   );
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-primary">
       {/* Header */}
       <View className="py-4 pb-4 px-4 bg-neutral-50 border-b border-gray-100 flex-row items-center">
         <TouchableOpacity onPress={onBack} className="mr-3">

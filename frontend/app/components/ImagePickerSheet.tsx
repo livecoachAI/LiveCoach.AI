@@ -6,10 +6,10 @@ import {
   Animated,
   Dimensions,
   Alert,
+  Modal,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import ButtonYellow from "./buttonYellow";
 import ButtonGray from "./buttonGray";
 
 const { height } = Dimensions.get("window");
@@ -18,16 +18,19 @@ interface Props {
   visible: boolean;
   onClose: () => void;
   onImageSelected: (imageUri: string) => void;
+  onVisibilityChange?: (visible: boolean) => void;
 }
 
 export default function ImagePickerSheet({
   visible,
   onClose,
   onImageSelected,
+  onVisibilityChange,
 }: Props) {
   const translateY = useRef(new Animated.Value(height)).current;
 
   useEffect(() => {
+    onVisibilityChange?.(visible);
     Animated.timing(translateY, {
       toValue: visible ? 0 : height,
       duration: 300,
@@ -106,21 +109,26 @@ export default function ImagePickerSheet({
   if (!visible) return null;
 
   return (
-    <>
-      <Pressable
-        onPress={onClose}
-        className="absolute inset-0 bg-black/60"
-        style={{ zIndex: 999 }}
-      />
+      <Modal
+        visible={visible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={onClose}
+      >
+
+      <View className="flex-1 justify-end">
+        <Pressable
+          onPress={onClose}
+          className="absolute inset-0 bg-black/60"
+        />
 
       <Animated.View
         style={{
           transform: [{ translateY }],
-          zIndex: 1000,
         }}
         className="absolute bottom-0 w-full bg-white rounded-t-[28px] shadow-2xl"
       >
-        <View className="pt-4 pb-2">
+        <View className="pt-4 pb-2 ">
           <View className="w-12 h-1.5 bg-gray-300 self-center rounded-full" />
         </View>
 
@@ -170,14 +178,12 @@ export default function ImagePickerSheet({
             <MaterialIcons name="chevron-right" size={24} color="#9CA3AF" />
           </Pressable>
 
-          <ButtonGray
-            title="Cancel"
-            onPress={onClose}
-          />
+          <ButtonGray title="Cancel" onPress={onClose} />
         </View>
 
-        <View className="h-6" />
+        <View className="h-24" />
       </Animated.View>
-    </>
+      </View>
+      </Modal>
   );
 }

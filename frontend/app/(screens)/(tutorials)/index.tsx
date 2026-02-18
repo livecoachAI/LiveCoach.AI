@@ -13,7 +13,7 @@ const Index = () => {
     const [selectedTechnique, setSelectedTechnique] = useState<string>('');
 
     return (
-        <SafeAreaView edges={['top']} className="flex-1 bg-neutral-50">
+        <SafeAreaView edges={['top']} className="flex-1 bg-primary">
             <View className="flex-1">
                 
                 {view === 'overview' && (

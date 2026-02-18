@@ -32,7 +32,7 @@ const goToTutorial = () => {
   return (
       <View className="flex-1">
         {/* Header */}
-        <View className="flex-row items-center gap-4 px-6 mb-8 pt-6">
+        <View className="flex-row items-center gap-4 px-6 mb-8 pt-6 bg-primary">
           <Pressable onPress={() => setActiveSport('cricket')}>
             <Text 
               className={`font-bebas text-4xl tracking-tight ${activeSport === 'cricket' ? 'text-primary-dark' : 'text-neutral-300'}`}
