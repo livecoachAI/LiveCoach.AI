@@ -45,6 +45,55 @@ const CRICKET_DATA: Record<string, any> = {
     risks: 'Leading edge back to the bowler or mid-on; aerial flicks can be caught in the deep.',
     whenToUse: 'Against full or good-length balls drifting onto the pads, ideal for rotating strike or picking boundaries when leg-side fielders are sparse.',
     exponents: 'Virat Kohli, Michael Hussey'
+  },
+  'PULL SHOT': {
+    difficulty: '6/10',
+    description: ' A horizontal-bat shot played to short balls around waist height. The batsman swivels on the back foot, pulls the bat across the body in a controlled arc, and rolls the wrists to keep the ball down, directing it to mid-wicket or square leg.',
+    risks: 'op edge to deep square leg or fine leg; mistimed pulls can balloon up for easy catches.',
+    whenToUse: 'Against short-pitched deliveries not too high, when the leg-side boundary is open and the bowler is predictable.',
+    exponents: 'Rohit Sharma, Ricky Ponting, Viv Richards'
+  },
+  'HOOK SHOT': {
+    difficulty: '7/10',
+    description: 'An aggressive horizontal-bat shot to bouncers at or above chest height. Similar to the pull but played later and higher, the batsman hooks the ball behind square on the leg side, often aerially, using quick reflexes and strong upper body.',
+    risks: 'High chance of top edge to fine leg or deep backward square; exposes the head and gloves.',
+    whenToUse: 'Against short, rising deliveries from pace bowlers when the leg-side field is up and the batsman wants to dominate.',
+    exponents: 'Ricky Ponting, David Warner, Brian Lara'
+  },
+  'RAMP' : {
+    difficulty: '6/10',
+    description: "A modern unorthodox shot played to short-pitched straight balls. The batsman gets inside the line, angles the bat horizontally or upward behind the wicket, and ramps the ball over the slips, wicketkeeper, or fine leg using the bowler's pace.",
+    risks: ' Caught by fine leg or wicketkeeper if mistimed; requires excellent hand-eye coordination.',
+    whenToUse: 'Against pace bowlers bowling short at the body when the field behind square is up, common in T20 and ODIs.',
+    exponents: 'Jos Buttler, AB de Villiers, Rishabh Pant'
+  },
+  'SCOOP': {
+    difficulty: '8/10',
+    description: " An audacious shot where the batsman kneels or stays low to full or yorker-length deliveries, gets underneath the ball, and scoops it with a horizontal bat or upward flick over the wicketkeeper's head to fine leg or beyond. Variants include the Dilscoop.",
+    risks: 'Very high—wicketkeeper can take a simple catch, or the batsman can be stumped or bowled if the bat misses. Defenceless against a good yorker.',
+    whenToUse: 'In limited-overs cricket against pace bowlers when the field is up behind square and the batsman needs quick runs off good-length balls.',
+    exponents: 'Tillakaratne Dilshan, Brendon McCullum, Jos Buttler'
+  },
+  'REVERSE SWEEP':{
+    difficulty: '5/10',
+    description: 'Using an unchanged grip and orthodox stance, a batsman swings around his front shoulder from leg to off horizontally to access the off-side.',
+    risks: 'Hard to control, often aerial, exposes front leg.',
+    whenToUse: 'When the leg-side perimeter is protected and the off-side field is up inside the circle, the reverse-sweep, when executed properly, penetrates the field to find the boundary from cover to third man.',
+    exponents: 'Glenn Maxwell, Mike Hussey'
+  },
+  'Slog Sweep':{
+    difficulty: '7/10',
+    description: 'An aggressive, power-oriented variation of the sweep, often played aerially for big scores. The batsman adopts a similar low, kneeling position but opens up the stance more, gets the front leg out of the way, swings the bat harder with straight arms and a full, explosive follow-through from high to low to high. The focus is on getting under the ball to loft it powerfully over mid-wicket, cow corner, or deep square leg, often aiming for sixes rather than keeping it down',
+    risks: 'Significantly higher aerial risk—top edge to deep backward square or mid-wicket; miscued shots can balloon up for easy catches; lbw or bowled if completely missed against fuller lengths; requires excellent timing and power, making it prone to failure under pressure.',
+    whenToUse: 'Against spinners or even pace bowlers when quick boundaries or sixes are needed, the leg side is open or deep fielders are placed, and the batsman is set. Best for big overs or when the run rate demands acceleration.',
+    exponents: 'Rohit Sharma, Shane Watson,  Glenn Maxwell'
+  },
+  'SWEEP': {
+    difficulty: '5/10',
+    description: 'The conventional (or hard) sweep is a defensive yet productive front-foot cross-batted shot primarily against spin bowling. The batsman gets low by kneeling on one knee (back knee often on the ground), stretches forward with the front foot, keeps the head over the ball, and sweeps the bat horizontally low across the body in a controlled arc. The ball is typically rolled along the ground or kept down towards square leg or fine leg, using soft hands and wrist control to minimize elevation.',
+    risks: 'Top edge can loop up to backward square leg or short fine leg; lbw if the ball is too full and the batsman misses or gets hit on the pad; playing against sharp turn or bounce increases the chance of miscuing or edging.',
+    whenToUse: "Against spinners bowling full or good-length deliveries on or around leg stump or outside off, especially on turning or slow pitches where using the feet is risky. Ideal for rotating strike, disrupting the bowler's line, or scoring safely when the leg side is under-populated.",
+    exponents: 'AB de Villiers , Ross Taylor , Joe Root'
   }
 
 };

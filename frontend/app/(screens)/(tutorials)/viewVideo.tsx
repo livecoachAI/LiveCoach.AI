@@ -52,7 +52,7 @@ const ViewVideo = ({ activeSport, onBack, onSelect, setSport }: any) => {
   const [searchText, setSearchText] = useState('');
 
 
-  const cricketTutorial = ['FUNDAMENTALS', 'COVER DRIVE','FRONT FOOT DEFENCE','BACK FOOT DEFENCE','STRAIGHT DRIVE','SQUARE CUT','FLICK',  'ON DRIVE', 'CUT SHOT', 'LATE CUT', 'SWEEP', 'REVERSE SWEEP', 'HOOK SHOT', 'SCOOP SHOT', 'DOWN THE GROUND'];
+  const cricketTutorial = ['FUNDAMENTALS', 'FRONT FOOT DEFENCE', 'BACK FOOT DEFENCE', 'COVER DRIVE', 'STRAIGHT DRIVE', 'ON DRIVE', 'SQUARE DRIVE', 'SQUARE CUT', 'BACK FOOT PUNCH', 'PULL SHOT', 'HOOK SHOT', 'FLICK', 'UPPER CUT', 'LEG GLANCE', 'FLICK', 'SWEEP', 'SLOG SWEEP', 'REVERSE SWEEP', 'SWITCH HIT','SCOOP SHOT'];
   const badmintonTutorial = ['SMASH', 'CLEAR', 'DROP', 'NET SHOT'];
 
   const baseTechniques = activeSport === 'cricket' ? cricketTutorial : badmintonTutorial;
@@ -68,7 +68,13 @@ const ViewVideo = ({ activeSport, onBack, onSelect, setSport }: any) => {
             </TouchableOpacity>
             <Text className="font-bebas text-4xl text-black pt-1">TUTORIALS</Text>
           </View>
-          <TouchableOpacity onPress={() => setIsSearching(!isSearching)} className="px-2 mb-4">
+          <TouchableOpacity 
+            onPress={() => {
+              if (isSearching) setSearchText(''); // Clear the text when search is closed
+              setIsSearching(!isSearching);
+            }} 
+            className="px-2 mb-4"
+          >
             <Ionicons name={isSearching ? "close" : "search"} size={25} color="#000" />
           </TouchableOpacity>
         </View>
@@ -93,37 +99,38 @@ const ViewVideo = ({ activeSport, onBack, onSelect, setSport }: any) => {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-        {filteredTechniques.map((technique, index) => (
-          // <TouchableOpacity
-          //   key={index}
-          //   className="flex-row items-center justify-between py-5 border-b border-neutral-100 bg-neutral-50 rounded-full mx-4 mb-2"
-          //   onPress={() => onSelect(technique)} // Use onSelect prop
-          // >
-          //   <Text className="font-manrope font-base text-primary-dark px-6">{technique}</Text>
-          //   <Entypo name="chevron-right" size={20} color="#5B5757" style={{paddingRight:20}} />
-          // </TouchableOpacity>
-          
-          <TouchableOpacity
-            key={index}
-            className="flex-row items-center mx-4 mb-2 active:opacity-70"
-            onPress={() => onSelect(technique)}
-          >
-            {/* Left Triangle - Height 52px */}
-            <View style={styles.contenttriangleLeft} className="border-r-neutral-50" />
-            
-            {/* Middle Body - Height 52px */}
-            <View className="flex-1 h-[52px] bg-neutral-50 flex-row items-center justify-between px-1">
-              <Text className="font-manrope font-base text-primary-dark uppercase tracking-tight px-3">
-                {technique}
-              </Text>
-              <Entypo name="chevron-right" size={20} color="#5B5757" style={{ paddingRight: 10 }} />
-            </View>
+        {/* Check the list is empty */}
+        {filteredTechniques.length === 0 ? (
+          <View className="mt-52 items-center justify-center">
+            <Ionicons name="search-outline" size={48} color="#ADABAB" />
+            <Text className="font-manrope text-neutral-600 text-2xl text-center mt-4">
+              Technique not found...
+            </Text>
+          </View>
+        ) : (
+          /* If items exist*/
+          filteredTechniques.map((technique, index) => (
+            <TouchableOpacity
+              key={index}
+              className="flex-row items-center mx-4 mb-2 active:opacity-70"
+              onPress={() => onSelect(technique)}
+            >
+              {/* Left Triangle */}
+              <View style={styles.contenttriangleLeft} className="border-r-neutral-50" />
+        
+              {/* Middle Body */}
+              <View className="flex-1 h-[52px] bg-neutral-50 flex-row items-center justify-between px-1">
+                <Text className="font-manrope font-base text-primary-dark uppercase tracking-tight px-3">
+                  {technique}
+                </Text>
+                <Entypo name="chevron-right" size={20} color="#5B5757" style={{ paddingRight: 10 }} />
+              </View>
 
-            {/* Right Triangle - Height 52px */}
-            <View style={styles.contenttriangleRight} className="border-l-neutral-50" />
-          </TouchableOpacity>
-
-        ))}
+              {/* Right Triangle */}
+              <View style={styles.contenttriangleRight} className="border-l-neutral-50" />
+            </TouchableOpacity>
+          ))
+        )}
       </ScrollView>
     </View>
   );
