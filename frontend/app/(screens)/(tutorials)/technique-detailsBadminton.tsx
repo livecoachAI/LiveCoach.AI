@@ -22,7 +22,9 @@ const BadmintonDetail = ({ techniqueName, onBack }: any) => {
   // Reusable component for consistent styling
   const DetailSection = ({ label, content }: { label: string, content: string }) => (
     <View className="mb-6">
+      {/* labels */}
       <Text className="font-abeezee text-2xl text-primary-dark mb-1 opacity-90">{label}</Text>
+      {/* content */}
       <Text className="font-manrope text-base font-semibold text-neutral-900 leading-6 text-justify">
         {content}
       </Text>

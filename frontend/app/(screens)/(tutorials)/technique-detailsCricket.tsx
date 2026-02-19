@@ -17,7 +17,36 @@ const CRICKET_DATA: Record<string, any> = {
     risks: 'Playing too early can lead to a leading edge or bat-pad catch; too late and the ball may sneak through to the stumps. Vulnerable to late swing or seam.',
     whenToUse: 'To defend against full or good-length balls on or outside off stump from pace or spin, particularly early in the innings or against accurate bowling.',
     exponents: 'Rahul Dravid, Sunil Gavaskar, Sachin Tendulkar'
+  },
+  'BACK FOOT DEFENCE': {
+    difficulty: '2/10',
+    description: 'A solid defensive shot played off the back foot to short-of-a-length or rising deliveries. The batsman moves the back foot across towards the stumps, keeps the bat vertical and angled slightly downward, head over the ball, and presents the full face to deaden the delivery.',
+    risks: 'If the bat is not straight or the hands are too high, the ball can squirt to the slips or produce a catch. Exposes the body more than the front-foot version.',
+    whenToUse: 'Against pace bowlers on good to back-of-a-length deliveries pitching on or around off stump, especially when the ball is seaming or bouncing. Essential for survival in seaming conditions.',
+    exponents: 'Rahul Dravid, Jacques Kallis, Alastair Cook'
+  },
+  'STRAIGHT DRIVE': {
+    difficulty: '5/10',
+    description: 'A vertical-bat drive played straight down the ground past the bowler. The batsman takes a full stride forward, keeps the bat perfectly straight through the line of the ball, and extends the arms fully in the follow-through for elegance and power.',
+    risks: 'The ball can go straight back to the bowler or mid-on if slightly mistimed; requires perfect balance to avoid being caught in the V.',
+    whenToUse: 'Against full-length deliveries on the stumps or just outside off, when the bowler overpitches and mid-on is vacant or deep. One of the most satisfying shots when timed perfectly.',
+    exponents: 'Sachin Tendulkar, Brian Lara, Ricky Ponting'
+  },
+  'SQUARE CUT': {
+    difficulty: '5/10',
+    description: 'A horizontal-bat shot played off the back foot to short, wide deliveries outside off stump. The batsman rocks back, opens the bat face, and cuts the ball square through the point region using the bowler\'s pace.',
+    risks: 'Top edge can fly to gully or third man; mistiming often leads to catches in the off-side cordon. Requires precise footwork.',
+    whenToUse: 'Against short and wide balls from pace bowlers, especially when the point and gully fields are up or vacant. Great for quick boundaries in powerplays.',
+    exponents: 'Brian Lara, Mahela Jayawardene, Virender Sehwag'
+  },
+  'FLICK': {
+    difficulty: '4/10',
+    description: 'A wristy leg-side shot, often played to balls on or outside leg stump. Using soft hands and strong bottom-hand wrists, the batsman flicks the ball through mid-wicket or square leg with a straight bat angled slightly to the on-side. Can be played off front or back foot.',
+    risks: 'Leading edge back to the bowler or mid-on; aerial flicks can be caught in the deep.',
+    whenToUse: 'Against full or good-length balls drifting onto the pads, ideal for rotating strike or picking boundaries when leg-side fielders are sparse.',
+    exponents: 'Virat Kohli, Michael Hussey'
   }
+
 };
 
 const CricketDetail = ({ techniqueName, onBack }: any) => {
@@ -34,7 +63,9 @@ const CricketDetail = ({ techniqueName, onBack }: any) => {
   // Reusable component for each section
   const DetailSection = ({ label, content }: { label: string, content: string }) => (
     <View className="mb-6">
+      {/* labels */}
       <Text className="font-abeezee text-2xl text-primary-dark mb-1 opacity-90 mt-2">{label}</Text>
+      {/* content */}
       <Text className="font-manrope text-base font-semibold text-neutral-900 leading-6 text-justify">
         {content}
       </Text>

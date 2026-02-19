@@ -19,17 +19,31 @@ const styles = StyleSheet.create({
     borderTopWidth: 18, borderBottomWidth: 18, borderLeftWidth: 12,
     borderTopColor: 'transparent', borderBottomColor: 'transparent',
   },
+  scrollContent: {
+    paddingBottom: 140, //extra space for the last item to be fully visible 
+  },
+  contenttriangleLeft: {
+    width: 0, height: 0, backgroundColor: 'transparent', borderStyle: 'solid',
+    borderTopWidth: 26, borderBottomWidth: 26, borderRightWidth: 16,
+    borderTopColor: 'transparent', borderBottomColor: 'transparent',
+  },
+  contenttriangleRight: {
+    width: 0, height: 0, backgroundColor: 'transparent', borderStyle: 'solid',
+    borderTopWidth: 26, borderBottomWidth: 26, borderLeftWidth: 16,
+    borderTopColor: 'transparent', borderBottomColor: 'transparent',
+  },
+  
 });
 
 const TabButton = ({ label, isActive, onPress }: TabButtonProps) => (
   <Pressable onPress={onPress} className="flex-row items-center">
-    <View style={styles.triangleLeft} className={isActive ? 'border-r-accent-yellow' : 'border-r-white'} />
-    <View className={`h-[36px] px-4 justify-center items-center ${isActive ? 'bg-accent-yellow' : 'bg-white'}`}>
-      <Text className={`font-manrope uppercase tracking-tighter ${isActive ? 'font-extrabold text-black' : 'font-semibold text-neutral-500'}`}>
+    <View style={styles.triangleLeft} className={isActive ? 'border-r-accent-yellow' : 'border-r-neutral-50'} />
+    <View className={`h-[36px] px-4 justify-center items-center ${isActive ? 'bg-accent-yellow' : 'bg-neutral-50'}`}>
+      <Text className={`font-manrope uppercase tracking-tighter ${isActive ? 'font-extrabold text-black' : 'font-semibold  text-neutral-800'}`}>
         {label}
       </Text>
     </View>
-    <View style={styles.triangleRight} className={isActive ? 'border-l-accent-yellow' : 'border-l-white'} />
+    <View style={styles.triangleRight} className={isActive ? 'border-l-accent-yellow' : 'border-l-neutral-50'} />
   </Pressable>
 );
 
@@ -38,7 +52,7 @@ const ViewVideo = ({ activeSport, onBack, onSelect, setSport }: any) => {
   const [searchText, setSearchText] = useState('');
 
 
-  const cricketTutorial = ['FUNDAMENTALS', 'COVER DRIVE', 'ON DRIVE', 'CUT SHOT', 'LATE CUT', 'SWEEP', 'REVERSE SWEEP', 'HOOK SHOT', 'SCOOP SHOT', 'DOWN THE GROUND'];
+  const cricketTutorial = ['FUNDAMENTALS', 'COVER DRIVE','FRONT FOOT DEFENCE','BACK FOOT DEFENCE','STRAIGHT DRIVE','SQUARE CUT','FLICK',  'ON DRIVE', 'CUT SHOT', 'LATE CUT', 'SWEEP', 'REVERSE SWEEP', 'HOOK SHOT', 'SCOOP SHOT', 'DOWN THE GROUND'];
   const badmintonTutorial = ['SMASH', 'CLEAR', 'DROP', 'NET SHOT'];
 
   const baseTechniques = activeSport === 'cricket' ? cricketTutorial : badmintonTutorial;
@@ -72,22 +86,43 @@ const ViewVideo = ({ activeSport, onBack, onSelect, setSport }: any) => {
           </View>
         )}
 
-        <View className="flex-row gap-2 mb-4">
+        <View className="flex-row gap-2 mb-6">
           <TabButton label="Cricket" isActive={activeSport === 'cricket'} onPress={() => { setSport('cricket'); setSearchText(''); }} />
           <TabButton label="Badminton" isActive={activeSport === 'badminton'} onPress={() => { setSport('badminton'); setSearchText(''); }} />
         </View>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false} >
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {filteredTechniques.map((technique, index) => (
+          // <TouchableOpacity
+          //   key={index}
+          //   className="flex-row items-center justify-between py-5 border-b border-neutral-100 bg-neutral-50 rounded-full mx-4 mb-2"
+          //   onPress={() => onSelect(technique)} // Use onSelect prop
+          // >
+          //   <Text className="font-manrope font-base text-primary-dark px-6">{technique}</Text>
+          //   <Entypo name="chevron-right" size={20} color="#5B5757" style={{paddingRight:20}} />
+          // </TouchableOpacity>
+          
           <TouchableOpacity
             key={index}
-            className="flex-row items-center justify-between py-5 border-b border-neutral-100 bg-neutral-50 mb-1 "
-            onPress={() => onSelect(technique)} // Use onSelect prop
+            className="flex-row items-center mx-4 mb-2 active:opacity-70"
+            onPress={() => onSelect(technique)}
           >
-            <Text className="font-manrope font-base text-primary-dark px-6">{technique}</Text>
-            <Entypo name="chevron-right" size={20} color="#5B5757" style={{paddingRight:20}} />
+            {/* Left Triangle - Height 52px */}
+            <View style={styles.contenttriangleLeft} className="border-r-neutral-50" />
+            
+            {/* Middle Body - Height 52px */}
+            <View className="flex-1 h-[52px] bg-neutral-50 flex-row items-center justify-between px-1">
+              <Text className="font-manrope font-base text-primary-dark uppercase tracking-tight px-3">
+                {technique}
+              </Text>
+              <Entypo name="chevron-right" size={20} color="#5B5757" style={{ paddingRight: 10 }} />
+            </View>
+
+            {/* Right Triangle - Height 52px */}
+            <View style={styles.contenttriangleRight} className="border-l-neutral-50" />
           </TouchableOpacity>
+
         ))}
       </ScrollView>
     </View>
