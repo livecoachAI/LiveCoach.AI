@@ -56,7 +56,7 @@ const goToTutorial = () => {
             {content[activeSport].text1}
           </Text>
 
-          <Text className="text-neutral-900 font-manrope font-semibold text-lg text-center leading-8 px-6">
+          <Text className="text-neutral-900 font-abeezee text-xl text-center leading-8 px-6">
             {content[activeSport].text2}
           </Text>
         </View>
