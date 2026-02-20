@@ -41,7 +41,8 @@ const BadmintonDetail = ({ techniqueName, onBack }: any) => {
         <Text className="font-bebas text-4xl text-black pt-1">{title}</Text>
       </View>
 
-      <ScrollView className="flex-1 px-6 pt-6" showsVerticalScrollIndicator={false}>
+      <ScrollView className="flex-1 px-6 pt-6" showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 140 }}>
         {/* Difficulty Badge */}
         <View className="flex-row items-center mb-6">
           <Text className="font-bebas text-2xl text-black mr-2">DEGREE OF DIFFICULTY:</Text>
