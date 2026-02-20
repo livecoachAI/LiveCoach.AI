@@ -8,6 +8,9 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { api, authHeaders } from "@/lib/api";
 import { clearSignupRole } from "@/lib/storage";
+import { Picker } from "@react-native-picker/picker";
+
+type ExperienceLevel = "beginner" | "intermediate" | "advanced" | "professional";
 
 const CreateAccount = () => {
 
@@ -20,23 +23,45 @@ const CreateAccount = () => {
     const [isChecked, setIsChecked] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    const SPORT_OPTIONS = ["Badminton", "Cricket"] as const;
+    const [sports, setSports] = useState<string[]>([]);
+
+    const toggleSport = (sport: string) => {
+        setSports(prev => {
+            const exists = prev.includes(sport);
+            const next = exists ? prev.filter(s => s !== sport) : [...prev, sport];
+            return next;
+        });
+    };
+
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
         email: "",
         password: "",
+
+        // athlete fields
+        age: "",
+        experienceLevel: "intermediate" as ExperienceLevel,
     });
 
     const emailRegex = useMemo(() => /\S+@\S+\.\S+/, []);
     const passwordRegex = useMemo(() => /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/, []);
 
     const isFormValid = () => {
-        const { firstName, lastName, email, password } = formData;
+        const ageNum = Number(formData.age);
+        const validAge = Number.isInteger(ageNum) && ageNum >= 5 && ageNum <= 120;
+
+        const { firstName, lastName, email, password, experienceLevel  } = formData;
+
         return (
             firstName.trim() !== "" &&
             lastName.trim() !== "" &&
             emailRegex.test(email) &&
             passwordRegex.test(password) &&
+            validAge &&
+            sports.length > 0 && // must select at least one sport
+            ["beginner","intermediate","advanced","professional"].includes(experienceLevel) &&
             isChecked
         );
     };
@@ -45,12 +70,18 @@ const CreateAccount = () => {
         if (loading) return; // prevent double submit
 
         if (!isFormValid()) {
-            Alert.alert("Invalid Form", "Please ensure all fields are correct and you have agreed to the terms.");
+            Alert.alert(
+                "Invalid Form",
+                "Please ensure all fields are correct, select at least one sport, and agree to the terms."
+            );
             return;
         }
 
         setLoading(true);
         try {
+            // "Badminton" OR "Cricket" OR "Badminton,Cricket"
+            const sportString = [...sports].sort().join(",");
+
             // 1) Firebase create user
             const cred = await createUserWithEmailAndPassword(auth, formData.email.trim(), formData.password);
             await updateProfile(cred.user, { displayName: `${formData.firstName} ${formData.lastName}` });
@@ -62,11 +93,19 @@ const CreateAccount = () => {
             await api.post(
                 "/api/auth/register",
                 {
+                    firebaseUid: cred.user.uid,
                     email: formData.email.trim(),
                     firstName: formData.firstName.trim(),
                     lastName: formData.lastName.trim(),
                     role: "athlete",
                     authProvider: "email",
+                    athleteData: {
+                        sport: sportString, // now matches selection
+                        age: Number(formData.age),
+                        experienceLevel: formData.experienceLevel,
+                        bio: "",
+                        goals: [], // optional but safe
+                    },
                 },
                 { headers: await authHeaders(token) }
             );
@@ -82,8 +121,12 @@ const CreateAccount = () => {
             await clearSignupRole();
             router.replace("/(screens)/(profile)");
         } catch (e: any) {
-            const msg = e?.response?.data?.message || e?.message || "Unknown error";
-            Alert.alert("Sign up failed", msg);
+            console.log("SIGNUP FAILED", {
+                message: e?.message,
+                status: e?.response?.status,
+                data: e?.response?.data,
+            });
+            Alert.alert("Sign up failed", e?.response?.data?.message || e?.message || "Unknown error");
         } finally {
             setLoading(false);
         }
@@ -150,6 +193,59 @@ const CreateAccount = () => {
                             />
                         </View>
 
+                        {/*AGE*/}
+                        <View className="bg-gray-100 rounded-lg px-4 py-4">
+                            <TextInput
+                                placeholder="Age"
+                                placeholderTextColor="#D6D5D5"
+                                keyboardType="number-pad"
+                                className="text-base text-primary-dark font-medium"
+                                value={formData.age}
+                                onChangeText={(val) => setFormData({ ...formData, age: val.replace(/[^0-9]/g, "") })}
+                            />
+                        </View>
+
+                        <Text className="text-sm text-neutral-700 mb-2 ml-1">Sport(s)</Text>
+
+                        <View className="bg-gray-100 rounded-lg px-4 py-4">
+                            {SPORT_OPTIONS.map((sport) => {
+                                const selected = sports.includes(sport);
+                                return (
+                                    <TouchableOpacity
+                                        key={sport}
+                                        onPress={() => toggleSport(sport)}
+                                        className="flex-row items-center justify-between py-3"
+                                    >
+                                        <Text className="text-base text-primary-dark font-medium">{sport}</Text>
+                                        <View className={`w-6 h-6 rounded border items-center justify-center ${
+                                            selected ? "bg-primary-dark border-primary-dark" : "bg-white border-gray-300"
+                                        }`}>
+                                            {selected && <Feather name="check" size={16} color="white" />}
+                                        </View>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+
+                        <View className="bg-gray-100 rounded-lg overflow-hidden">
+                            <Text className="text-sm text-neutral-700 mt-3 ml-4 mb-1">Experience Level</Text>
+                            <Picker
+                                selectedValue={formData.experienceLevel}
+                                onValueChange={(val) =>
+                                    setFormData({ ...formData, experienceLevel: val as ExperienceLevel })
+                                }
+                            >
+                                <Picker.Item label="Beginner" value="beginner" />
+                                <Picker.Item label="Intermediate" value="intermediate" />
+                                <Picker.Item label="Advanced" value="advanced" />
+                                <Picker.Item label="Professional" value="professional" />
+                            </Picker>
+                        </View>
+
+                        <Text className="text-xs text-neutral-500 mt-2 ml-1">
+                            Select one or both. (Badminton / Cricket)
+                        </Text>
+
                         {/* Email */}
                         <View className="bg-gray-100 rounded-lg px-4 py-4">
                             <TextInput
@@ -191,10 +287,10 @@ const CreateAccount = () => {
                         </Text>
                     </View>
 
-                    {/* Submit Button - Visual feedback for disabled state */}
+                    {/* Submit Button */}
                     <View>
                         <ButtonBlack
-                            title="CREATE ACCOUNT"
+                            title={loading ? "PLEASE WAIT..." : "CREATE ACCOUNT"}
                             onPress={handleCreateAccount}
                         />
                     </View>
@@ -207,4 +303,4 @@ const CreateAccount = () => {
         </View>
     );
 }
-export default CreateAccount
+export default CreateAccount;

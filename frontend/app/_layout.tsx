@@ -15,7 +15,7 @@ export default function RootLayout() {
             {/* {<Stack.Screen name="(auth)" options={{ headerShown: false }} /> } */}
             {/* Your route groups are children automatically */}
              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            <Stack.Screen name="(screens)" options={{ headerShown: false }} />
+            {/*<Stack.Screen name="(screens)" options={{ headerShown: false }} />*/}
         </Stack>
     );
 }

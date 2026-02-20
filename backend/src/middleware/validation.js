@@ -39,11 +39,9 @@ const athleteValidationRules = () => {
   return [
     ...registerValidationRules(),
 
-    body('athleteData.sport')
-      .notEmpty()
-      .withMessage('Sport is required for athletes')
-      .isLength({ min: 2, max: 50 })
-      .withMessage('Sport name must be between 2 and 50 characters'),
+    body("athleteData.sport")
+        .isIn(["Badminton", "Cricket", "Badminton,Cricket", "Cricket,Badminton"])
+        .withMessage("Sport must be Badminton, Cricket, or both"),
 
     body('athleteData.age')
       .isInt({ min: 5, max: 120 })

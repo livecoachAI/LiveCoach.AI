@@ -7,7 +7,7 @@ const logger = require('../utils/logger');
 //Create new user in database after successful Firebase authentication
 const createUser = async (userData) => {
     try {
-        const { role, firebaseUid, email, fullName, authProviders } = userData;
+        const { role, firebaseUid, email, firstName, lastName, authProviders } = userData;
 
         // Check if user already exists
         const existingUser = await User.findOne({ firebaseUid });
