@@ -26,7 +26,7 @@ const startServer = async () => {
 
         // 3. Start Express server
         const PORT = config.port;
-        const server = app.listen(PORT, () => {
+        const server = app.listen(PORT,"0.0.0.0", () => {
             logger.success(`Server running on port ${PORT}`);
             logger.info(`Environment: ${config.nodeEnv}`);
             logger.info(`API URL: http://localhost:${PORT}/api`);
