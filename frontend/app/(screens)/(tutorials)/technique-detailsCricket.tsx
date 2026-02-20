@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, TouchableOpacity, ImageBackground, Pressable, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 // Data Structure 
@@ -7,6 +7,8 @@ const CRICKET_DATA: Record<string, any> = {
   'COVER DRIVE': {
     difficulty: '4/10', 
     description: 'A classic front-foot drive played with a vertical bat, where the batsman steps forward towards the pitch of the ball, leans into the line, and swings through with a high elbow and full follow-through. The ball is struck through the covers (between extra cover and point) along the ground or slightly lofted.',
+    imageUrl: require('../../../assets/tutorials/Coverdrive.png'), 
+    videoUrl: 'https://youtu.be/h3N-BRQXTS4?si=bJNl44W-7UiN2Ngv', 
     risks: 'Mistiming can result in a thick edge to the slips or gully, or playing inside the line and missing the ball entirely. The front leg can get in the way if the stride is too big.',
     whenToUse: 'Against full-length or slightly overpitched deliveries outside off stump, particularly when the off-side field is spread or the bowler is swinging the ball away. Ideal for building an innings with elegant boundaries.',
     exponents: 'Kumar Sangakkara, Virat Kohli, Mark Waugh'
@@ -133,6 +135,7 @@ const CRICKET_DATA: Record<string, any> = {
 
 };
 
+//when details are not provided for a shot
 const CricketDetail = ({ techniqueName, onBack }: any) => {
   const title = techniqueName?.toUpperCase() || 'UNKNOWN';
   
@@ -144,12 +147,49 @@ const CricketDetail = ({ techniqueName, onBack }: any) => {
     exponents: 'N/A'
   };
 
-  // Reusable component for each section
+  //Video Preview 
+  const VideoPreview = ({ imageUrl, videoUrl }: { imageUrl?: any, videoUrl?: string }) => {
+    const [isHovered, setIsHovered] = useState(false);
+
+    const handlePress = () => {
+      // Only try to open link if videoUrl is not empty
+      if (videoUrl && videoUrl !== '') {
+        Linking.openURL(videoUrl).catch(err => console.error("Couldn't load page", err));
+      }
+    };
+
+    return (
+      <Pressable
+        onPress={handlePress}
+        onHoverIn={() => setIsHovered(true)}
+        onHoverOut={() => setIsHovered(false)}
+        onPressIn={() => setIsHovered(true)}
+        onPressOut={() => setIsHovered(false)}
+        className="w-full h-48 mb-6 rounded-lg overflow-hidden justify-center items-center bg-gray-200"
+      >
+        <ImageBackground
+          // Handles both local require() and web links (string)
+          source={typeof imageUrl === 'string' ? { uri: imageUrl } : imageUrl}
+          className="w-full h-full justify-center items-center"
+          resizeMode="cover"
+        >  
+          <View 
+            className={`w-16 h-11 justify-center items-center rounded-xl transition-colors duration-200 ${
+              isHovered ? 'bg-[#FF0000]' : 'bg-black'
+            }`}
+          >
+            <Ionicons name="play" size={24} color="white" className="ml-1" />
+          </View>
+
+        </ImageBackground>
+      </Pressable>
+    );
+  };
+
+  
   const DetailSection = ({ label, content }: { label: string, content: string }) => (
     <View className="mb-6">
-      {/* labels */}
       <Text className="font-abeezee text-2xl text-primary-dark mb-1 opacity-90 mt-2">{label}</Text>
-      {/* content */}
       <Text className="font-manrope text-base font-semibold text-neutral-900 leading-6 text-justify">
         {content}
       </Text>
@@ -158,7 +198,6 @@ const CricketDetail = ({ techniqueName, onBack }: any) => {
 
   return (
     <View className="flex-1 bg-primary">
-      {/* Header */}
       <View className="py-4 pb-4 px-4 border-b border-gray-100 flex-row items-center">
         <TouchableOpacity onPress={onBack} className="mr-3">
           <Ionicons name="arrow-back" size={28} color="#150000" />
@@ -168,7 +207,7 @@ const CricketDetail = ({ techniqueName, onBack }: any) => {
 
       <ScrollView className="flex-1 px-6 pt-6" showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 140 }}>
-        {/* Difficulty Badge */}
+        
         <View className="flex-row items-center mb-6">
           <Text className="font-bebas text-2xl text-black mr-2">DEGREE OF DIFFICULTY:</Text>
           <View className="bg-accent-yellow px-3 py-1 rounded-md">
@@ -176,17 +215,14 @@ const CricketDetail = ({ techniqueName, onBack }: any) => {
           </View>
         </View>
 
-        {/* Content Sec */}
         <DetailSection label="DESCRIPTION" content={data.description} />
+        <VideoPreview imageUrl={data.imageUrl} videoUrl={data.videoUrl} />
         <DetailSection label="RISKS" content={data.risks} />
         <DetailSection label="WHEN TO USE" content={data.whenToUse} />
 
-        {/* Best Exponents */}
         <View className="my-6 p-4 bg-gray-50 rounded-2xl border border-gray-100">
           <Text className="font-bebas text-xl text-primary-dark mb-3">BEST EXPONENTS</Text>
-          
           {data.exponents !== 'N/A' ? (
-            // split using comma
             data.exponents.split(',').map((exponent: string, index: number) => (
               <View key={index} className="flex-row items-start mb-2">
                 <Text className="text-primary-dark mr-2 text-lg leading-5">•</Text>
