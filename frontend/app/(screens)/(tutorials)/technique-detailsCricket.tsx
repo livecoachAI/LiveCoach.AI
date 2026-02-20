@@ -81,7 +81,7 @@ const CRICKET_DATA: Record<string, any> = {
     whenToUse: 'When the leg-side perimeter is protected and the off-side field is up inside the circle, the reverse-sweep, when executed properly, penetrates the field to find the boundary from cover to third man.',
     exponents: 'Glenn Maxwell, Mike Hussey'
   },
-  'Slog Sweep':{
+  'SLOG SWEEP':{
     difficulty: '7/10',
     description: 'An aggressive, power-oriented variation of the sweep, often played aerially for big scores. The batsman adopts a similar low, kneeling position but opens up the stance more, gets the front leg out of the way, swings the bat harder with straight arms and a full, explosive follow-through from high to low to high. The focus is on getting under the ball to loft it powerfully over mid-wicket, cow corner, or deep square leg, often aiming for sixes rather than keeping it down',
     risks: 'Significantly higher aerial risk—top edge to deep backward square or mid-wicket; miscued shots can balloon up for easy catches; lbw or bowled if completely missed against fuller lengths; requires excellent timing and power, making it prone to failure under pressure.',
@@ -94,6 +94,41 @@ const CRICKET_DATA: Record<string, any> = {
     risks: 'Top edge can loop up to backward square leg or short fine leg; lbw if the ball is too full and the batsman misses or gets hit on the pad; playing against sharp turn or bounce increases the chance of miscuing or edging.',
     whenToUse: "Against spinners bowling full or good-length deliveries on or around leg stump or outside off, especially on turning or slow pitches where using the feet is risky. Ideal for rotating strike, disrupting the bowler's line, or scoring safely when the leg side is under-populated.",
     exponents: 'AB de Villiers , Ross Taylor , Joe Root'
+  },
+  'ON DRIVE':{
+    difficulty: '6/10',
+    description:'A classic front-foot drive played straight down the ground but angled towards the on-side (mid-on or long-on region). The batsman steps forward decisively to the pitch of the ball, keeps the bat straight through the line, leans into the shot with weight transferred to the front foot, high elbow, and a full follow-through. It requires perfect balance, timing, and alignment to hit the ball fluently along the ground or slightly lofted. Often considered one of the most technically demanding drives due to the need for precise footwork and body positioning.',
+    risks:'Mistiming can lead to a leading edge back to the bowler or mid-on; playing across the line slightly risks lbw or inside edge onto the stumps; requires excellent judgment of length as fuller balls are ideal but overpitching can make it hard to control.',
+    whenToUse:'Against full-length deliveries on or around middle/leg stump from pace or spin, particularly when mid-on is deep or vacant, allowing elegant boundaries or rotation of strike. Best on good batting surfaces.',
+    exponents:'Sachin Tendulkar, Virat Kohli, Brian Lara, Kumar Sangakkara'
+  },
+  'SQUARE DRIVE':{
+    difficulty: '5/10',
+    description:'A front-foot drive played to wider deliveries outside off stump, directing the ball square of the wicket through the point or cover-point area. The batsman steps forward with the front foot towards the line, opens the bat face slightly, hits from high to low with a partial horizontal arc (more like a controlled cut-drive hybrid), and follows through over the shoulder while keeping the head steady and weight forward.',
+    risks:'Thick edge to gully or slips if the bat face is too open; mistiming can result in a catch at point or cover; requires good timing as playing too early or late can lead to mishits.',
+    whenToUse:'Against overpitched or good-length balls wider outside off, especially when the off-side infield is spread or the bowler is offering width. Effective for finding gaps square of the wicket.',
+    exponents:'Brian Lara, Graeme Pollock, Sachin Tendulkar, AB de Villiers'
+  },
+  'BACK FOOT PUNCH':{
+    difficulty: '4/10',
+    description:'A controlled, aggressive back-foot shot (also called back-foot drive) played to short-of-a-length or back-of-length deliveries around off stump. The batsman transfers weight onto the back foot, moves across slightly towards the off side, keeps the bat straight or slightly angled, punches through the line with a short, crisp follow-through, accelerating the bat at contact for power while keeping the ball down.',
+    risks:'Playing away from the body can cause edges to the slips; mistimed punches may pop up for catches at short cover or mid-off; vulnerable to late movement or extra bounce.',
+    whenToUse:"Against pace bowlers offering width or length on or outside off stump on good pitches, ideal for scoring quickly through the off side when the front foot isn't needed. Great for rotating strike or punishing loose balls.",
+    exponents:'Virat Kohli, Kane Williamson, Rahul Dravid, Joe Root'
+  },
+  'UPPER CUT':{
+    difficulty: '6/10',
+    description:"An aggressive shot played to short-pitched deliveries rising outside off stump or bouncers. The batsman rocks back, drops the back elbow slightly to get under the ball, opens the bat face, and cuts upward with a horizontal bat to loft the ball over the slips, wicketkeeper, or third man, using the bowler's pace for elevation.",
+    risks:'High risk of top edge to third man, gully, or fine leg if mistimed; gloves or bat can be exposed leading to catches behind; inconsistent bounce makes control difficult.',
+    whenToUse:'Against fast bowlers dropping short and wide, especially when third man or slips are up or vacant, common in limited-overs cricket to counter bouncers and score quick boundaries.',
+    exponents:'Sachin Tendulkar, Virender Sehwag, David Warner, Yashasvi Jaiswal'
+  },
+  'LEG GLANCE':{
+    difficulty: '4/10',
+    description:"A delicate, wristy shot (also called fine glance or deflection) played to balls on or around leg stump or drifting down the leg side. The batsman can play it off front or back foot by getting in line, keeping the head over the ball, and using soft hands and wrists to deflect/flick the ball fine towards fine leg or square leg, often using the bowler's pace rather than generating power.",
+    risks:'Leading edge back to the bowler or mid-wicket; lbw if playing across the line and missing; can be aerial if wrists are overused or timing is off.',
+    whenToUse:'Against leg-side deliveries from pace or spin, especially when fine leg is up or the bowler is straying onto the pads. Excellent for rotating strike and scoring easy runs with minimal risk.',
+    exponents:'VVS Laxman, Rahul Dravid, Kumar Sangakkara, Shivnarine Chanderpaul'
   }
 
 };
@@ -131,7 +166,8 @@ const CricketDetail = ({ techniqueName, onBack }: any) => {
         <Text className="font-bebas text-4xl text-primary-dark pt-1">{title}</Text>
       </View>
 
-      <ScrollView className="flex-1 px-6 pt-6" showsVerticalScrollIndicator={false}>
+      <ScrollView className="flex-1 px-6 pt-6" showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 24, paddingTop: 24, paddingBottom: 140 }}>
         {/* Difficulty Badge */}
         <View className="flex-row items-center mb-6">
           <Text className="font-bebas text-2xl text-black mr-2">DEGREE OF DIFFICULTY:</Text>
@@ -147,10 +183,21 @@ const CricketDetail = ({ techniqueName, onBack }: any) => {
 
         {/* Best Exponents */}
         <View className="my-6 p-4 bg-gray-50 rounded-2xl border border-gray-100">
-          <Text className="font-bebas text-xl text-primary-dark my-2">BEST EXPONENTS</Text>
-          <Text className="font-manrope text-base text-neutral-900 italic">
-            {data.exponents}
-          </Text>
+          <Text className="font-bebas text-xl text-primary-dark mb-3">BEST EXPONENTS</Text>
+          
+          {data.exponents !== 'N/A' ? (
+            // split using comma
+            data.exponents.split(',').map((exponent: string, index: number) => (
+              <View key={index} className="flex-row items-start mb-2">
+                <Text className="text-primary-dark mr-2 text-lg leading-5">•</Text>
+                <Text className="font-manrope text-base text-neutral-900 italic flex-1">
+                  {exponent.trim()}
+                </Text>
+              </View>
+            ))
+          ) : (
+            <Text className="font-manrope text-base text-neutral-900 italic">N/A</Text>
+          )}
         </View>
       </ScrollView>
     </View>
