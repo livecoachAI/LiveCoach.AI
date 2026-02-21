@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, Pressable, TextInput, StyleSheet } from 'react-native';
 import { Ionicons, Entypo } from '@expo/vector-icons';
 
@@ -35,6 +35,8 @@ const styles = StyleSheet.create({
   
 });
 
+
+
 const TabButton = ({ label, isActive, onPress }: TabButtonProps) => (
   <Pressable onPress={onPress} className="flex-row items-center">
     <View style={styles.triangleLeft} className={isActive ? 'border-r-accent-yellow' : 'border-r-neutral-50'} />
@@ -47,19 +49,19 @@ const TabButton = ({ label, isActive, onPress }: TabButtonProps) => (
   </Pressable>
 );
 
-const ViewVideo = ({ activeSport, onBack, onSelect, setSport }: any) => {
+const ViewVideo = ({ activeSport, onBack, onSelect, setSport, onSelectFundamentals }: any) => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchText, setSearchText] = useState('');
 
 
-  const cricketTutorial = ['FUNDAMENTALS', 'FRONT FOOT DEFENCE', 'BACK FOOT DEFENCE', 'COVER DRIVE', 'STRAIGHT DRIVE', 'ON DRIVE', 'SQUARE DRIVE', 'SQUARE CUT', 'LATE CUT', 'BACK FOOT PUNCH', 'PULL SHOT', 'HOOK SHOT', 'FLICK', 'UPPER CUT', 'LEG GLANCE',  'SWEEP', 'SLOG SWEEP', 'REVERSE SWEEP', 'SCOOP'];
+  const cricketTutorial = ['FUNDAMENTALS', 'FRONT FOOT DEFENCE', 'BACK FOOT DEFENCE', 'COVER DRIVE', 'STRAIGHT DRIVE', 'ON DRIVE', 'SQUARE DRIVE', 'SQUARE CUT', 'LATE CUT', 'BACK FOOT PUNCH', 'PULL SHOT', 'HOOK SHOT', 'RAMP', 'FLICK SHOT', 'UPPER CUT', 'LEG GLANCE',  'SWEEP SHOT', 'SLOG SWEEP', 'REVERSE SWEEP', 'SCOOP SHOT'];
   const badmintonTutorial = ['SMASH', 'CLEAR', 'DROP', 'NET SHOT'];
 
   const baseTechniques = activeSport === 'cricket' ? cricketTutorial : badmintonTutorial;
   const filteredTechniques = baseTechniques.filter(item => item.toLowerCase().includes(searchText.toLowerCase()));
   
   return (
-    <View className="flex-1 bg-primary">
+    <View className="flex-1 bg-primary pt-16">
       <View className="py-4 pb-4 px-4">
         <View className="flex-row items-center justify-between mb-2">
           <View className="flex-row items-center">
@@ -92,7 +94,7 @@ const ViewVideo = ({ activeSport, onBack, onSelect, setSport }: any) => {
           </View>
         )}
 
-        <View className="flex-row gap-2 mb-6">
+        <View className="flex-row gap-2 mb-6 mt-2">
           <TabButton label="Cricket" isActive={activeSport === 'cricket'} onPress={() => { setSport('cricket'); setSearchText(''); }} />
           <TabButton label="Badminton" isActive={activeSport === 'badminton'} onPress={() => { setSport('badminton'); setSearchText(''); }} />
         </View>
@@ -113,7 +115,13 @@ const ViewVideo = ({ activeSport, onBack, onSelect, setSport }: any) => {
             <TouchableOpacity
               key={index}
               className="flex-row items-center mx-4 mb-2 active:opacity-70"
-              onPress={() => onSelect(technique)}
+              onPress={() => {
+                if (technique === 'FUNDAMENTALS') {
+                  onSelectFundamentals(activeSport); // Route to the fundamentals
+                } else {
+                  onSelect(technique); // Route to techniques details
+                }
+              }}
             >
               {/* Left Triangle */}
               <View style={styles.contenttriangleLeft} className="border-r-neutral-50" />
