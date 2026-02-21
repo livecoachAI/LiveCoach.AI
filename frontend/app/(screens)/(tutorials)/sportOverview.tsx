@@ -30,7 +30,7 @@ const goToTutorial = () => {
   };
 
   return (
-      <View className="flex-1">
+      <View className="flex-1 pt-16">
         {/* Header */}
         <View className="flex-row items-center gap-4 px-6 mb-8 pt-6 bg-primary">
           <Pressable onPress={() => setActiveSport('cricket')}>
