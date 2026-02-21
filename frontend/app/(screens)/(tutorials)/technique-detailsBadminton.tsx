@@ -32,7 +32,7 @@ const BadmintonDetail = ({ techniqueName, onBack }: any) => {
   );
 
   return (
-    <View className="flex-1 bg-primary">
+    <View className="flex-1 bg-primary pt-20">
       {/* Header - Ensures return to the Badminton tab */}
       <View className="py-4 pb-4 px-4 border-b border-gray-100 flex-row items-center">
         <TouchableOpacity onPress={onBack} className="mr-3">
