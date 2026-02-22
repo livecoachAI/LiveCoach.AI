@@ -39,7 +39,7 @@ export default function ScreensTabsLayout() {
           // Hide navbar on splash screens
           const isSplashScreen = currentRouteName.includes("splash");
           if (isSplashScreen) return null;
-
+          
           return (
             <View className="bg-primary px-3 pb-8 pt-2 absolute bottom-0 left-0 right-0 z-50">
               <View className="flex-row items-center justify-center">
@@ -98,6 +98,9 @@ export default function ScreensTabsLayout() {
         <Tabs.Screen name="(profile)/add-note" options={{ href: null }} />
         <Tabs.Screen name="(social)/social" options={{ href: null }} />
       </Tabs>
+
+     
+
     </>
   );
 }
