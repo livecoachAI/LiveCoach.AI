@@ -10,7 +10,7 @@ interface SessionsScreenProps {
   onBackPress: () => void;
 }
 
-// --- PERFECT HEXAGON BUTTON COMPONENT ---
+// --- REFINED HEXAGON BUTTON COMPONENT ---
 const HexButton = ({ title, onPress, color, textColor = "black", icon: Icon }: any) => {
   const pointSize = 24; // Controls the sharpness of the point
   
@@ -30,12 +30,12 @@ const HexButton = ({ title, onPress, color, textColor = "black", icon: Icon }: a
         {/* Middle Body */}
         <View 
           style={{ backgroundColor: color, height: pointSize * 2 }} 
-          className="flex-row items-center justify-center px-4 min-w-[180px]"
+          className="flex-row items-center justify-center px-4 min-w-[200px]"
         >
-          <Text className={`font-bebas text-2xl font-black tracking-tighter text-${textColor} uppercase`}>
+          <Text className={`font-bebas text-2xl font-black tracking-tighter text-black uppercase`}>
             {title}
           </Text>
-          {Icon && <View className="ml-3"><Icon size={22} color={textColor} strokeWidth={3} /></View>}
+          {Icon && <View className="ml-3"><Icon size={22} color="black" strokeWidth={3} /></View>}
         </View>
 
         {/* Right Triangle Point */}
@@ -96,13 +96,20 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
   };
 
   return (
-    <View className="flex-1 bg-primary">
+    <View className="flex-1 bg-white">
       <StatusBar barStyle="dark-content" />
+
+      {/* BACKGROUND BRANDING WATERMARK */}
+      <View className="absolute top-1/2 left-0 right-0 items-center opacity-5 pointer-events-none">
+        <Text className="font-bebas text-6xl font-black rotate-[-15deg] text-gray-400">
+          LiveCoach.AI
+        </Text>
+      </View>
       
       {/* Header */}
-      <View className="flex-row items-center px-4 py-5 border-b border-neutral-50">
+      <View className="flex-row items-center px-4 py-5 border-b border-neutral-50 bg-white">
         <TouchableOpacity onPress={onBackPress} className="p-1">
-          <ChevronLeft size={32} color="black" strokeWidth={2} />
+          <ChevronLeft size={32} color="black" strokeWidth={2.5} />
         </TouchableOpacity>
         <Text className="font-bebas pt-2 text-4xl font-black tracking-tighter text-black uppercase">Sessions</Text>
       </View>
@@ -112,7 +119,7 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity 
-            className="flex-row items-center justify-between px-6 py-7 bg-primary"
+            className="flex-row items-center justify-between px-6 py-7 bg-white"
             onPress={() => {
               setSelectedSession(item);
               setIsNoteVisible(true);
@@ -147,14 +154,14 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
       {/* --- OPTIONS MODAL --- */}
       <Modal visible={isOptionsVisible} transparent animationType="fade">
         <TouchableOpacity 
-          className="flex-1 justify-center items-center bg-black/50 px-8"
+          className="flex-1 justify-center items-center bg-black/60 px-8"
           activeOpacity={1}
           onPress={() => setIsOptionsVisible(false)}
         >
           <View className="bg-white w-full rounded-[40px] p-10 items-center shadow-2xl">
             <HexButton 
               title="RENAME" 
-              color="#EAFF00" // Precise Neon Yellow
+              color="#EAFF00" // Neon Yellow
               icon={RotateCw}
               onPress={() => {
                 setIsOptionsVisible(false);
@@ -165,7 +172,7 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
             />
             <HexButton 
               title="DELETE SESSION" 
-              color="#EAFF00" 
+              color="#FF3B3B" // BOLD RED ACTION
               icon={Trash2}
               onPress={handleDelete} 
             />
@@ -182,7 +189,7 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
             onPress={() => setIsAddModalVisible(false)}
           >
             <View className="bg-white w-full rounded-[35px] p-8 shadow-2xl items-center">
-              <Text className="font-abeezee text-2xl font-black mb-6 italic">NAME YOUR SESSION</Text>
+              <Text className="font-abeezee text-2xl font-black mb-6 italic uppercase">NAME YOUR SESSION</Text>
               
               <View className="border-2 border-[#EAFF00] rounded-2xl w-full px-4 py-4 mb-8">
                 <TextInput
@@ -203,7 +210,6 @@ const SessionsScreen: React.FC<SessionsScreenProps> = ({ onBackPress }) => {
                 <HexButton 
                   title="CANCEL" 
                   color="#9E9E9E" // Solid Gray
-                  textColor="white"
                   onPress={() => setIsAddModalVisible(false)} 
                 />
               </View>
