@@ -36,9 +36,11 @@ export default function ScreensTabsLayout() {
 
           const currentRouteName = props.state.routes[props.state.index].name;
 
-          // Hide navbar on splash screens
+          // Hide navbar on splash & analyze pages
           const isSplashScreen = currentRouteName.includes("splash");
-          if (isSplashScreen) return null;
+          const hideOnAnalyzeResult = currentRouteName.includes("analyze-result");
+
+          if (isSplashScreen || hideOnAnalyzeResult ) return null;
 
           return (
             <View className="bg-primary px-3 pb-8 pt-2 absolute bottom-0 left-0 right-0 z-50">
