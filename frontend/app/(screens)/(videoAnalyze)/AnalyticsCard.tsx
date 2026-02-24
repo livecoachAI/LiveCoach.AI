@@ -1,14 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Text, Animated, Easing } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
-import { MaterialIcons } from '@expo/vector-icons';
+import Octicons from '@expo/vector-icons/Octicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Ionicons } from '@expo/vector-icons';
 
 export type AnalyticsData = {
   overallScore: number;
   maxScore: number;
-  distanceValue: number;       // e.g. 1.369
-  distanceProgress: number;    // 0–100
-  similarityScore: number;     // e.g. 0.062
+  // distanceValue: number;       // e.g. 1.369
+  // distanceProgress: number;    // 0–100
+  // similarityScore: number;     // e.g. 0.062
   overallFeedback?: string;
   feedbackPositive: string[];      // ✅ list of good points
   feedbackNegative: string[];      // ✅ list of issues
@@ -20,8 +22,41 @@ type Props = {
 };
 
 const AnalyticsCard = ({ data }: Props) => {
-  const { overallScore, maxScore, distanceValue, distanceProgress, similarityScore, feedbackPositive, feedbackNegative,
-  recommendations, } = data;
+  const { overallScore, maxScore, feedbackPositive, feedbackNegative, recommendations } = data;
+
+  // Derived metrics (all driven by overallScore)
+  const similarityScore = overallScore / maxScore;          // 0 → 1
+  const distanceValue = 1 - similarityScore;                // 1 → 0
+  const distanceProgress = overallScore;                    // 0–100, same as score
+
+
+  // ----- Performance level styling -----
+  const getScoreStyle = (score: number) => {
+    if (score < 30) {
+      return {
+        label: 'Needs improvement',
+        color: '#EF4444',   // red-500
+      };
+    } else if (score < 55) {
+      return {
+        label: 'Below average',
+        color: '#F97316',   // orange-500
+      };
+    } else if (score < 75) {
+      return {
+        label: 'On track',
+        color: '#EAB308',   // amber-500
+      };
+    } else {
+      return {
+        label: 'Excellent',
+        color: '#22C55E',   // green-500
+      };
+    }
+  };
+
+  const { label: performanceLabel, color: performanceColor } = getScoreStyle(overallScore);
+
 
   const radius = 65;
   const strokeWidth = 8;
@@ -55,10 +90,11 @@ const AnalyticsCard = ({ data }: Props) => {
 
 
   return (
+    
     <View className="flex-1">
       {/* Overall Score */}
       {/* <View className="mt-10 bg-white rounded-2xl p-8 border border-gray-100 shadow-lg shadow-black/5"> */}
-      <View className="mt-10 bg-white rounded-2xl p-8 border border-gray-100"
+      <View className="mt-5 bg-white rounded-2xl p-8 border border-gray-100"
           style={{
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 6 },
@@ -67,6 +103,7 @@ const AnalyticsCard = ({ data }: Props) => {
             elevation: 4,
           }}
       >
+        
         <View className="flex-row items-center">
           {/* Circle */}
           <View className="mr-5">
@@ -83,7 +120,7 @@ const AnalyticsCard = ({ data }: Props) => {
                 cx={radius + 5}
                 cy={radius + 5}
                 r={normalizedRadius}
-                stroke="#EF5350"
+                stroke={performanceColor}
                 strokeWidth={strokeWidth}
                 fill="none"
                 strokeDasharray={circumference}
@@ -103,10 +140,16 @@ const AnalyticsCard = ({ data }: Props) => {
 
           {/* Text */}
           <View className="flex-1">
-            <Text className="text-2xl font-semibold text-red-500 mb-1">
-              Needs improvement
+            <Text className="text-2xl font-semibold mb-1"
+            style={{ color: performanceColor }}>
+            {performanceLabel}
             </Text>
-            <Text className="text-lg text-gray-500">Today&apos;s session</Text>
+            {/* <Text className="text-lg text-gray-500">Today&apos;s session</Text> */}
+            <View className="self-start mt-1 px-3 py-1 rounded-full bg-accent-yellow">
+              <Text className="text-[10px] font-bold text-gray-700">
+                TODAY&apos;S SESSION
+              </Text>
+            </View>
           </View>
         </View>
       </View>
@@ -122,32 +165,59 @@ const AnalyticsCard = ({ data }: Props) => {
             elevation: 4,
           }}
       >
-        <View className="flex-row items-center justify-between mb-6">
+        {/* <View className="flex-row items-center justify-between mb-6">
           <Text className="text-2xl font-semibold text-gray-900">
             Distance to Expert
           </Text>
           <Text className="text-lg font-medium text-gray-700">
-            {distanceValue} units
+            {distanceValue.toFixed(2)} away
+          </Text>
+
+        </View> */}
+
+        <View className="flex-row items-center justify-between mb-6">
+          <View className="flex-row items-center mb-2">
+            <View className="w-1.5 h-6 rounded-full bg-accent-yellow mr-3" />
+            <Text className="text-2xl font-semibold text-gray-900">
+              Distance to Expert
+            </Text>
+          </View>
+          
+
+          <Text className="text-lg font-medium text-gray-700 mb-2">
+            {distanceValue.toFixed(2)} away
           </Text>
         </View>
 
         {/* Progress Section */}
         <View className="relative pt-6 pb-4">
           <View className="h-4 bg-gray-200 rounded-full overflow-visible">
-            <View className="h-4 rounded-full bg-accent-yellow"
+            <View className="h-4"
                 style={{
                   width: `${distanceProgress}%`,
+                  backgroundColor: performanceColor,
+                  borderTopLeftRadius: 999,        // react native doesnt have rounded-l-full.
+                  borderBottomLeftRadius: 999,      //So we manually make the left corners fully rounded by using a large radius like 999
                 }}
             />
 
             {/* Animated Avatar */}
-            <View className="absolute -top-4 w-10 h-10 rounded-full items-center justify-center border-4 "
+            {/* <View className="absolute -top-4 w-10 h-10 rounded-full items-center justify-center border-4 "
                 style={{
                   left: `${distanceProgress}%`,
                   transform: [{ translateX: -20 }],
                   backgroundColor: 'white',
-                  borderColor: '#E6F20D',
+                  borderColor: performanceColor,
                 }}
+            > */}
+
+            <View
+              className="absolute"
+              style={{
+                left: `${distanceProgress}%`,
+                transform: [{ translateX: -3 }], // half of icon size
+                top: -8, // adjust to sit nicely on the bar
+              }}
             >
               <Animated.View
                 style={{
@@ -162,7 +232,8 @@ const AnalyticsCard = ({ data }: Props) => {
                   ],
                 }}
               >
-              <MaterialIcons name="directions-run" size={22} color="#111827" />
+            <Octicons name="feed-trophy" size={29} color={performanceColor} />
+              
               </Animated.View>
             </View>
           </View>
@@ -191,7 +262,7 @@ const AnalyticsCard = ({ data }: Props) => {
       </View>
 
       {/* Similarity Score */}
-      <View className="mt-10 bg-white rounded-2xl p-4 border border-gray-100"
+      <View className="mt-6 bg-white rounded-2xl p-4 border border-gray-100"
         style={{
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 6 },
@@ -200,13 +271,22 @@ const AnalyticsCard = ({ data }: Props) => {
           elevation: 4,
         }}
       >
-        <Text className="text-2xl font-semibold text-gray-900 mb-4">
-          Similarity Score
-        </Text>
+        <View className="flex-row items-center mb-4">
+            <View className="w-1.5 h-6 rounded-full bg-accent-yellow mr-3" />
+            <Text className="text-2xl font-semibold text-gray-900">
+              Similarity Score
+            </Text>
+        </View>
+
+        <View className="items-center mb-4">
+          <Text className="text-4xl font-semibold" style={{ color: performanceColor }}>
+            {similarityScore.toFixed(3)}
+          </Text>
+        </View>
 
         <View className="items-center mb-6">
-          <Text className="text-4xl font-semibold" style={{ color: '#FACC15' }}>
-            {similarityScore}
+          <Text className="text-xs text-gray-500">
+            Similarity (0 to 1)
           </Text>
         </View>
 
@@ -222,7 +302,7 @@ const AnalyticsCard = ({ data }: Props) => {
             className="absolute top-[-5px] w-3 h-3 rounded-full shadow-md" 
             style={{ 
                 left: `${similarityScore * 100}%`,  // 0.062 → 6.2% from left
-                backgroundColor: '#FACC15',
+                backgroundColor: performanceColor,
                 transform: [{ translateX: -6 }] // center the dot
             }}
         />
@@ -240,25 +320,34 @@ const AnalyticsCard = ({ data }: Props) => {
       
       {/* Feedback */}
       {/* Feedback – Coach Notes timeline style */}
-<View
-  className="mt-10 bg-white rounded-2xl p-5 border border-gray-100"
-  style={{
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 4,
-  }}
->
+        <View
+          className="mt-6 bg-white rounded-2xl p-5 border border-gray-100"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 6 },
+            shadowOpacity: 0.06,
+            shadowRadius: 12,
+            elevation: 4,
+          }}
+        >
   {/* Title */}
-  <Text className="text-2xl font-semibold text-gray-900 mb-6">
-    Feedback
-  </Text>
+        <View className="flex-row items-center mb-6">
+            <View className="w-1.5 h-6 rounded-full bg-accent-yellow mr-3" />
+            <Text className="text-2xl font-semibold text-gray-900">
+              Feedback
+            </Text>
+        </View>
+  
 
   {/* Summary Box */}
           <View className="bg-yellow-50 rounded-xl p-5 mb-8">
             <Text className="text-gray-800 leading-relaxed">
-              {data.overallFeedback}
+              <Text style={{ color: performanceColor, fontWeight: '800'}}>
+                Overall:{' '}
+              </Text>
+              <Text className="text-gray-800">
+                {data.overallFeedback?.replace("Overall:", "").trim()}
+              </Text>
             </Text>
           </View>
 
@@ -316,13 +405,8 @@ const AnalyticsCard = ({ data }: Props) => {
   </View>
 </View>
 
-
-       
-
-
-      
       {/* Recommendations */}
-      <View className="mt-10 bg-white rounded-2xl p-4 border border-gray-100"
+      <View className="mt-6 bg-white rounded-2xl p-4 border border-gray-100"
         style={{
           shadowColor: "#000",
           shadowOffset: { width: 0, height: 6 },
@@ -331,9 +415,21 @@ const AnalyticsCard = ({ data }: Props) => {
           elevation: 4,
         }}
       >
-        <Text className="text-2xl font-semibold text-gray-700 mb-4">
-          Recommendations
-        </Text>
+        
+        <View className="flex-row items-center justify-between mb-4">
+          <View className="flex-row items-center flex-1 pr-3">
+            <View className="w-1.5 h-6 rounded-full bg-accent-yellow mr-3" />
+            <Text className="text-2xl font-semibold text-gray-700">
+              Recommendations
+            </Text>
+          </View>
+
+          <View className="px-3 py-1 rounded-full bg-accent-yellow ml-6">
+            <Text className="text-xs font-bold text-black">
+              {recommendations.length} Tips
+            </Text>
+          </View>
+        </View>
 
         <View className="space-y-3">
           {recommendations.map((item, index) => (
@@ -347,6 +443,10 @@ const AnalyticsCard = ({ data }: Props) => {
               <Text className="text-sm text-gray-800 flex-1 ">
                 {item}
               </Text>
+              {/* NEW: Arrow circle */}
+              <View className="w-8 h-8 rounded-full bg-white items-center justify-center ml-2">
+                <Ionicons name="chevron-forward" size={18} color="black" />
+              </View>
             </View>
           ))}
         </View>
