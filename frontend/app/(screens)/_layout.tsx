@@ -46,6 +46,8 @@ export default function ScreensTabsLayout() {
           const shouldHideTabBar =
               currentRouteName.includes("splash") ||
               currentRouteName === "(profile)/sessions" ||
+              currentRouteName === "(videoAnalyze)/analyze-result" ||
+
               options.tabBarVisible === false;
 
           if (shouldHideTabBar) return null;
