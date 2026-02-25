@@ -26,6 +26,7 @@ export default function ScreensTabsLayout() {
           },
         }}
         tabBar={(props) => {
+
           const tabs = [
             { name: "(social)/index", Icon: HomeIcon, group: "(social)" },
             { name: "(tutorials)/index", Icon: TutorialsIcon, group: "(tutorials)" },
@@ -34,12 +35,18 @@ export default function ScreensTabsLayout() {
             { name: "(profile)/index", Icon: ProfileIcon, group: "(profile)" },
           ];
 
+          //Current active screen
+          const { state, descriptors} = props;
+          const currentRouteKey = state.routes[state.index].key;
+          const options = descriptors[currentRouteKey].options as any;
+
           const currentRouteName = props.state.routes[props.state.index].name;
 
           // hide navbar on splash + sessions
           const shouldHideTabBar =
               currentRouteName.includes("splash") ||
-              currentRouteName === "(profile)/sessions";
+              currentRouteName === "(profile)/sessions" ||
+              options.tabBarVisible === false;
 
           if (shouldHideTabBar) return null;
           
