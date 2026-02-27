@@ -357,3 +357,5 @@ const CreateAccount = () => {
   );
 };
 export default CreateAccount;
+console.log("Firebase projectId:", auth.app.options.projectId);
+console.log("Firebase authDomain:", auth.app.options.authDomain);

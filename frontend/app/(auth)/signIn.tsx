@@ -157,7 +157,7 @@ const SignIn = () => {
             {/* Forgot Password */}
             <TouchableOpacity
               className="items-end mb-8 ml-4"
-              onPress={() => setShowOtp(true)}
+              onPress={() => router.push("/(auth)/forgotPassword")}
             >
               <OtpPopup
                 visible={showOtp}
@@ -198,3 +198,5 @@ const SignIn = () => {
 };
 
 export default SignIn;
+console.log("Firebase projectId:", auth.app.options.projectId);
+console.log("Firebase authDomain:", auth.app.options.authDomain);
