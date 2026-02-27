@@ -50,7 +50,7 @@ export interface ProgressResponse {
  */
 export const getAvailableSports = async () => {
   try {
-    const response = await api.get('/ai/sports');
+    const response = await api.get('/api/ai/sports');
     return response.data;
   } catch (error) {
     console.error('Error fetching sports:', error);
@@ -86,7 +86,7 @@ export const uploadAndAnalyze = async (
     const headers = await authHeaders(idToken);
     
     const response = await api.post(
-      `/ai/analyze/${sport}/${shot}`,
+      `/api/ai/analyze/${sport}/${shot}`,
       formData,
       {
         headers: {
@@ -125,7 +125,7 @@ export const getAnalysisHistory = async (
 
     const headers = await authHeaders(idToken);
 
-    const response = await api.get('/ai/history', {
+    const response = await api.get('/api/ai/history', {
       headers,
       params,
     });
@@ -149,7 +149,7 @@ export const getAnalysisById = async (
   try {
     const headers = await authHeaders(idToken);
 
-    const response = await api.get(`/ai/analysis/${analysisId}`, {
+    const response = await api.get(`/api/ai/analysis/${analysisId}`, {
       headers,
     });
 
@@ -174,7 +174,7 @@ export const getProgress = async (
   try {
     const headers = await authHeaders(idToken);
 
-    const response = await api.get(`/ai/progress/${sport}/${shot}`, {
+    const response = await api.get(`/api/ai/progress/${sport}/${shot}`, {
       headers,
     });
 
@@ -190,7 +190,7 @@ export const getProgress = async (
  */
 export const checkAIServiceHealth = async () => {
   try {
-    const response = await api.get('/ai/health');
+    const response = await api.get('/api/ai/health');
     return response.data;
   } catch (error) {
     console.error('Error checking AI service health:', error);
