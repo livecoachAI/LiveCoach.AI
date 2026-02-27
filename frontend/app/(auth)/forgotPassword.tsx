@@ -1,13 +1,16 @@
 import React, { useMemo, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert } from "react-native";
-import { useRouter } from "expo-router";
+import { View, Text, TextInput, ScrollView, Alert } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import ButtonBlack from "@/app/components/buttonBlack";
-import { sendPasswordResetEmail } from "firebase/auth";
+
 import { auth } from "@/lib/firebase";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 export default function ForgotPassword() {
     const router = useRouter();
-    const [email, setEmail] = useState("");
+    const { email: initialEmail } = useLocalSearchParams<{ email?: string }>();
+
+    const [email, setEmail] = useState(initialEmail ?? "");
     const [loading, setLoading] = useState(false);
 
     const emailRegex = useMemo(() => /\S+@\S+\.\S+/, []);
@@ -19,24 +22,21 @@ export default function ForgotPassword() {
             Alert.alert("Invalid email", "Please enter a valid email address.");
             return;
         }
-
         if (loading) return;
 
         setLoading(true);
         try {
             await sendPasswordResetEmail(auth, cleanEmail);
 
-            Alert.alert(
-                "Check your email",
-                "We sent you a password reset link. Open your email and follow the instructions.",
-                [{ text: "OK", onPress: () => router.back() }]
-            );
+            router.replace({
+                pathname: "/(auth)/resetSent",
+                params: { email: cleanEmail },
+            });
         } catch (e: any) {
-            // Firebase common errors
             const code = e?.code;
 
             if (code === "auth/user-not-found") {
-                Alert.alert("No account found", "No user exists with that email.");
+                Alert.alert("Email not registered", "No account exists with this email address.");
             } else if (code === "auth/invalid-email") {
                 Alert.alert("Invalid email", "Please enter a valid email address.");
             } else if (code === "auth/too-many-requests") {
@@ -71,12 +71,11 @@ export default function ForgotPassword() {
                     </View>
 
                     <View className="mt-6">
-                        <ButtonBlack title={loading ? "SENDING..." : "SEND RESET LINK"} onPress={handleReset} />
+                        <ButtonBlack
+                            title={loading ? "SENDING..." : "SEND RESET LINK"}
+                            onPress={handleReset}
+                        />
                     </View>
-
-                    <TouchableOpacity className="mt-6 items-center" onPress={() => router.back()}>
-                        <Text className="text-neutral-700 underline">Back to Sign In</Text>
-                    </TouchableOpacity>
                 </View>
             </ScrollView>
         </View>

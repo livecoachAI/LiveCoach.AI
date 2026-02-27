@@ -198,3 +198,5 @@ const SignIn = () => {
 };
 
 export default SignIn;
+console.log("Firebase projectId:", auth.app.options.projectId);
+console.log("Firebase authDomain:", auth.app.options.authDomain);
