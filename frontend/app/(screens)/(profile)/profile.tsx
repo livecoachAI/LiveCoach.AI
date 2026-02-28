@@ -7,6 +7,7 @@ import {
   ChevronRight, Camera, SlidersHorizontal, 
   RotateCw, Trash2 
 } from 'lucide-react-native';
+import { useRouter } from 'expo-router'; // <--- IMPORT ROUTER
 import ImagePickerSheet from '../../components/ImagePickerSheet';
 
 export interface AthleteData {
@@ -16,10 +17,11 @@ export interface AthleteData {
 
 interface ProfileAthleteProps {
   data: AthleteData;
-  onPressSessions: () => void; 
+  onPressSessions: () => void;
+  // removed onPressProgress because we handle it internally now
 }
 
-// --- SHARED HEXAGON BUTTON COMPONENT ---
+// --- SHARED HEXAGON BUTTON ---
 const HexButton = ({ title, onPress, color, icon: Icon }: any) => {
   const pointSize = 24;
   return (
@@ -37,10 +39,10 @@ const HexButton = ({ title, onPress, color, icon: Icon }: any) => {
 };
 
 const ProfileAthlete = ({ data, onPressSessions }: ProfileAthleteProps) => {
+  const router = useRouter(); // <--- INITIALIZE ROUTER
+  
   const [sheetVisible, setSheetVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  
-  // --- STATE FOR THE NAME SHOWN ON PAGE ---
   const [displayName, setDisplayName] = useState(data.name);
   
   // Modal States
@@ -48,13 +50,9 @@ const ProfileAthlete = ({ data, onPressSessions }: ProfileAthleteProps) => {
   const [isEditVisible, setIsEditVisible] = useState(false);
   const [nameInput, setNameInput] = useState(displayName);
 
-  const handleImageSelected = (imageUri: string) => {
-    setSelectedImage(imageUri);
-  };
-
   const handleSaveName = () => {
     if (nameInput.trim()) {
-      setDisplayName(nameInput); // This updates the name on the page immediately
+      setDisplayName(nameInput);
       setIsEditVisible(false);
     }
   };
@@ -70,33 +68,20 @@ const ProfileAthlete = ({ data, onPressSessions }: ProfileAthleteProps) => {
             resizeMode="cover"
           />
 
-          {/* TOP RIGHT MORE BUTTON */}
           <TouchableOpacity 
-            onPress={() => {
-              setNameInput(displayName); // Reset input to current name before opening
-              setIsOptionsVisible(true);
-            }}
+            onPress={() => { setNameInput(displayName); setIsOptionsVisible(true); }}
             className="absolute top-12 right-5 bg-black/20 p-2.5 rounded-full"
           >
             <SlidersHorizontal size={24} color="white" strokeWidth={2} />
           </TouchableOpacity>
           
-          <Pressable
-            onPress={() => setSheetVisible(true)}
-            className="absolute bottom-7 right-3 bg-white p-2.5 rounded-full shadow-md active:scale-95"
-            style={{ elevation: 10, zIndex: 10 }}
-          >
+          <Pressable onPress={() => setSheetVisible(true)} className="absolute bottom-7 right-3 bg-white p-2.5 rounded-full shadow-md active:scale-95" style={{ elevation: 10, zIndex: 10 }}>
             <Camera size={22} color="black" strokeWidth={2} />
           </Pressable>
 
-          {/* ATHLETE NAME DISPLAYED HERE */}
           <View className="absolute bottom-6 left-6">
-            <Text className="text-white text-xs font-bold uppercase tracking-widest opacity-90" style={styles.textShadow}>
-              {data.role}
-            </Text>
-            <Text className="text-white text-5xl font-bebas uppercase tracking-tighter" style={styles.textShadow}>
-              {displayName}
-            </Text>
+            <Text className="text-white text-xs font-bold uppercase tracking-widest opacity-90" style={styles.textShadow}>{data.role}</Text>
+            <Text className="text-white text-5xl font-bebas uppercase tracking-tighter" style={styles.textShadow}>{displayName}</Text>
           </View>
         </View>
 
@@ -106,14 +91,21 @@ const ProfileAthlete = ({ data, onPressSessions }: ProfileAthleteProps) => {
             <ChevronRight size={22} color="#ADABAB" strokeWidth={1.5} />
           </Pressable>
           
-          <Pressable className="px-4 py-6 border-b border-neutral-100 flex-row justify-between items-center active:opacity-50">
+          {/* --- THIS IS THE FIX --- */}
+          <Pressable 
+            onPress={() => {
+               // This path matches your folder structure exactly: app/(screens)/(profile)/prograssChart.tsx
+               router.push("/(screens)/(profile)/prograssChart" as any); 
+            }}
+            className="px-4 py-6 border-b border-neutral-100 flex-row justify-between items-center active:opacity-50"
+          >
             <Text className="text-xl font-manrope text-black uppercase">PROGRESS CHART</Text>
             <ChevronRight size={22} color="#ADABAB" strokeWidth={1.5} />
           </Pressable>
         </View>
       </ScrollView>
 
-      {/* --- OPTIONS MODAL --- */}
+      {/* Options Modal */}
       <Modal visible={isOptionsVisible} transparent animationType="fade">
         <TouchableOpacity className="flex-1 justify-center items-center bg-black/60 px-8" activeOpacity={1} onPress={() => setIsOptionsVisible(false)}>
           <View className="bg-white w-full rounded-[40px] p-10 items-center shadow-2xl">
@@ -123,16 +115,14 @@ const ProfileAthlete = ({ data, onPressSessions }: ProfileAthleteProps) => {
         </TouchableOpacity>
       </Modal>
 
-      {/* --- EDIT NAME MODAL --- */}
+      {/* Edit Name Modal */}
       <Modal visible={isEditVisible} transparent animationType="slide">
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
           <TouchableOpacity className="flex-1 justify-center items-center bg-black/50 px-6" activeOpacity={1} onPress={() => setIsEditVisible(false)}>
             <View className="bg-white w-full rounded-[35px] p-8 shadow-2xl items-center">
               <Text className="font-bebas text-2xl font-black mb-6 italic uppercase">EDIT ATHLETE NAME</Text>
-              <View className="border-2 border-[#F8FE11] rounded-2xl w-full px-4 py-4 mb-8">
-                <TextInput value={nameInput} onChangeText={setNameInput} className="text-lg font-bold text-center uppercase" autoFocus />
-              </View>
-              <View className="w-full">
+              <TextInput value={nameInput} onChangeText={setNameInput} className="border-2 border-[#F8FE11] rounded-2xl w-full p-4 text-center uppercase text-lg font-bold" autoFocus />
+              <View className="w-full mt-6">
                 <HexButton title="SAVE" color="#F8FE11" onPress={handleSaveName} />
                 <HexButton title="CANCEL" color="#9E9E9E" onPress={() => setIsEditVisible(false)} />
               </View>
@@ -141,17 +131,13 @@ const ProfileAthlete = ({ data, onPressSessions }: ProfileAthleteProps) => {
         </KeyboardAvoidingView>
       </Modal>
 
-      <ImagePickerSheet visible={sheetVisible} onClose={() => setSheetVisible(false)} onImageSelected={handleImageSelected} />
+      <ImagePickerSheet visible={sheetVisible} onClose={() => setSheetVisible(false)} onImageSelected={(uri) => setSelectedImage(uri)} />
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  textShadow: {
-    textShadowColor: 'rgba(0, 0, 0, 0.8)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 10,
-  }
+  textShadow: { textShadowColor: 'rgba(0, 0, 0, 0.8)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 10 }
 });
 
 export default ProfileAthlete;
