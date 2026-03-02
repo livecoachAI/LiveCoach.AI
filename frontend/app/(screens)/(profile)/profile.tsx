@@ -11,6 +11,7 @@ import { useRouter } from 'expo-router'; // <--- IMPORT ROUTER
 import ImagePickerSheet from '../../components/ImagePickerSheet';
 
 export interface AthleteData {
+  _id: string; 
   name: string;
   role: 'Athlete';
 }
@@ -94,8 +95,10 @@ const ProfileAthlete = ({ data, onPressSessions }: ProfileAthleteProps) => {
           {/* --- THIS IS THE FIX --- */}
           <Pressable 
             onPress={() => {
-               // This path matches your folder structure exactly: app/(screens)/(profile)/prograssChart.tsx
-               router.push("/(screens)/(profile)/prograssChart" as any); 
+              router.push({
+                pathname: "/(screens)/(profile)/prograssChart",
+                params: { athleteId: data._id } // MUST pass the ID
+              } as any); 
             }}
             className="px-4 py-6 border-b border-neutral-100 flex-row justify-between items-center active:opacity-50"
           >

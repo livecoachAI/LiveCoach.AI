@@ -8,6 +8,7 @@ const userRoutes = require('./user.routes');
 const sessionNoteRoutes = require("./sessionNote.routes");
 const aiRoutes = require('./aiService.routes');
 const gigRoutes = require('./gig.routes');
+const progressRoutes = require('./routes/progress.routes');
 
 // Health check endpoint
 router.get('/health', (req, res) => {
@@ -23,6 +24,7 @@ router.get('/health', (req, res) => {
 router.use('/auth', authRoutes);
 router.use('/user', userRoutes);
 router.use("/session-notes", sessionNoteRoutes);
+router.use("/session-notes/progress", progressRoutes);
 router.use('/ai', aiRoutes); 
 router.use('/gigs', gigRoutes); 
 module.exports = router;
