@@ -8,7 +8,7 @@ const userRoutes = require('./user.routes');
 const sessionNoteRoutes = require("./sessionNote.routes");
 const aiRoutes = require('./aiService.routes');
 const gigRoutes = require('./gig.routes');
-const progressRoutes = require('./routes/progress.routes');
+const progressRoutes = require('./progress.routes');
 
 // Health check endpoint
 router.get('/health', (req, res) => {
