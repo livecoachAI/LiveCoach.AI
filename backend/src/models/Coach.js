@@ -59,14 +59,8 @@ const coachSchema = new mongoose.Schema({
         default: 0,
     },
 
-    // Current athletes
+    // Current athletes names
     currentAthletes: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Athlete',
-    }],
-
-    // Players list
-    players: [{
         type: String,
         trim: true,
     }],

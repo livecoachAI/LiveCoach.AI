@@ -53,12 +53,12 @@ const ProfileAthlete = ({
   const [isEditVisible, setIsEditVisible] = useState(false);
   const [nameInput, setNameInput] = useState(data.name);
 
-  // Keep input aligned with latest server-backed name from parent.
+  // Keep input updated
   useEffect(() => {
     setNameInput(data.name);
   }, [data.name]);
 
-  // Save name through parent callback so athlete and coach follow one update path.
+  //Update the name in the backend
   const handleSaveName = async () => {
     const trimmed = nameInput.trim();
     if (!trimmed || isSavingName) return;
@@ -90,7 +90,7 @@ const ProfileAthlete = ({
 
           <View className="absolute bottom-6 left-6">
             <Text className="text-white text-xs font-bold uppercase tracking-widest opacity-90" style={styles.textShadow}>{data.role}</Text>
-            {/* Render backend-synced name directly (no local displayName source of truth). */}
+            {/* Render the athlete's name */}
             <Text className="text-white text-5xl font-bebas uppercase tracking-tighter" style={styles.textShadow}>{data.name}</Text>
           </View>
         </View>
@@ -133,7 +133,7 @@ const ProfileAthlete = ({
               <Text className="font-bebas text-2xl font-black mb-6 italic uppercase">EDIT ATHLETE NAME</Text>
               <TextInput value={nameInput} onChangeText={setNameInput} className="border-2 border-[#F8FE11] rounded-2xl w-full p-4 text-center uppercase text-lg font-bold" autoFocus />
               <View className="w-full mt-6">
-                {/* Prevent duplicate saves and give immediate feedback while request is in flight. */}
+                
                 <HexButton
                   title={isSavingName ? "SAVING..." : "SAVE"}
                   color="#F8FE11"

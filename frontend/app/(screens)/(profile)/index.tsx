@@ -16,6 +16,16 @@ type BackendProfile = {
   role: BackendRole;
   isEmailVerified?: boolean;
   coachData?: {
+    currentAthletes?: Array<
+      | string
+      | {
+          _id?: string;
+          id?: string;
+          name?: string;
+          firstName?: string;
+          lastName?: string;
+        }
+    >;
     players?: string[];
   };
 };
@@ -25,6 +35,53 @@ type ProfileState = {
   name: string;
   isVerified?: boolean;
   players: { id: string; name: string }[];
+};
+
+const normalizeName = (value: string) => value.trim().toUpperCase();
+
+const mapCurrentAthleteToPlayer = (
+  athlete: NonNullable<NonNullable<BackendProfile["coachData"]>["currentAthletes"]>[number],
+  index: number,
+) => {
+  if (typeof athlete === "string") {
+    const name = normalizeName(athlete);
+    return {
+      id: `current-athlete-${index}`,
+      name,
+    };
+  }
+
+  const fullName =
+    athlete.name?.trim() || `${athlete.firstName ?? ""} ${athlete.lastName ?? ""}`.trim();
+
+  return {
+    id: athlete._id || athlete.id || `current-athlete-${index}`,
+    name: normalizeName(fullName || `ATHLETE ${index + 1}`),
+  };
+};
+
+const toCoachPlayers = (coachData?: BackendProfile["coachData"]) => {
+  const fromCurrentAthletes = (coachData?.currentAthletes ?? [])
+    .map(mapCurrentAthleteToPlayer)
+    .filter((player) => player.name.length > 0);
+
+  const fromLegacyPlayers = (coachData?.players ?? [])
+    .map((playerName, index) => ({
+      id: `legacy-player-${index}`,
+      name: normalizeName(playerName || ""),
+    }))
+    .filter((player) => player.name.length > 0);
+
+  const merged = [...fromCurrentAthletes, ...fromLegacyPlayers];
+  const uniqueByName = new Map<string, { id: string; name: string }>();
+
+  merged.forEach((player) => {
+    if (!uniqueByName.has(player.name)) {
+      uniqueByName.set(player.name, player);
+    }
+  });
+
+  return Array.from(uniqueByName.values());
 };
 
 //Convert first and last name into a full-name
@@ -40,13 +97,7 @@ const UiProfile = (raw: BackendProfile): ProfileState => ({
   role: raw.role === "coach" ? "Coach" : "Athlete",
   name: `${raw.firstName ?? ""} ${raw.lastName ?? ""}`.trim().toUpperCase(), 
   isVerified: raw.role === "coach" ? !!raw.isEmailVerified : undefined, 
-  players:
-    raw.role === "coach"
-      ? (raw.coachData?.players ?? []).map((playerName, index) => ({
-          id: `player-${index}`,
-          name: (playerName || "").trim().toUpperCase(),
-        }))
-      : [],
+  players: raw.role === "coach" ? toCoachPlayers(raw.coachData) : [],
 });
 
 const Index = () => {
@@ -112,7 +163,7 @@ const Index = () => {
     [fetchProfile],
   );
 
-  // Persist coach players and then resync from server to avoid stale local state.
+  //Update the players for a coach in the backend
   const handleUpdatePlayers = useCallback(
     async (nextPlayers: { id: string; name: string }[]) => {
       setProfile((prev) => (prev ? { ...prev, players: nextPlayers } : prev));
@@ -122,7 +173,7 @@ const Index = () => {
         "/api/user/profile",
         {
           coachData: {
-            players: nextPlayers.map((player) => player.name.trim()),
+            currentAthletes: nextPlayers.map((player) => player.name.trim()),
           },
         },
         { headers: await authHeaders(token) },

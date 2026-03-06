@@ -14,8 +14,28 @@ export interface CoachData {
   name: string;
   role: "Coach";
   isVerified?: boolean;
-  players: Player[];
+  players?: Player[];
+  currentAthletes?: Player[];
 }
+
+const getCoachPlayers = (data: CoachData): Player[] => {
+  const merged = [...(data.currentAthletes ?? []), ...(data.players ?? [])];
+  const uniqueByName = new Map<string, Player>();
+
+  merged.forEach((player, index) => {
+    const normalizedName = (player?.name || "").trim().toUpperCase();
+    if (!normalizedName || uniqueByName.has(normalizedName)) {
+      return;
+    }
+
+    uniqueByName.set(normalizedName, {
+      id: player?.id || `player-${index}`,
+      name: normalizedName,
+    });
+  });
+
+  return Array.from(uniqueByName.values());
+};
 
 interface ProfileCoachProps {
   data: CoachData;
@@ -91,7 +111,7 @@ const ProfileCoach = ({
   const [isAddPlayerVisible, setIsAddPlayerVisible] = useState(false);
   const [playerNameInput, setPlayerNameInput] = useState("");
   const [isSavingPlayers, setIsSavingPlayers] = useState(false);
-  const [players, setPlayers] = useState<Player[]>(data.players);
+  const [players, setPlayers] = useState<Player[]>(getCoachPlayers(data));
   const [nameInput, setNameInput] = useState(data.name);
 
   //Keep the name updated 
@@ -101,8 +121,8 @@ const ProfileCoach = ({
 
   // Keep the player list sync with the backend through parent
   useEffect(() => {
-    setPlayers(data.players);
-  }, [data.players]);
+    setPlayers(getCoachPlayers(data));
+  }, [data.players, data.currentAthletes]);
 
   const handleImageSelected = (imageUri: string) => {
     setSelectedImage(imageUri);
