@@ -14,6 +14,7 @@ import ButtonGray from "@/app/components/buttonGray";
 import PasswordInput from "@/app/components/PasswordInput";
 import { useRouter } from "expo-router";
 import OtpPopup from "../components/OtpPopUp";
+import SuccessAlert from "../components/SuccessAlert";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
@@ -24,6 +25,9 @@ const SignIn = () => {
 
   const [loading, setLoading] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [nextRoute, setNextRoute] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -65,27 +69,32 @@ const SignIn = () => {
       );
 
      
-
+      const message = res.data?.message || "Login successful";
       //Backend returns responseData directly in successResponse.
       const payload = res.data?.data ?? res.data;
 
       const role = payload?.role; // 'athlete' | 'coach'
       const isFirstTimeUser = payload?.isFirstTimeUser;
 
+      let route = "/(screens)/(profile)";
+
       // 4) Route user
       if (isFirstTimeUser) {
         // Up to you: you can send them to onboarding again, or straight to profile setup.
-        router.replace("/(auth)"); // onboarding index in your structure
-        return;
+        route = ("/(auth)"); // onboarding index in your structure
       }
 
-      if (role === "coach") {
+      else if (role === "coach") {
         // Example: coach home
-        router.replace("/(screens)/(profile)");
+        route = "/(screens)/(profile)";
       } else {
         // athlete home
-        router.replace("/(screens)/(profile)");
+        route = "/(screens)/(profile)";
       }
+      setSuccessMessage(message);
+      setNextRoute(route);
+      setShowSuccessPopup(true);
+
     } catch (e: any) {
       console.log("LOGIN FAILED", {
         message: e?.message,
@@ -103,6 +112,17 @@ const SignIn = () => {
 
   return (
     <View className="flex-1 bg-white">
+      <SuccessAlert
+        visible={showSuccessPopup}
+        message={successMessage}
+        onHide={() => {
+          setShowSuccessPopup(false);
+
+          if (nextRoute) {
+            router.replace(nextRoute as any);
+          }
+        }}
+      />
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
