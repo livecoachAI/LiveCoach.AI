@@ -46,6 +46,7 @@ const getProfile = async (req, res, next) => {
                 totalRatings: user.totalRatings,
                 maxAthletes: user.maxAthletes,
                 currentAthletes: user.currentAthletes,
+                players: user.players || [],
             };
         }
 

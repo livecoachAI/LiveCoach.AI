@@ -65,6 +65,12 @@ const coachSchema = new mongoose.Schema({
         ref: 'Athlete',
     }],
 
+    // Players list
+    players: [{
+        type: String,
+        trim: true,
+    }],
+
     // Maximum number of athletes can handle
     maxAthletes: {
         type: Number,
