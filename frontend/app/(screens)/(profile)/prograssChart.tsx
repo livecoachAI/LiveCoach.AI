@@ -3,6 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, SafeAreaView } from 'react-na
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { auth } from '../../../lib/firebase';
 import { router } from "expo-router";
+import { authHeaders } from "@/lib/api";
 
 // Base API URL
 const BASE = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://localhost:3000';
@@ -48,18 +49,15 @@ const PrograssChart: React.FC<PrograssChartProps> = ({ onBackPress }) => {
     // Loads user's session dates 
     const fetchProgressData = async () => {
       try {
-        const user = auth.currentUser;
-        if (!user) {
-          if (isMounted) setActiveDates([]); //if no user, activedates
-          return;
+        const idToken = await auth.currentUser?.getIdToken();
+
+        if (!idToken) {
+          throw new Error('Unable to authorize request.');
         }
 
-        const idToken = await user.getIdToken();
         const response = await fetch(`${BASE}/api/progress/my-sessions`, {
           method: 'GET',
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
+          headers: await authHeaders(idToken),
         });
 
         const payload = await response.json();

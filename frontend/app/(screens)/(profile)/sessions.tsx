@@ -9,6 +9,7 @@ import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
 import { auth } from "../../../lib/firebase";
+import { authHeaders } from "@/lib/api";
 
 interface SessionsScreenProps {
   onBackPress?: () => void;
@@ -24,10 +25,13 @@ type SessionNoteItem = {
 const BASE = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 async function authConfig() {
-  const user = auth.currentUser;
-  if (!user) throw new Error("Not logged in");
-  const idToken = await user.getIdToken();
-  return { headers: { Authorization: `Bearer ${idToken}` } };
+  const idToken = await auth.currentUser?.getIdToken();
+
+  if (!idToken) {
+    throw new Error("Unable to authorize request.");
+  }
+
+  return { headers: await authHeaders(idToken) };
 }
 
 // --- REFINED HEXAGON BUTTON COMPONENT ---

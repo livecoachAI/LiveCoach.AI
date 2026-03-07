@@ -50,6 +50,7 @@ type ApiErrorPayload = {
 
 //full name normalization
 const normalizeName = (value: string) => value.trim().toUpperCase();
+const fallbackName = "USER";
 
 //Maps current athletes to the players in the UI 
 const mapCurrentAthleteToPlayer = (
@@ -134,8 +135,6 @@ const parseRequestError = (error: unknown, fallbackMessage: string) => {
   };
 };
 
-const isUnauthorizedStatus = (status?: number) => status === 401 || status === 403;
-
 const blobToDataUrl = (blob: Blob): Promise<string> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -180,22 +179,20 @@ const Index = () => {
   const [updatingName, setUpdatingName] = useState(false);
   const [updatingImage, setUpdatingImage] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [errorStatus, setErrorStatus] = useState<number | null>(null);
 
   const getAuthToken = useCallback(async () => {
-    const currentUser = auth.currentUser;
+    const token = await auth.currentUser?.getIdToken();
 
-    if (!currentUser) {
-      throw new Error("You are not signed in.");
+    if (!token) {
+      throw new Error("Unable to authorize request.");
     }
 
-    return currentUser.getIdToken();
+    return token;
   }, []);
 
   const applyRequestError = useCallback((error: unknown, fallbackMessage: string) => {
     const parsed = parseRequestError(error, fallbackMessage);
     setErrorMessage(parsed.message);
-    setErrorStatus(parsed.status ?? null);
 
     return parsed;
   }, []);
@@ -215,7 +212,6 @@ const Index = () => {
 
     setProfile(toUiProfile(payload));
     setErrorMessage(null);
-    setErrorStatus(null);
   }, [getAuthToken]);
 
   const retryFetchProfile = useCallback(async () => {
@@ -258,11 +254,6 @@ const Index = () => {
     }, [applyRequestError, fetchProfile]),
   );
 
-  const handleUnauthorized = useCallback(async () => {
-    await auth.signOut();
-    router.replace("/(auth)/signIn");
-  }, []);
-
   const handleUpdateName = useCallback(
     async (nextName: string) => {
       if (updatingName) {
@@ -299,24 +290,18 @@ const Index = () => {
         );
 
         setErrorMessage(null);
-        setErrorStatus(null);
       } catch (error) {
         if (previousName) {
           setProfile((prev) => (prev ? { ...prev, name: previousName } : prev));
         }
 
         const parsed = applyRequestError(error, "Unable to update your name.");
-
-        Alert.alert(isUnauthorizedStatus(parsed.status) ? "Session expired" : "Update failed", parsed.message);
-
-        if (isUnauthorizedStatus(parsed.status)) {
-          await handleUnauthorized();
-        }
+        Alert.alert("Update failed", parsed.message);
       } finally {
         setUpdatingName(false);
       }
     },
-    [applyRequestError, getAuthToken, handleUnauthorized, profile?.name, updatingName],
+    [applyRequestError, getAuthToken, profile?.name, updatingName],
   );
 
   const handleUpdatePlayers = useCallback(
@@ -339,20 +324,14 @@ const Index = () => {
         );
 
         setErrorMessage(null);
-        setErrorStatus(null);
       } catch (error) {
         setProfile((prev) => (prev ? { ...prev, players: previousPlayers } : prev));
-
-        const parsed = applyRequestError(error, "Unable to update players.");
-
-        if (isUnauthorizedStatus(parsed.status)) {
-          await handleUnauthorized();
-        }
+        applyRequestError(error, "Unable to update players.");
 
         throw error;
       }
     },
-    [applyRequestError, getAuthToken, handleUnauthorized, profile?.players],
+    [applyRequestError, getAuthToken, profile?.players],
   );
 
   const handleUpdateProfileImage = useCallback(
@@ -377,25 +356,16 @@ const Index = () => {
 
         setProfile((prev) => (prev ? { ...prev, profileImage: dataUrl } : prev));
         setErrorMessage(null);
-        setErrorStatus(null);
       } catch (error) {
         setProfile((prev) => (prev ? { ...prev, profileImage: previousImage } : prev));
 
         const parsed = applyRequestError(error, "Unable to update profile image.");
-
-        Alert.alert(
-          isUnauthorizedStatus(parsed.status) ? "Session expired" : "Image update failed",
-          parsed.message,
-        );
-
-        if (isUnauthorizedStatus(parsed.status)) {
-          await handleUnauthorized();
-        }
+        Alert.alert("Image update failed", parsed.message);
       } finally {
         setUpdatingImage(false);
       }
     },
-    [applyRequestError, getAuthToken, handleUnauthorized, profile, updatingImage],
+    [applyRequestError, getAuthToken, profile, updatingImage],
   );
 
   if (loading && !profile) {
@@ -409,8 +379,6 @@ const Index = () => {
   }
 
   if (!profile) {
-    const isUnauthorized = isUnauthorizedStatus(errorStatus ?? undefined);
-
     return (
       <SafeAreaView className="flex-1 bg-primary">
         <View className="flex-1 items-center justify-center px-6">
@@ -426,17 +394,6 @@ const Index = () => {
           >
             <Text className="font-manrope text-sm font-bold uppercase text-white">Retry</Text>
           </Pressable>
-
-          {isUnauthorized && (
-            <Pressable
-              onPress={() => {
-                void handleUnauthorized();
-              }}
-              className="mt-3 rounded-full border border-black px-6 py-3"
-            >
-              <Text className="font-manrope text-sm font-bold uppercase text-black">Go To Sign In</Text>
-            </Pressable>
-          )}
         </View>
       </SafeAreaView>
     );
