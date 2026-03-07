@@ -1,21 +1,20 @@
-import {Slot, Stack} from "expo-router";
+import { Stack } from "expo-router";
 import "./global.css";
-import {requireNativeComponent, StatusBar} from "react-native";
-import { useFonts } from "expo-font"
+import { useFonts } from "expo-font";
+import { AuthProvider } from "@/app/context/AuthContext";
 
 export default function RootLayout() {
     const [loaded] = useFonts({
-        "abeezee": require('../app/fonts/ABeeZee-Regular.ttf'),
-        "bebas": require('../app/fonts/BebasNeue-Regular.ttf'),
-        "manrope": require('../app/fonts/Manrope-VariableFont_wght.ttf')
-    })
+        abeezee: require("../app/fonts/ABeeZee-Regular.ttf"),
+        bebas: require("../app/fonts/BebasNeue-Regular.ttf"),
+        manrope: require("../app/fonts/Manrope-VariableFont_wght.ttf"),
+    });
+
+    if (!loaded) return null;
 
     return (
-        <Stack screenOptions={{ headerShown: false }}>
-            {/* {<Stack.Screen name="(auth)" options={{ headerShown: false }} /> } */}
-            {/* Your route groups are children automatically */}
-            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            {/* <Stack.Screen name="(screens)" options={{ headerShown: false }} /> */}
-        </Stack>
+        <AuthProvider>
+            <Stack screenOptions={{ headerShown: false }} />
+        </AuthProvider>
     );
 }

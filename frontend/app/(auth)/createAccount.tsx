@@ -16,12 +16,9 @@ import { Feather } from "@expo/vector-icons";
 import ButtonBlack from "@/app/components/buttonBlack";
 import { useRouter } from "expo-router";
 import { useRequireSignupRole } from "@/app/hooks/useRequireSignupRole";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "@/lib/firebase";
-import { api, authHeaders } from "@/lib/api";
-import { clearSignupRole } from "@/lib/storage";
 import { Picker } from "@react-native-picker/picker";
 import PasswordInput from "../components/PasswordInput";
+import { useAuth } from "@/app/context/AuthContext";
 
 type ExperienceLevel =
     | "beginner"
@@ -71,9 +68,9 @@ const PasswordRule = ({
 const CreateAccount = () => {
   const router = useRouter();
   const loadingRole = useRequireSignupRole("athlete");
+  const { registerAthlete, loading } = useAuth();
 
   const [isChecked, setIsChecked] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [passwordTouched, setPasswordTouched] = useState(false);
 
@@ -123,7 +120,7 @@ const CreateAccount = () => {
     return (
         firstName.trim() !== "" &&
         lastName.trim() !== "" &&
-        emailRegex.test(email) &&
+        emailRegex.test(email.trim()) &&
         isPasswordValid &&
         validAge &&
         sports.length > 0 &&
@@ -145,50 +142,22 @@ const CreateAccount = () => {
       return;
     }
 
-    setLoading(true);
-
     try {
-      const sportString = [...sports].sort().join(",");
-
-      const cred = await createUserWithEmailAndPassword(
-          auth,
-          formData.email.trim(),
-          formData.password,
-      );
-
-      await updateProfile(cred.user, {
-        displayName: `${formData.firstName} ${formData.lastName}`,
+      const profile = await registerAthlete({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        age: Number(formData.age),
+        sports,
+        experienceLevel: formData.experienceLevel,
       });
 
-      const token = await cred.user.getIdToken(true);
+      if (!profile) {
+        Alert.alert("Sign up failed", "Could not load user profile.");
+        return;
+      }
 
-      await api.post(
-          "/api/auth/register",
-          {
-            firebaseUid: cred.user.uid,
-            email: formData.email.trim(),
-            firstName: formData.firstName.trim(),
-            lastName: formData.lastName.trim(),
-            role: "athlete",
-            authProvider: "email",
-            athleteData: {
-              sport: sportString,
-              age: Number(formData.age),
-              experienceLevel: formData.experienceLevel,
-              bio: "",
-              goals: [],
-            },
-          },
-          { headers: await authHeaders(token) },
-      );
-
-      await api.post(
-          "/api/auth/complete-onboarding",
-          { role: "athlete" },
-          { headers: await authHeaders(token) },
-      );
-
-      await clearSignupRole();
       router.replace("/(screens)/(profile)");
     } catch (e: any) {
       console.log("SIGNUP FAILED", {
@@ -201,8 +170,6 @@ const CreateAccount = () => {
           "Sign up failed",
           e?.response?.data?.message || e?.message || "Unknown error",
       );
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -446,7 +413,9 @@ const CreateAccount = () => {
                               : "bg-white border-gray-300"
                       }`}
                   >
-                    {isChecked && <Feather name="check" size={16} color="white" />}
+                    {isChecked && (
+                        <Feather name="check" size={16} color="white" />
+                    )}
                   </TouchableOpacity>
 
                   <Text className="flex-1 text-sm text-neutral-700">
