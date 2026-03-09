@@ -5,21 +5,26 @@ import { Feather } from '@expo/vector-icons';
 type CoachCardProps = {
   name: string;
   location: string;
-  image: any;
   price: number;
   billingCycle: 'Monthly' | 'Yearly' | 'Daily' | 'Weekly';
+  image: string | null;
   onContactPress?: () => void;
 };
 
 const CoachCard = ({ name, location, price, billingCycle, image, onContactPress }: CoachCardProps) => {
+  // Logic for fallback image
+    const displayImage = image 
+        ? { uri: image } 
+        : require('../../../assets/Profile/fallback_Coach.jpg');
+  
   return (
-    <View className="bg-white rounded-3xl mb-5 flex-row p-3 shadow-xl shadow-black/2">
+    <View className="bg-white rounded-3xl mb-5 flex-row p-3 shadow-xl shadow-black/10">
       {/* Left: Rounded Square Image */}
       <Image
-        source={image}
-        className="w-24 h-24 rounded-2xl bg-neutral-100 mt-2"
-        resizeMode="cover"
-      />
+                source={displayImage} // Use the resolved image source
+                className="w-24 h-24 rounded-2xl bg-neutral-100 mt-2"
+                resizeMode="cover"
+            />
 
       {/* Right: Info and Button Container */}
       <View className="flex-1 ml-5 justify-between mt-2">
@@ -37,7 +42,7 @@ const CoachCard = ({ name, location, price, billingCycle, image, onContactPress 
         <TouchableOpacity 
           onPress={onContactPress}
           activeOpacity={0.8}
-          className="bg-[#F8FE11] self-end mr-3  flex-row items-center justify-center gap-2 px-6 py-3 rounded-xl shadow-lg shadow-[#EDF856]/40"
+          className="bg-[#F8FE11] self-end mr-3  flex-row items-center justify-center gap-2 px-6 py-3 rounded-xl shadow-lg shadow-[#EDF856]/40 mt-1"
         >
 
             <Feather name="phone" size={16} color="black" />

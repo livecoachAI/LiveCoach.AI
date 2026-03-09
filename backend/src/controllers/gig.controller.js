@@ -47,7 +47,7 @@ const getAllGigs = async (req, res, next) => {
         // Use object syntax for populate to ensure _id is included
         const gigs = await Gig.find().populate({
             path: 'coachId',
-            select: '_id firstName lastName email'
+            select: '_id firstName lastName email profilePicture'
         });
         
         return successResponse(res, 200, 'Gigs retrieved successfully', gigs);

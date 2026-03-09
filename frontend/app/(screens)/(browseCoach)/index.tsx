@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SportTabs from './SportTabs';
 import CoachCard from './CoachCard';
@@ -10,6 +10,7 @@ import MyGigButton from './MyGigButton';
 import { getAllGigs } from '../../../services/gigService';
 import { onAuthStateChanged } from 'firebase/auth'; 
 import { auth } from '@/lib/firebase'; 
+import { useFocusEffect } from 'expo-router';
 
 const Index = () => {
   const [userRole, setUserRole] = useState<'athlete' | 'coach' | null>(null);
@@ -48,19 +49,23 @@ const Index = () => {
   }, []);
 
   // 2. Fetch all gigs and store them
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const result = await getAllGigs();
       if (result.success) {
         const formatted = (result.data || []).map((gig: any) => {
           let extractedOwnerId = "";
+          let extractedImage = null;
           if (gig.coachId) {
             extractedOwnerId = typeof gig.coachId === 'object' 
               ? String(gig.coachId._id || gig.coachId.id || "") 
               : String(gig.coachId);
+
+            // Extract the profile picture string from the backend
+            extractedImage = gig.coachId.profilePicture || null;
           }
-          return { ...gig, id: String(gig._id), ownerId: extractedOwnerId };
+          return { ...gig, id: String(gig._id), ownerId: extractedOwnerId, profileImage: extractedImage };
         });
         setCoaches(formatted);
       }
@@ -69,7 +74,14 @@ const Index = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // 2. THE FIX: Refresh data every time the screen is viewed
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [fetchData])
+  );
 
   // 3. Check if the current user owns one of the gigs
   useEffect(() => {
@@ -128,11 +140,7 @@ const Index = () => {
             <CoachCard
               {...coach}
               onContactPress={() => setSelectedCoach(coach)}
-              image={
-                coach.sport === 'Cricket'
-                  ? require('../../../assets/BrowseCoachImages/cricketCoach1.png')
-                  : require('../../../assets/BrowseCoachImages/badmintonCoach1.jpg')
-              }
+              image={coach.profileImage}
             />
           </View>
         ))}

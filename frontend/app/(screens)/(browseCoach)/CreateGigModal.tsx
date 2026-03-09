@@ -3,6 +3,9 @@ import { View, Text, Modal, TextInput, TouchableOpacity, ScrollView, Alert, Touc
 import { publishGig, updateGig, deleteMyGig } from '../../../services/gigService'; // Import deleteMyGig
 import { getAuth } from 'firebase/auth';
 import { KeyboardAvoidingView, Platform } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import Octicons from '@expo/vector-icons/Octicons';
 
 type Props = {
   visible: boolean;
@@ -121,14 +124,45 @@ const CreateGigModal = ({ visible, onClose, existingGig }: Props) => {
                   
 
                   <ScrollView showsVerticalScrollIndicator={false}>
+                    {/* <Text className="font-manrope font-semibold mb-1 text-neutral-800">Full Name</Text>
+                    <TextInput className="bg-primary-light p-4 rounded-xl mb-4 text-primary-dark border border-neutral-500 font-manrope" value={name} onChangeText={setName} /> */}
                     <Text className="font-manrope font-semibold mb-1 text-neutral-800">Full Name</Text>
-                    <TextInput className="bg-primary-light p-4 rounded-xl mb-4 text-primary-dark border border-neutral-500 font-manrope" value={name} onChangeText={setName} />
+                      <View className="flex-row items-center bg-primary-light px-4 rounded-xl border border-neutral-500 mb-4">
+                        <Octicons name="person" size={20} color="#6B7280" />
+                        <TextInput 
+                          className="flex-1 p-4 text-primary-dark font-manrope" 
+                          placeholder="Enter Your Name"
+                          placeholderTextColor="#9CA3AF"
+                          value={name} 
+                          onChangeText={setName} 
+                        />
+                      </View>
+
 
                     <Text className="font-manrope font-semibold mb-1 text-neutral-800">Location</Text>
-                    <TextInput className="bg-primary-light p-4 rounded-xl mb-4 text-primary-dark border border-neutral-500 font-manrope" value={location} onChangeText={setLocation} />
+                      <View className="flex-row items-center bg-primary-light px-4 rounded-xl border border-neutral-500 mb-4">
+                        <MaterialIcons name="location-on" size={20} color="#6B7280" />
+                        <TextInput 
+                          className="flex-1 p-4 text-primary-dark font-manrope" 
+                          placeholder="Enter location"
+                          placeholderTextColor="#9CA3AF"
+                          value={location} 
+                          onChangeText={setLocation} 
+                        />
+                      </View>
 
                     <Text className="font-manrope font-semibold mb-1 text-neutral-800">Price (LKR)</Text>
-                    <TextInput className="bg-primary-light p-4 rounded-xl flex-1 text-primary-dark border border-neutral-500 font-manrope mb-2" keyboardType="decimal-pad" value={price} onChangeText={handlePriceChange} />
+                      <View className="flex-row items-center bg-primary-light px-4 rounded-xl border border-neutral-500 mb-4">
+                        <MaterialIcons name="attach-money" size={20} color="#6B7280" />
+                        <TextInput 
+                          className="flex-1 p-4 text-primary-dark font-manrope" 
+                          placeholder="Enter price"
+                          placeholderTextColor="#9CA3AF"
+                          keyboardType="decimal-pad"
+                          value={price} 
+                          onChangeText={handlePriceChange} 
+                        />
+                      </View>
 
                     <View className="flex-row flex-wrap gap-2 mb-4">
                         {(['Daily', 'Weekly', 'Monthly', 'Yearly'] as const).map((cycle) => (
@@ -143,31 +177,67 @@ const CreateGigModal = ({ visible, onClose, existingGig }: Props) => {
                     </View>
 
                     <Text className="font-manrope font-semibold mb-1 text-neutral-800">Phone Number</Text>
-                    <TextInput className="bg-primary-light p-4 rounded-xl mb-4 text-primary-dark border border-neutral-500 font-manrope" value={phone} onChangeText={handlePhoneChange} />
+                      <View className="flex-row items-center bg-primary-light px-4 rounded-xl border border-neutral-500 mb-4">
+                        <MaterialIcons name="phone" size={20} color="#6B7280" />
+                        <TextInput 
+                          className="flex-1 p-4 text-primary-dark font-manrope" 
+                          placeholder="Enter phone number"
+                          placeholderTextColor="#9CA3AF"
+                          keyboardType="phone-pad"
+                          value={phone} 
+                          onChangeText={handlePhoneChange} 
+                        />
+                      </View>
 
                     <Text className="font-manrope font-semibold mb-1 text-neutral-800">Email Address</Text>
-                    <TextInput className="bg-primary-light p-4 rounded-xl mb-4 text-primary-dark border border-neutral-500 font-manrope" value={email} onChangeText={setEmail} />
+                      <View className="flex-row items-center bg-primary-light px-4 rounded-xl border border-neutral-500 mb-4">
+                        <MaterialIcons name="email" size={20} color="#6B7280" />
+                        <TextInput 
+                          className="flex-1 p-4 text-primary-dark font-manrope" 
+                          placeholder="Enter email address"
+                          placeholderTextColor="#9CA3AF"
+                          value={email} 
+                          onChangeText={setEmail} 
+                        />
+                      </View>
 
-                    <Text className="font-manrope font-semibold mb-3 text-neutral-800">Sport</Text>
-                    <View className="flex-row gap-2 mb-16">
-                      {['Cricket', 'Badminton'].map((s) => (
-                        <TouchableOpacity key={s} onPress={() => setSport(s as any)} className={`px-6 py-2 rounded-full ${sport === s ? 'bg-accent-yellow' : 'bg-gray-200'}`}>
-                          <Text className={sport === s ? 'font-bold' : ''}>{s}</Text>
-                        </TouchableOpacity>
-                      ))}
-                    </View>
+                    {/* --- Sport Selection Cards --- */}
+                  <Text className="font-manrope font-semibold mb-3 text-neutral-800">Select Sport</Text>
+                  <View className="flex-row gap-4 mb-10 ">
+                    {/* Cricket Card */}
+                    <TouchableOpacity 
+                      onPress={() => setSport('Cricket')}
+                      className={`h-24 w-24 items-center justify-center rounded-2xl border-2 ${sport === 'Cricket' ? 'bg-accent-yellow border-accent-yellow' : 'bg-gray-100 border-transparent'}`}
+                    >
+                      <View className={`p-2 rounded-full mb-1 ${sport === 'Cricket' ? 'bg-black/10' : 'bg-gray-200'}`}>
+                        <MaterialIcons name="sports-cricket" size={24} color={sport === 'Cricket' ? 'black' : '#6B7280'} />
+                      </View>
+                      <Text className={`font-manrope font-bold text-xs ${sport === 'Cricket' ? 'text-black' : 'text-gray-500'}`}>Cricket</Text>
+                    </TouchableOpacity>
+
+                    {/* Badminton Card */}
+                    <TouchableOpacity 
+                      onPress={() => setSport('Badminton')}
+                      className={`h-24 w-24 items-center justify-center rounded-2xl border-2 ${sport === 'Badminton' ? 'bg-accent-yellow border-accent-yellow' : 'bg-gray-100 border-transparent'}`}
+                    >
+                      <View className={`p-2 rounded-full mb-1 ${sport === 'Badminton' ? 'bg-black/10' : 'bg-gray-200'}`}>
+                        <MaterialCommunityIcons name="badminton" size={24} color={sport === 'Badminton' ? 'black' : '#6B7280'} />
+                      </View>
+                      <Text className={`font-manrope font-bold text-xs ${sport === 'Badminton' ? 'text-black' : 'text-gray-500'}`}>Badminton</Text>
+                    </TouchableOpacity>
+                  </View>
 
                     <TouchableOpacity 
                       disabled={!isFormValid || isSubmitting} 
                       className={`py-4 rounded-xl items-center ${isFormValid ? 'bg-accent-yellow' : 'bg-neutral-500'}`}
                       onPress={handleAction}
                     >
-                      <Text className="font-manrope font-extrabold text-lg text-primary-dark uppercase tracking-tighter">{isSubmitting ? "Processing..." : (existingGig ? "Save Changes" : "Publish Gig")}</Text>
+                      <Text className="font-manrope font-extrabold text-lg text-primary-dark">{isSubmitting ? "Processing..." : (existingGig ? "Save Changes" : "Publish Gig")}</Text>
                     </TouchableOpacity>
 
                     {/* --- DELETE BUTTON --- */}
                     {existingGig && (
-                      <TouchableOpacity className="mt-4 py-4 rounded-xl items-center border-2 border-red-500 uppercase tracking-tighter" onPress={handleDelete}>
+                      <TouchableOpacity className="mt-4 py-4 rounded-xl items-center border-2 border-red-500 " onPress={handleDelete}>
                         <Text className="font-manrope font-extrabold text-lg text-red-500">Delete My Gig</Text>
                       </TouchableOpacity>
                     )}

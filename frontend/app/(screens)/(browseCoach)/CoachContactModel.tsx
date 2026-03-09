@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Modal, Image, TouchableOpacity, Pressable } from 'react-native';
+import { View, Text, Modal, Image, TouchableOpacity, Pressable, Linking, Alert } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 type Coach = {
@@ -8,6 +8,7 @@ type Coach = {
   phone?: string;
   email?: string;
   image: any;
+  profileImage?: string | null;
 };
 
 type Props = {
@@ -18,6 +19,35 @@ type Props = {
 
 const CoachContactModal = ({ visible, coach, onClose }: Props) => {
   if (!coach) return null;
+// Use the same logic: check for profileImage string, otherwise use fallback
+    const displayImage = coach.profileImage 
+        ? { uri: coach.profileImage } 
+        : require('../../../assets/Profile/fallback_Coach.jpg');
+
+  // Function to open Phone Dialer
+  const handleCall = (phoneNumber: string | undefined) => {
+    if (!phoneNumber) {
+      Alert.alert("Error", "No phone number available for this coach.");
+      return;
+    }
+    // tel: is the protocol for phone calls
+    Linking.openURL(`tel:${phoneNumber}`).catch(() => 
+      Alert.alert("Error", "Could not open the dialer.")
+    );
+  };
+
+  // Function to open Email App
+  const handleEmail = (emailAddress: string | undefined) => {
+    if (!emailAddress) {
+      Alert.alert("Error", "No email address available for this coach.");
+      return;
+    }
+    // mailto: is the protocol for emails
+    Linking.openURL(`mailto:${emailAddress}`).catch(() => 
+      Alert.alert("Error", "Could not open your email app.")
+    );
+  };
+
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
@@ -30,7 +60,7 @@ const CoachContactModal = ({ visible, coach, onClose }: Props) => {
             <View className="mx-auto mb-4 relative">
               <View className="p-1 rounded-full border-4 border-[#EDF856]">
                 <Image 
-                  source={coach.image} 
+                  source={displayImage} 
                   className="w-28 h-28 rounded-full bg-neutral-100" 
                 />
               </View>
@@ -45,7 +75,7 @@ const CoachContactModal = ({ visible, coach, onClose }: Props) => {
 
             {/* Phone */}
             <View className="space-y-3">
-              <TouchableOpacity activeOpacity={0.7} className="flex-row items-center p-4 bg-green-50 rounded-2xl border border-green-100 mb-3 ">
+              <TouchableOpacity onPress={() => handleCall(coach.phone)} activeOpacity={0.7} className="flex-row items-center p-4 bg-green-50 rounded-2xl border border-green-100 mb-3 ">
                 <View className="w-12 h-12 bg-white rounded-full justify-center items-center mr-4 border border-green-100">
                   <Ionicons name="call" size={22} color="#22a351" />
                 </View>
@@ -60,7 +90,7 @@ const CoachContactModal = ({ visible, coach, onClose }: Props) => {
               </TouchableOpacity>
 
               {/* Email */}
-              <TouchableOpacity activeOpacity={0.7} className="flex-row items-center p-4 bg-rose-50 rounded-2xl border border-rose-100">
+              <TouchableOpacity onPress={() => handleEmail(coach.email)} activeOpacity={0.7} className="flex-row items-center p-4 bg-rose-50 rounded-2xl border border-rose-100">
                 <View className="w-12 h-12 bg-white rounded-full justify-center items-center mr-4 border border-rose-100">
                   <MaterialIcons name="email" size={22} color="#be123c" />
                 </View>
