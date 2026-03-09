@@ -440,18 +440,10 @@ const Index = () => {
               name: profile.name,
             }}
             profileImage={profile.profileImage}
-            data={{
-              role: "Athlete",
-              name: profile.name,
-            }}
-            profileImage={profile.profileImage}
             onPressSessions={() => router.push("/(screens)/(profile)/sessions")}
             onUpdateName={handleUpdateName}
             onUpdateProfileImage={handleUpdateProfileImage}
-            onUpdateProfileImage={handleUpdateProfileImage}
             isSavingName={updatingName}
-            isSavingImage={updatingImage}
-            isSavingImage={updatingImage}
           />
         )}
       </View>
