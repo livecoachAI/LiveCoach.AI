@@ -8,7 +8,7 @@ type Props = {
 
 const MyGigButton = ({ onPress }: Props) => {
   return (
-    <View className="bg-white border-2 border-green-500 rounded-2xl p-5 mt-6 items-center shadow-sm">
+    <View className="bg-white border-2 border-green-500 rounded-2xl p-3 mt-6 items-center shadow-sm">
       <View className="flex-row items-center mb-4">
         <View className="bg-green-500 rounded-full w-5 h-5 items-center justify-center mr-2">
           <Entypo name="check" size={12} color="white" />
@@ -17,7 +17,7 @@ const MyGigButton = ({ onPress }: Props) => {
       </View>
       <TouchableOpacity 
         activeOpacity={0.7}
-        className="bg-green-500 w-full py-4 rounded-xl items-center"
+        className="bg-green-500 w-full py-3 rounded-xl items-center"
         onPress={onPress} // Opens the modal
       >
         <Text className="font-manrope text-white font-bold text-lg">Go to My Gig</Text>
