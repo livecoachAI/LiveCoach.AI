@@ -13,6 +13,10 @@ export interface AnalyzeResponse {
     max_similarity: number;
     frames_analyzed: number;
     shot_display_name: string;
+    // Gemini AI fields
+    feedback?: string;
+    improvements?: string;
+    ai_feedback_enabled?: boolean;
   };
 }
 
@@ -26,6 +30,15 @@ export interface AnalysisHistory {
     score: number;
     timestamp: string;
     performanceLevel: string;
+    shotDisplayName?: string;
+    distanceToExpert?: number;
+    avgSimilarity?: number;
+    maxSimilarity?: number;
+    framesAnalyzed?: number;
+    // Gemini AI fields
+    feedback?: string;
+    improvements?: string;
+    aiFeedbackEnabled?: boolean;
   }>;
 }
 

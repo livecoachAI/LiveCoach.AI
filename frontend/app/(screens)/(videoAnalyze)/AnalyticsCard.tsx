@@ -8,13 +8,14 @@ import { Ionicons } from '@expo/vector-icons';
 export type AnalyticsData = {
   overallScore: number;
   maxScore: number;
-  // distanceValue: number;       // e.g. 1.369
-  // distanceProgress: number;    // 0–100
-  // similarityScore: number;     // e.g. 0.062
   overallFeedback?: string;
   feedbackPositive: string[];      // ✅ list of good points
   feedbackNegative: string[];      // ✅ list of issues
   recommendations: string[];       // ✅ list of suggestions
+  // Gemini AI fields
+  aiFeedback?: string;             // personalised coaching paragraph from Gemini
+  aiImprovements?: string[];       // bullet-point improvement tips from Gemini
+  aiFeedbackEnabled?: boolean;
 };
 
 type Props = {
@@ -22,7 +23,16 @@ type Props = {
 };
 
 const AnalyticsCard = ({ data }: Props) => {
-  const { overallScore, maxScore, feedbackPositive, feedbackNegative, recommendations } = data;
+  const {
+    overallScore,
+    maxScore,
+    feedbackPositive,
+    feedbackNegative,
+    recommendations,
+    aiFeedback,
+    aiImprovements,
+    aiFeedbackEnabled,
+  } = data;
 
   // Derived metrics (all driven by overallScore)
   const similarityScore = overallScore / maxScore;          // 0 → 1
@@ -132,7 +142,7 @@ const AnalyticsCard = ({ data }: Props) => {
 
             <View className="absolute left-0 right-0 top-0 bottom-0 items-center justify-center">
               <Text className="font-manrope text-2xl font-bold text-primary-dark">
-                {overallScore}/{maxScore}
+                {Math.round(overallScore)}/{maxScore}
               </Text>
               <Text className="font-manrope text-[12px] text-neutral-700 italic">Overall Score</Text>
             </View>
@@ -330,33 +340,39 @@ const AnalyticsCard = ({ data }: Props) => {
             elevation: 4,
           }}
         >
-  {/* Title */}
-        <View className="flex-row items-center mb-6">
+  {/* Title row */}
+        <View className="flex-row items-center justify-between mb-6">
+          <View className="flex-row items-center">
             <View className="w-1.5 h-6 rounded-full bg-accent-yellow mr-3" />
             <Text className="font-manrope text-2xl font-semibold text-primary-dark">
               Feedback
             </Text>
+          </View>
+          {aiFeedbackEnabled && (
+            <View className="px-2 py-1 rounded-full bg-accent-yellow">
+              <Text className="font-manrope text-[10px] font-bold text-primary-dark">
+                ✦ AI POWERED
+              </Text>
+            </View>
+          )}
         </View>
-  
 
-  {/* Summary Box */}
+  {/* Coach feedback paragraph (Gemini or overallFeedback fallback) */}
+        {(aiFeedback || data.overallFeedback) ? (
           <View className="bg-yellow-50 rounded-xl p-5 mb-8">
             <Text className="font-manrope text-neutral-800 leading-relaxed">
-              <Text style={{ color: performanceColor, fontWeight: '800'}}>
-                Overall:{' '}
-              </Text>
-              <Text className="font-manrope text-neutral-800">
-                {data.overallFeedback?.replace("Overall:", "").trim()}
-              </Text>
+              {aiFeedback || data.overallFeedback}
             </Text>
           </View>
+        ) : null}
 
   {/* Timeline container */}
   <View className="relative">
-    {/* Vertical line */}
-    <View className="absolute left-5 top-0 bottom-0 w-[1px] bg-neutral-500" />
+    {/* Vertical line — only show when there are items */}
+    {(feedbackPositive.length > 0 || feedbackNegative.length > 0) && (
+      <View className="absolute left-5 top-0 bottom-0 w-[1px] bg-neutral-500" />
+    )}
 
-    {/* Combined notes */}
     <View>
       {/* 1) Positive notes */}
       {feedbackPositive.map((item, index) => (
@@ -364,14 +380,11 @@ const AnalyticsCard = ({ data }: Props) => {
           key={`pos-${index}`}
           className="relative flex-row items-start mb-6"
         >
-          {/* Yellow circle with green check */}
           <View className="z-10 mr-4 ml-1">
             <View className="w-8 h-8 rounded-full bg-accent-yellow items-center justify-center">
               <MaterialIcons name="check" size={18} color="#16A34A" />
             </View>
           </View>
-
-          {/* Text */}
           <View className="flex-1 pt-1">
             <Text className="font-manrope text-sm text-neutral-800 leading-relaxed">
               {item}
@@ -386,14 +399,11 @@ const AnalyticsCard = ({ data }: Props) => {
           key={`neg-${index}`}
           className="relative flex-row items-start mb-6"
         >
-          {/* Yellow circle with red alert */}
           <View className="z-10 mr-4 ml-1">
             <View className="w-8 h-8 rounded-full bg-accent-yellow items-center justify-center">
               <MaterialIcons name="error-outline" size={18} color="#DC2626" />
             </View>
           </View>
-
-          {/* Text */}
           <View className="flex-1 pt-1">
             <Text className="font-manrope text-sm text-neutral-800 leading-relaxed">
               {item}
@@ -405,7 +415,7 @@ const AnalyticsCard = ({ data }: Props) => {
   </View>
 </View>
 
-      {/* Recommendations */}
+      {/* Recommendations / AI Improvements */}
       <View className="mt-6 bg-white rounded-2xl p-4 border border-neutral-500"
         style={{
           shadowColor: "#000",
@@ -415,24 +425,25 @@ const AnalyticsCard = ({ data }: Props) => {
           elevation: 4,
         }}
       >
-        
+        {/* Header */}
         <View className="flex-row items-center justify-between mb-4">
           <View className="flex-row items-center flex-1 pr-3">
             <View className="w-1.5 h-6 rounded-full bg-accent-yellow mr-3" />
             <Text className="font-manrope text-2xl font-semibold text-primary-dark">
-              Recommendations
+              Improvements
             </Text>
           </View>
 
           <View className="px-3 py-1 rounded-full bg-accent-yellow ml-6">
             <Text className="font-manrope text-xs font-bold text-primary-dark">
-              {recommendations.length} Tips
+              {(aiImprovements && aiImprovements.length > 0 ? aiImprovements : recommendations).length} Tips
             </Text>
           </View>
         </View>
 
+        {/* Render Gemini improvement tips if available, otherwise fallback recommendations */}
         <View className="space-y-3">
-          {recommendations.map((item, index) => (
+          {(aiImprovements && aiImprovements.length > 0 ? aiImprovements : recommendations).map((item, index) => (
             <View
               key={`rec-${index}`}
               className="flex-row items-center px-4 py-3 rounded-full bg-yellow-50 mb-2"
@@ -440,10 +451,10 @@ const AnalyticsCard = ({ data }: Props) => {
               <View className="w-9 h-9 rounded-full bg-amber-100 items-center justify-center mr-3">
                 <MaterialIcons name="tips-and-updates" size={20} color="#FACC15" />
               </View>
-              <Text className="font-manrope text-sm text-neutral-800 flex-1 ">
-                {item}
+              <Text className="font-manrope text-sm text-neutral-800 flex-1">
+                {/* Strip leading bullet characters Gemini may include */}
+                {item.replace(/^[•\-\*]\s*/, '')}
               </Text>
-              {/* NEW: Arrow circle */}
               <View className="w-8 h-8 rounded-full bg-white items-center justify-center ml-2">
                 <Ionicons name="chevron-forward" size={18} color="black" />
               </View>

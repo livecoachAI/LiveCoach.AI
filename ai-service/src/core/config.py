@@ -24,7 +24,10 @@ class Settings(BaseSettings):
     
     # Security
     API_KEY: str
-    
+
+    # Gemini AI (optional — feedback degrades gracefully if not set)
+    GEMINI_API_KEY: str = ""
+
     # Performance
     MAX_WORKERS: int = 4
     TIMEOUT: int = 60

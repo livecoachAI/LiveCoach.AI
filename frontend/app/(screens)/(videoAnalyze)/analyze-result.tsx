@@ -35,25 +35,37 @@ const AnalyzeResult = () => {
 
         if (response.success && response.data) {
           const data = response.data;
+
+          // Parse Gemini improvements string into an array of strings
+          const parseImprovements = (raw?: string): string[] => {
+            if (!raw) return [];
+            return raw
+              .split('\n')
+              .map((l: string) => l.trim())
+              .filter((l: string) => l.length > 0);
+          };
           
           // Transform backend response to AnalyticsData format
           const transformed: AnalyticsData = {
             overallScore: data.score || 0,
             maxScore: 100,
-            overallFeedback: `Performance level: ${data.performanceLevel}. Distance to expert: ${data.distanceToExpert?.toFixed(2) || 'N/A'}`,
-            feedbackPositive: [
-              `Maximum similarity achieved: ${(data.maxSimilarity * 100).toFixed(1)}%`,
-              `Average similarity: ${(data.avgSimilarity * 100).toFixed(1)}%`,
-              `Frames analyzed: ${data.framesAnalyzed}`,
-            ],
-            feedbackNegative: [
-              // These can be populated from detailed analysis if available
-            ],
-            recommendations: [
-              'Review your technique against expert videos',
-              'Practice regularly to improve form',
-              'Focus on areas with lower similarity scores',
-            ],
+            // Keep overallFeedback as a fallback when Gemini is off
+            overallFeedback: data.feedback
+              ? undefined
+              : `Performance level: ${data.performanceLevel}. Distance to expert: ${data.distanceToExpert?.toFixed(2) || 'N/A'}`,
+            feedbackPositive: data.feedback
+              ? [] // Gemini paragraph replaces these static lines
+              : [
+                  `Maximum similarity achieved: ${(data.maxSimilarity * 100).toFixed(1)}%`,
+                  `Average similarity: ${(data.avgSimilarity * 100).toFixed(1)}%`,
+                  `Frames analyzed: ${data.framesAnalyzed}`,
+                ],
+            feedbackNegative: [],
+            recommendations: [],
+            // Gemini AI fields
+            aiFeedback: data.feedback || undefined,
+            aiImprovements: parseImprovements(data.improvements),
+            aiFeedbackEnabled: data.aiFeedbackEnabled ?? false,
           };
 
           setAnalyticsData(transformed);

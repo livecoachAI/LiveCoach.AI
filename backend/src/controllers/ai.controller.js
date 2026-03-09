@@ -57,6 +57,9 @@ exports.analyzeTechnique = async (req, res) => {
       avgSimilarity: aiResult.avg_similarity,
       maxSimilarity: aiResult.max_similarity,
       framesAnalyzed: aiResult.frames_analyzed,
+      feedback: aiResult.feedback || '',
+      improvements: aiResult.improvements || '',
+      aiFeedbackEnabled: aiResult.ai_feedback_enabled || false,
       timestamp: new Date(),
     });
 

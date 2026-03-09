@@ -32,6 +32,10 @@ const analysisSchema = new mongoose.Schema({
   maxSimilarity: Number,
   framesAnalyzed: Number,
   videoUrl: String,
+  // Gemini AI-generated fields
+  feedback: String,
+  improvements: String,
+  aiFeedbackEnabled: { type: Boolean, default: false },
   timestamp: {
     type: Date,
     default: Date.now,
