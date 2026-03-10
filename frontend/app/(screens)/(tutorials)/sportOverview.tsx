@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Pressable, Image} from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useRef, useState } from 'react';
+import { View, Text, Pressable, Image, Animated, Easing, PanResponder } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 
 
@@ -8,6 +7,10 @@ type SportType = 'cricket' | 'badminton';
 
 const SportOverview = ({ onNavigate }: any) => {
 const [activeSport, setActiveSport] = useState<SportType>('cricket');
+//prevent animation during switiching 
+const [isTransitioning, setIsTransitioning] = useState(false);
+const fadeValue = useRef(new Animated.Value(1)).current;
+const slideValue = useRef(new Animated.Value(0)).current;
 
   const content = {
     cricket: {
@@ -29,11 +32,88 @@ const goToTutorial = () => {
     onNavigate(activeSport);
   };
 
+  //get directions
+  const getDirection = (fromSport: SportType, toSport: SportType): 1 | -1 => {
+    if (fromSport === toSport) {
+      return 1;
+    }
+    return fromSport === 'cricket' && toSport === 'badminton' ? -1 : 1;
+  };
+
+  const switchSport = (nextSport: SportType, directionOverride?: 1 | -1) => {
+    if (nextSport === activeSport || isTransitioning) {
+      return;
+    }
+
+    const direction = directionOverride ?? getDirection(activeSport, nextSport);
+    const slideOffset = 26;
+
+    setIsTransitioning(true);
+
+    Animated.parallel([
+      Animated.timing(fadeValue, {
+        toValue: 0,
+        duration: 170,
+        easing: Easing.out(Easing.quad),
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideValue, {
+        toValue: direction * slideOffset,
+        duration: 170,
+        easing: Easing.out(Easing.quad),
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setActiveSport(nextSport);
+      slideValue.setValue(-direction * slideOffset);
+
+      Animated.parallel([
+        Animated.timing(fadeValue, {
+          toValue: 1,
+          duration: 240,
+          easing: Easing.inOut(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideValue, {
+          toValue: 0,
+          duration: 240,
+          easing: Easing.inOut(Easing.cubic),
+          useNativeDriver: true,
+        }),
+      ]).start(() => setIsTransitioning(false));
+    });
+  };
+
+  const contentTransitionStyle = {
+    opacity: fadeValue,
+    transform: [
+      {
+        translateX: slideValue,
+      },
+    ],
+  };
+
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => false,
+    onMoveShouldSetPanResponder: (_, gestureState) => {
+      const horizontalDistance = Math.abs(gestureState.dx);
+      const verticalDistance = Math.abs(gestureState.dy);
+      return horizontalDistance > 12 && horizontalDistance > verticalDistance;
+    },
+    onPanResponderRelease: (_, gestureState) => {
+      if (gestureState.dx < -50) {
+        switchSport('badminton', -1);
+      } else if (gestureState.dx > 50) {
+        switchSport('cricket', 1);
+      }
+    },
+  });
+
   return (
-      <View className="flex-1 pt-16">
+      <View className="flex-1 pt-16" {...panResponder.panHandlers}>
         {/* Header */}
         <View className="flex-row items-center gap-4 px-6 mb-8 pt-6 bg-primary">
-          <Pressable onPress={() => setActiveSport('cricket')}>
+          <Pressable onPress={() => switchSport('cricket')}>
             <Text 
               className={`font-bebas text-4xl tracking-tight ${activeSport === 'cricket' ? 'text-primary-dark' : 'text-neutral-300'}`}
             >
@@ -41,7 +121,7 @@ const goToTutorial = () => {
             </Text>
           </Pressable>
 
-          <Pressable onPress={() => setActiveSport('badminton')}>
+          <Pressable onPress={() => switchSport('badminton')}>
             <Text 
               className={`font-bebas text-4xl tracking-tight ${activeSport === 'badminton' ? 'text-primary-dark' : 'text-neutral-300'}`}
             >
@@ -51,7 +131,7 @@ const goToTutorial = () => {
         </View>
 
         {/* --- Text Content --- */}
-        <View className="z-10 pt-6">
+        <Animated.View className="z-10 pt-6" style={contentTransitionStyle}>
           <Text className="text-primary-dark font-manrope text-center font-bold leading-7 mb-8 text-xl px-8">
             {content[activeSport].text1}
           </Text>
@@ -59,15 +139,17 @@ const goToTutorial = () => {
           <Text className="text-neutral-900 font-abeezee text-xl text-center leading-8 px-6">
             {content[activeSport].text2}
           </Text>
-        </View>
+        </Animated.View>
 
         {/* -- BACKGROUND IMAGE --- */}
-      <View style={{ 
+      <Animated.View style={{ 
           position: 'absolute', 
           bottom: 0,  
           left: 0, 
           right: 0, 
-          height: '80%'
+          height: '80%',
+          opacity: fadeValue,
+          transform: [{ translateX: slideValue }],
         }} className="-z-10 items-center justify-end">
         <Image
           source={content[activeSport].image}
@@ -77,7 +159,7 @@ const goToTutorial = () => {
             opacity: 0.8,
           }}
         />
-      </View>
+      </Animated.View>
 
         {/* --- Tutorial Link --- */}
         <View className="absolute bottom-40 right-8 z-20">
