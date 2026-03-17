@@ -49,12 +49,20 @@ class GeminiFeedbackService:
         max_similarity: float,
         distance_to_expert: float,
         frames_analyzed: int,
+        age: int = None,
+        weight: dict = None,
+        height: dict = None,
     ) -> Dict[str, str]:
         """
         Returns a dict with two keys:
           - ``feedback``     : personalised paragraph on what was good / bad
           - ``improvements`` : bullet-point list of actionable improvement tips
         Falls back to rule-based text if Gemini is unavailable.
+        
+        Additional parameters:
+          - age: Athlete's age for age-specific recommendations
+          - weight: Athlete's weight (dict with 'value' and 'unit')
+          - height: Athlete's height (dict with 'value' and 'unit')
         """
         try:
             self._init_model()
@@ -68,6 +76,9 @@ class GeminiFeedbackService:
                 max_similarity=max_similarity,
                 distance_to_expert=distance_to_expert,
                 frames_analyzed=frames_analyzed,
+                age=age,
+                weight=weight,
+                height=height,
             )
             response = self._model.generate_content(prompt)
             return self._parse_response(response.text)
@@ -96,9 +107,29 @@ class GeminiFeedbackService:
         max_similarity: float,
         distance_to_expert: float,
         frames_analyzed: int,
+        age: int = None,
+        weight: dict = None,
+        height: dict = None,
     ) -> str:
         similarity_pct = round(avg_similarity * 100, 1)
         max_sim_pct = round(max_similarity * 100, 1)
+
+        # Build athlete profile section if data is available
+        athlete_profile = ""
+        if age or weight or height:
+            athlete_profile = "\n## Athlete Profile\n"
+            if age:
+                athlete_profile += f"- Age: {age} years old\n"
+            if height and isinstance(height, dict):
+                height_val = height.get('value')
+                height_unit = height.get('unit', 'cm')
+                if height_val:
+                    athlete_profile += f"- Height: {height_val} {height_unit}\n"
+            if weight and isinstance(weight, dict):
+                weight_val = weight.get('value')
+                weight_unit = weight.get('unit', 'kg')
+                if weight_val:
+                    athlete_profile += f"- Weight: {weight_val} {weight_unit}\n"
 
         return f"""You are an elite sports biomechanics coach specialising in {sport.title()}.
 A player just performed a **{shot_display_name}** and their technique was analysed by an AI 
@@ -110,14 +141,15 @@ pose-estimation system that compared them to professional players.
 - Average Similarity : {similarity_pct}% (vs professional benchmark)
 - Peak Similarity    : {max_sim_pct}%
 - Expert Distance    : {distance_to_expert:.3f} (lower = closer to pro)
-- Frames Analysed    : {frames_analyzed}
+- Frames Analysed    : {frames_analyzed}{athlete_profile}
 
 ## Your Task
 Write a response in **exactly** the following format — no extra headings:
 
 FEEDBACK:
 <2–3 sentences of personalised, encouraging coaching feedback. Reference the actual scores 
-naturally. Acknowledge strengths if score > 60, be constructive if lower.>
+naturally. Acknowledge strengths if score > 60, be constructive if lower. Consider the athlete's
+age and physical profile when making recommendations.>
 
 IMPROVEMENTS:
 - <Specific, actionable tip 1 for {shot_display_name} technique>
@@ -131,6 +163,9 @@ Rules:
 - Keep feedback under 80 words.
 - Each improvement tip must be concrete and drillable (not vague like "practise more").
 - Do NOT repeat the numeric scores verbatim in the improvements section.
+- Consider the athlete's age and physical characteristics when providing feedback and tips.
+- For younger athletes, focus on foundational technique and age-appropriate progressions.
+- For older athletes, consider recovery and injury prevention in recommendations.
 """
 
     @staticmethod

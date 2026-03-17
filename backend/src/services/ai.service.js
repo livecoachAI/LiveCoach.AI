@@ -15,10 +15,21 @@ class AIService {
     }
   }
 
-  async analyzeTechnique(videoPath, sport, shot) {
+  async analyzeTechnique(videoPath, sport, shot, userProfile = {}) {
     try {
       const formData = new FormData();
       formData.append('video', fs.createReadStream(videoPath));
+      
+      // Add user profile data to request
+      if (userProfile.age) {
+        formData.append('age', userProfile.age);
+      }
+      if (userProfile.weight) {
+        formData.append('weight', JSON.stringify(userProfile.weight));
+      }
+      if (userProfile.height) {
+        formData.append('height', JSON.stringify(userProfile.height));
+      }
 
       const response = await axios.post(
         `${config.AI_SERVICE_URL}/analyze/${sport}/${shot}`,
