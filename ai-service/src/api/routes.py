@@ -42,7 +42,10 @@ async def analyze_technique(
     sport: str,
     shot: str,
     video: UploadFile = File(...),
-    x_api_key: str = Header(...)
+    x_api_key: str = Header(...),
+    age: int = None,
+    weight: str = None,
+    height: str = None,
 ):
     await verify_api_key(x_api_key)
     
@@ -50,6 +53,24 @@ async def analyze_technique(
         raise HTTPException(400, f"Unknown sport: {sport}")
     if shot not in SPORTS_CONFIG[sport]["shots"]:
         raise HTTPException(400, f"Unknown shot: {shot}")
+    
+    # Parse weight and height JSON if provided
+    weight_data = None
+    height_data = None
+    
+    if weight:
+        try:
+            import json
+            weight_data = json.loads(weight)
+        except:
+            pass
+    
+    if height:
+        try:
+            import json
+            height_data = json.loads(height)
+        except:
+            pass
     
     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=Path(video.filename).suffix)
     try:
@@ -81,6 +102,9 @@ async def analyze_technique(
             max_similarity=results['max_similarity'],
             distance_to_expert=results['distance_to_expert'],
             frames_analyzed=results['frames_analyzed'],
+            age=age,
+            weight=weight_data,
+            height=height_data,
         )
         results['feedback'] = ai_result.get('feedback', '')
         results['improvements'] = ai_result.get('improvements', '')
