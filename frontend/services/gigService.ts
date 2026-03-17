@@ -3,8 +3,8 @@ const BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 export const publishGig = async (gigData: any, token: string) => {
   try {
-    // Now it uses whatever is in the .env file
-    const response = await fetch(`${BASE_URL}api/gigs/create`, {
+    // FIX: Added / before api
+    const response = await fetch(`${BASE_URL}/api/gigs/create`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -22,7 +22,10 @@ export const publishGig = async (gigData: any, token: string) => {
 
 export const getAllGigs = async () => {
   try {
-    const response = await fetch(`${BASE_URL}api/gigs`, {
+    console.log("Fetching from:", `${BASE_URL}/api/gigs`); // Added for debugging
+    
+    // FIX: Added / before api
+    const response = await fetch(`${BASE_URL}/api/gigs`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -36,10 +39,10 @@ export const getAllGigs = async () => {
   }
 };
 
-
 export const deleteMyGig = async (token: string) => {
   try {
-    const response = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/api/gigs/delete`, {
+    // FIX: Consistency check for BASE_URL
+    const response = await fetch(`${BASE_URL}/api/gigs/delete`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -53,11 +56,10 @@ export const deleteMyGig = async (token: string) => {
   }
 };
 
-
-
 export const updateGig = async (gigData: any, token: string) => {
   try {
-    const response = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/api/gigs/update`, {
+    // FIX: Consistency check for BASE_URL
+    const response = await fetch(`${BASE_URL}/api/gigs/update`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
