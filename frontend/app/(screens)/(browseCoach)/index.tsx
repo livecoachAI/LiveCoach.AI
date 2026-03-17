@@ -31,6 +31,9 @@ const Index = () => {
       if (user) {
         try {
           const token = await user.getIdToken();
+          // TEMPORARY: print token for Postman
+          console.log("BEARER TOKEN:", token);
+          
           const response = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/api/user/profile`, {
             headers: { 'Authorization': `Bearer ${token}` }
           });
@@ -51,6 +54,7 @@ const Index = () => {
   // 2. Fetch all gigs and store them
   const fetchData = useCallback(async () => {
     setLoading(true);
+  
     try {
       const result = await getAllGigs();
       if (result.success) {
