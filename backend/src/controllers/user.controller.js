@@ -1,6 +1,7 @@
 // User Controller
 const { successResponse, errorResponse } = require('../utils/response');
 const userService = require('../services/user.service');
+const firebaseService = require('../services/firebase.service');
 const logger = require('../utils/logger');
 
 // Get User Profile
