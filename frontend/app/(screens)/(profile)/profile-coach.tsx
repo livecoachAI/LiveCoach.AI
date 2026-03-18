@@ -4,7 +4,7 @@ import {
   TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ActivityIndicator,
 } from "react-native";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
-import { SlidersHorizontal, RotateCw, LogOut } from "lucide-react-native"; // <--- Imported LogOut
+import { SlidersHorizontal, RotateCw, LogOut, Trash2 } from "lucide-react-native"; 
 import ImagePickerSheet from "../../components/ImagePickerSheet";
 
 export interface Player {
@@ -27,6 +27,7 @@ interface ProfileCoachProps {
   onUpdatePlayers: (players: Player[]) => Promise<void>; 
   onUpdateProfileImage: (localUri: string | null) => Promise<void>;
   onLogout: () => Promise<void>; // Prop handles the context logout
+  onDeleteProfile?: () => Promise<void>; // Prop for deleting profile
   isSavingName?: boolean;
   isSavingImage?: boolean;
 }
@@ -34,7 +35,7 @@ interface ProfileCoachProps {
 const fallbackProfileImage = require("../../../assets/Profile/fallback_Coach.jpg");
 
 // --- SHARED HEXAGON BUTTON ---
-const HexButton = ({ title, onPress, color, icon: Icon }: any) => {
+const HexButton = ({ title, onPress, color, icon: Icon, textColor = 'black', iconColor = 'black' }: any) => {
   const pointSize = 24;
   return (
     <TouchableOpacity
@@ -50,12 +51,12 @@ const HexButton = ({ title, onPress, color, icon: Icon }: any) => {
           style={{ backgroundColor: color, height: pointSize * 2 }}
           className="flex-row items-center justify-center px-4 min-w-[200px]"
         >
-          <Text className="font-bebas text-2xl font-black text-black uppercase">
+          <Text style={{ color: textColor }} className="font-bebas text-2xl font-black uppercase">
             {title}
           </Text>
           {Icon && (
             <View className="ml-3">
-              <Icon size={20} color="black" strokeWidth={2.5} />
+              <Icon size={20} color={iconColor} strokeWidth={2.5} />
             </View>
           )}
         </View>
@@ -75,6 +76,7 @@ const ProfileCoach = ({
   onUpdatePlayers,
   onUpdateProfileImage,
   onLogout,
+  onDeleteProfile,
   isSavingName = false,
   isSavingImage = false,
 }: ProfileCoachProps) => {
@@ -147,6 +149,32 @@ const ProfileCoach = ({
     } catch (error) {
       console.error("Logout failed:", error);
     }
+  };
+
+  // Delete profile
+  const handleDeleteProfile = () => {
+    setIsOptionsVisible(false);
+    Alert.alert(
+      "Delete Profile",
+      "Are you sure you want to delete your profile? This action cannot be undone.",
+      [
+        { text: "Cancel", onPress: () => {}, style: "cancel" },
+        {
+          text: "Delete",
+          onPress: async () => {
+            try {
+              if (onDeleteProfile) {
+                await onDeleteProfile();
+              }
+            } catch (error) {
+              console.error("Failed to delete profile:", error);
+              Alert.alert("Error", "Failed to delete profile. Please try again.");
+            }
+          },
+          style: "destructive",
+        },
+      ]
+    );
   };
 
   return (
@@ -283,12 +311,19 @@ const ProfileCoach = ({
                 setIsEditVisible(true);
               }}
             />
-            {/* ---> CHANGED TO LOGOUT <--- */}
             <HexButton
               title="LOGOUT"
-              color="#FF3B3B"
+              color="#000000"
+              textColor="white"
+              iconColor="white"
               icon={LogOut}
               onPress={handleLogoutClick}
+            />
+            <HexButton
+              title="DELETE PROFILE"
+              color="#FF0000"
+              icon={Trash2}
+              onPress={handleDeleteProfile}
             />
           </View>
         </TouchableOpacity>
