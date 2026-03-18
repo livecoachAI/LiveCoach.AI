@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {Alert,View,Text,ScrollView,Image,Pressable,Modal,TouchableOpacity,TextInput,KeyboardAvoidingView,Platform,
+import {
+  Alert, View, Text, ScrollView, Image, Pressable, Modal, 
+  TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ActivityIndicator,
 } from "react-native";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
-import { SlidersHorizontal, RotateCw, Trash2 } from "lucide-react-native";
+import { SlidersHorizontal, RotateCw, LogOut } from "lucide-react-native"; // <--- Imported LogOut
 import ImagePickerSheet from "../../components/ImagePickerSheet";
 
 export interface Player {
@@ -15,36 +17,23 @@ export interface CoachData {
   role: "Coach";
   isVerified?: boolean;
   players?: Player[];
-  currentAthletes?: Player[];
 }
-
-const getCoachPlayers = (data: CoachData): Player[] => {
-  const merged = [...(data.currentAthletes ?? []), ...(data.players ?? [])];
-  const uniqueByName = new Map<string, Player>();
-
-  merged.forEach((player, index) => {
-    const normalizedName = (player?.name || "").trim().toUpperCase();
-    if (!normalizedName || uniqueByName.has(normalizedName)) {
-      return;
-    }
-
-    uniqueByName.set(normalizedName, {
-      id: player?.id || `player-${index}`,
-      name: normalizedName,
-    });
-  });
-
-  return Array.from(uniqueByName.values());
-};
 
 interface ProfileCoachProps {
   data: CoachData;
+  profileImage?: string | null;
   onPressPlayer: () => void;
-  onUpdateName: (name: string) => Promise<void>; //Update name
-  onUpdatePlayers: (players: Player[]) => Promise<void>; //Update players list
+  onUpdateName: (name: string) => Promise<void>; 
+  onUpdatePlayers: (players: Player[]) => Promise<void>; 
+  onUpdateProfileImage: (localUri: string | null) => Promise<void>;
+  onLogout: () => Promise<void>; // Prop handles the context logout
   isSavingName?: boolean;
+  isSavingImage?: boolean;
 }
-//Hexbutton
+
+const fallbackProfileImage = require("../../../assets/Profile/fallback_Coach.jpg");
+
+// --- SHARED HEXAGON BUTTON ---
 const HexButton = ({ title, onPress, color, icon: Icon }: any) => {
   const pointSize = 24;
   return (
@@ -55,16 +44,7 @@ const HexButton = ({ title, onPress, color, icon: Icon }: any) => {
     >
       <View className="flex-row items-center justify-center">
         <View
-          style={{
-            width: 0,
-            height: 0,
-            borderTopWidth: pointSize,
-            borderTopColor: "transparent",
-            borderBottomWidth: pointSize,
-            borderBottomColor: "transparent",
-            borderRightWidth: pointSize,
-            borderRightColor: color,
-          }}
+          style={{ width: 0, height: 0, borderTopWidth: pointSize, borderTopColor: "transparent", borderBottomWidth: pointSize, borderBottomColor: "transparent", borderRightWidth: pointSize, borderRightColor: color }}
         />
         <View
           style={{ backgroundColor: color, height: pointSize * 2 }}
@@ -80,53 +60,42 @@ const HexButton = ({ title, onPress, color, icon: Icon }: any) => {
           )}
         </View>
         <View
-          style={{
-            width: 0,
-            height: 0,
-            borderTopWidth: pointSize,
-            borderTopColor: "transparent",
-            borderBottomWidth: pointSize,
-            borderBottomColor: "transparent",
-            borderLeftWidth: pointSize,
-            borderLeftColor: color,
-          }}
+          style={{ width: 0, height: 0, borderTopWidth: pointSize, borderTopColor: "transparent", borderBottomWidth: pointSize, borderBottomColor: "transparent", borderLeftWidth: pointSize, borderLeftColor: color }}
         />
       </View>
     </TouchableOpacity>
   );
 };
 
-
 const ProfileCoach = ({
   data,
+  profileImage,
   onPressPlayer,
   onUpdateName,
   onUpdatePlayers,
+  onUpdateProfileImage,
+  onLogout,
   isSavingName = false,
+  isSavingImage = false,
 }: ProfileCoachProps) => {
   const [sheetVisible, setSheetVisible] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isOptionsVisible, setIsOptionsVisible] = useState(false);
   const [isEditVisible, setIsEditVisible] = useState(false);
   const [isAddPlayerVisible, setIsAddPlayerVisible] = useState(false);
   const [playerNameInput, setPlayerNameInput] = useState("");
   const [isSavingPlayers, setIsSavingPlayers] = useState(false);
-  const [players, setPlayers] = useState<Player[]>(getCoachPlayers(data));
+  const [players, setPlayers] = useState<Player[]>(data.players ?? []);
   const [nameInput, setNameInput] = useState(data.name);
 
-  //Keep the name updated 
+  // Keep the name updated 
   useEffect(() => {
     setNameInput(data.name);
   }, [data.name]);
 
-  // Keep the player list sync with the backend through parent
+  // Keep the player list synced
   useEffect(() => {
-    setPlayers(getCoachPlayers(data));
-  }, [data.players, data.currentAthletes]);
-
-  const handleImageSelected = (imageUri: string) => {
-    setSelectedImage(imageUri);
-  };
+    setPlayers(data.players ?? []);
+  }, [data.players]);
 
   const handleSaveName = async () => {
     const trimmed = nameInput.trim();
@@ -135,7 +104,7 @@ const ProfileCoach = ({
     setIsEditVisible(false);
   };
 
-  //Add and check players
+  // Add and check players
   const handleAddPlayer = async () => {
     const trimmed = playerNameInput.trim().toUpperCase();
     if (!trimmed || isSavingPlayers) return;
@@ -152,7 +121,6 @@ const ProfileCoach = ({
     const previousPlayers = players;
     const nextPlayers = [...players, newPlayer];
 
-    //Update the UI immediately and then go through backend
     setPlayers(nextPlayers);
     setIsSavingPlayers(true);
 
@@ -171,6 +139,16 @@ const ProfileCoach = ({
     }
   };
 
+  // ---> ADDED LOGOUT HANDLER <---
+  const handleLogoutClick = async () => {
+    setIsOptionsVisible(false);
+    try {
+      await onLogout();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <>
       <ScrollView
@@ -178,32 +156,37 @@ const ProfileCoach = ({
         showsVerticalScrollIndicator={false}
         className="flex-1 bg-primary"
       >
-        <View className="h-[400px] w-full relative">
+        <View className="w-full relative" style={{ aspectRatio: 1 }}>
           <Image
             source={
-              selectedImage 
-                ? { uri: selectedImage }
-                : require("../../../assets/BrowseCoachImages/cricketCoach3.jpg")
+              profileImage
+                ? { uri: profileImage }
+                : fallbackProfileImage
             }
             className="w-full h-full"
             resizeMode="cover"
           />
           
           <Pressable
+            disabled={isSavingImage}
             onPress={() => setSheetVisible(true)}
             className="absolute bottom-7 right-3 bg-white p-2 rounded-full shadow-md active:scale-95"
             style={{
               elevation: 10,
               zIndex: 10,
+              opacity: isSavingImage ? 0.7 : 1,
             }}
-            // pointerEvents="box-only"
           >
-            <MaterialIcons 
-              name="photo-camera" 
-              size={20} 
-              color="black"
-              pointerEvents="none"
-            />
+            {isSavingImage ? (
+              <ActivityIndicator size="small" color="black" />
+            ) : (
+              <MaterialIcons 
+                name="photo-camera" 
+                size={20} 
+                color="black"
+                pointerEvents="none"
+              />
+            )}
           </Pressable>
 
           <TouchableOpacity
@@ -216,7 +199,7 @@ const ProfileCoach = ({
             <SlidersHorizontal size={24} color="white" strokeWidth={2} />
           </TouchableOpacity>
 
-          <View className="absolute bottom-0 left-0 right-0  p-6">
+          <View className="absolute bottom-0 left-0 right-0 p-6">
             <Text className="text-white text-xs font-bold uppercase tracking-widest opacity-80">
               {data.role}
             </Text>
@@ -245,6 +228,7 @@ const ProfileCoach = ({
             <Text className="text-white text-sm font-manrope font-bold uppercase">+ Add Player</Text>
           </TouchableOpacity>
         </View>
+
         <View className="px-4">
           {players.map((player) => (
             <Pressable
@@ -272,10 +256,17 @@ const ProfileCoach = ({
         <ImagePickerSheet
           visible={sheetVisible}
           onClose={() => setSheetVisible(false)}
-          onImageSelected={handleImageSelected}
+          canRemoveImage={!!profileImage}
+          onImageSelected={(uri) => {
+            void onUpdateProfileImage(uri);
+          }}
+          onRemoveImage={() => {
+            void onUpdateProfileImage(null);
+          }}
         />
       )}
 
+      {/* Options Modal */}
       <Modal visible={isOptionsVisible} transparent animationType="fade">
         <TouchableOpacity
           className="flex-1 justify-center items-center bg-black/60 px-8"
@@ -292,17 +283,18 @@ const ProfileCoach = ({
                 setIsEditVisible(true);
               }}
             />
+            {/* ---> CHANGED TO LOGOUT <--- */}
             <HexButton
-              title="DELETE PROFILE"
+              title="LOGOUT"
               color="#FF3B3B"
-              icon={Trash2}
-              onPress={() => setIsOptionsVisible(false)}
+              icon={LogOut}
+              onPress={handleLogoutClick}
             />
           </View>
         </TouchableOpacity>
       </Modal>
 
-            {/* Edit Name Modal */}
+      {/* Edit Name Modal */}
       <Modal visible={isEditVisible} transparent animationType="slide">
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -315,12 +307,12 @@ const ProfileCoach = ({
           >
             <View className="w-full rounded-[35px] p-8 shadow-2xl items-center bg-white">
               <Text className="font-bebas text-2xl font-black mb-6 italic uppercase">
-                EDIT COACH NAME
+                EDIT NAME
               </Text>
               <TextInput
                 value={nameInput}
                 onChangeText={setNameInput}
-                className="border border-[#F8FE11] rounded-2xl w-full p-4 text-center uppercase text-lg font-bold"
+                className="border border-neutral-200 rounded-2xl w-full p-2 text-center uppercase text-lg font-bold"
                 autoFocus
               />
               <View className="w-full mt-6">
@@ -340,6 +332,7 @@ const ProfileCoach = ({
         </KeyboardAvoidingView>
       </Modal>
 
+      {/* Add Player Modal */}        
       <Modal visible={isAddPlayerVisible} transparent animationType="fade">
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -351,18 +344,18 @@ const ProfileCoach = ({
             onPress={() => setIsAddPlayerVisible(false)}
           >
             <View className="w-full rounded-[35px] p-8 shadow-2xl items-center bg-white">
-              <Text className="font-bebas text-2xl font-black mb-6 italic uppercase">
+              <Text className="font-bebas text-3xl text-primary-dark mb-6 uppercase">
                 ADD PLAYER
               </Text>
               <TextInput
                 value={playerNameInput}
                 onChangeText={setPlayerNameInput}
-                placeholder="PLAYER NAME"
+                placeholder="Player Name"
                 placeholderTextColor="#ADABAB"
-                className="border border-[#F8FE11] rounded-2xl w-full p-8 text-center  text-lg font-bold"
+                className="border border-neutral-200 rounded-xl w-full p-2 text-center font-abeezee text-lg font-base"
                 autoFocus
               />
-              <View className="w-full mt-6">
+              <View className="w-full mt-10">
                 <HexButton
                   title={isSavingPlayers ? "SAVING..." : "ADD"}
                   color="#F8FE11"

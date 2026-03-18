@@ -21,12 +21,18 @@ import { auth } from "@/lib/firebase";
 import { api, authHeaders } from "@/lib/api";
 import { clearSignupRole } from "@/lib/storage";
 import PasswordInput from "../components/PasswordInput";
+import SuccessAlert from "../components/SuccessAlert";
+import { useAuth } from "@/app/context/AuthContext";
 
 type CoachSport = "Badminton" | "Cricket";
+type Gender = "male" | "female";
 
 const getVerified = () => {
   const router = useRouter();
+  const { refreshUser } = useAuth();
   const loadingRole = useRequireSignupRole("coach");
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const [isChecked, setIsChecked] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -37,10 +43,11 @@ const getVerified = () => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
+    gender: "male" as Gender,
     email: "",
     password: "",
-    nic: "", // ✅ store NIC correctly
-    yearsOfExperience: "", // ✅ required by backend
+    nic: "", 
+    yearsOfExperience: "", 
   });
 
   const emailRegex = useMemo(() => /\S+@\S+\.\S+/, []);
@@ -51,7 +58,7 @@ const getVerified = () => {
   const nicRegex = useMemo(() => /^.{10,}$/, []); // simple: at least 10 chars
 
   const isFormValid = () => {
-    const { firstName, lastName, email, password, nic, yearsOfExperience } =
+    const { firstName, lastName, gender, email, password, nic, yearsOfExperience } =
       formData;
 
     const yearsNum = Number(yearsOfExperience);
@@ -61,6 +68,7 @@ const getVerified = () => {
     return (
       firstName.trim() !== "" &&
       lastName.trim() !== "" &&
+      ["male", "female"].includes(gender) &&
       emailRegex.test(email) &&
       passwordRegex.test(password) &&
       nicRegex.test(nic.trim()) &&
@@ -104,15 +112,16 @@ const getVerified = () => {
           email: formData.email.trim(),
           firstName: formData.firstName.trim(),
           lastName: formData.lastName.trim(),
+          gender: formData.gender,
           role: "coach",
           authProvider: "email",
           coachData: {
-            specialization: [sport], // ✅ only ONE sport
+            specialization: [sport],
             yearsOfExperience: Number(formData.yearsOfExperience),
-            nic: formData.nic.trim(), // ✅
+            nic: formData.nic.trim(), 
             certifications: [], // optional, safe
             bio: "", // optional
-            // You can later send uploaded files URLs here
+            
           },
         },
         { headers: await authHeaders(token) },
@@ -126,8 +135,11 @@ const getVerified = () => {
       );
 
       // 5) Clear signup role + go to app
-      await clearSignupRole();
-      router.replace("/(screens)/(profile)");
+     await clearSignupRole();
+    await refreshUser();
+
+    setSuccessMessage("Account created successfully");
+    setShowSuccessAlert(true);
     } catch (e: any) {
       console.log("COACH SIGNUP FAILED", {
         message: e?.message,
@@ -147,14 +159,24 @@ const getVerified = () => {
 
   return (
     <View className="flex-1 bg-white">
+      <SuccessAlert
+        visible={showSuccessAlert}
+        message={successMessage}
+        autoHide={true}
+        duration={3000}
+        onHide={() => {
+    setShowSuccessAlert(false);
+    router.replace("/(screens)/(profile)");
+  }}
+/>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
       >
         {/* --- HEADER SECTION --- */}
         <View className="bg-accent-yellow w-full h-80 relative overflow-hidden pt-14 pb-8 px-6">
-          <View className="absolute right-0 top-48 opacity-10 overflow-hidden pointer-events-none">
-            <Text className="text-[115px] font-bebas font-bold text-primary-dark leading-none tracking-tighter">
+          <View className="absolute right-0 top-44 opacity-10 overflow-hidden pointer-events-none">
+            <Text className="text-[130px] font-bebas text-primary-dark leading-none tracking-tighter">
               VERIFY
             </Text>
           </View>
@@ -167,8 +189,8 @@ const getVerified = () => {
             />
           </View>
 
-          <View className="w-full h-full flex-col  justify-start items-start gap-2 mt-10 ml-2">
-            <Text className="font-bebas text-primary-dark uppercase tracking-tight mb-2">
+          <View className="w-full h-full flex-col  justify-start items-start gap-2 mt-6">
+            <Text className="font-bebas text-4xl text-primary-dark uppercase tracking-tight mb-2">
               Get Verified as a Coach
             </Text>
             <Text className="text-zinc-800 text-sm font-semibold leading-5">
@@ -204,7 +226,38 @@ const getVerified = () => {
               />
             </View>
 
-            {/* ✅ Coach Sport dropdown (single select) */}
+            <View className="mb-2">
+  <Text className="text-sm text-neutral-700 mb-2 ml-1 font-medium">
+    Gender
+  </Text>
+
+  <View className="bg-gray-100 rounded-2xl border border-gray-200 overflow-hidden">
+    <View className="flex-row items-center justify-between px-4 pt-3">
+      <Text className="text-xs uppercase tracking-wide text-neutral-500 font-semibold">
+        Select your gender
+      </Text>
+      <Feather name="chevron-down" size={18} color="#6B7280" />
+    </View>
+
+    <Picker
+      selectedValue={formData.gender}
+      onValueChange={(val) =>
+        setFormData({
+          ...formData,
+          gender: val as Gender,
+        })
+      }
+      style={{
+        color: "#111827",
+        marginTop: -6,
+      }}
+    >
+      <Picker.Item label="Male" value="male" />
+      <Picker.Item label="Female" value="female" />
+    </Picker>
+  </View>
+</View>
+
             <View className="bg-gray-100 rounded-lg overflow-hidden">
               <Text className="text-sm text-neutral-700 mt-3 ml-4 mb-1">
                 Sport (Specialization)
@@ -218,7 +271,6 @@ const getVerified = () => {
               </Picker>
             </View>
 
-            {/* ✅ Years of experience */}
             <View className="bg-gray-100 rounded-lg px-4 py-4">
               <TextInput
                 placeholder="Years of Experience"

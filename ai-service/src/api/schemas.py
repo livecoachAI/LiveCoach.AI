@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 class AnalysisResponse(BaseModel):
     success: bool
@@ -12,6 +12,11 @@ class AnalysisResponse(BaseModel):
     avg_similarity: float
     max_similarity: float
     frames_analyzed: int
+    # Gemini-powered fields
+    feedback: Optional[str] = None
+    improvements: Optional[str] = None
+    ai_feedback_enabled: bool = False
+
 
 class SportsListResponse(BaseModel):
     sports: Dict

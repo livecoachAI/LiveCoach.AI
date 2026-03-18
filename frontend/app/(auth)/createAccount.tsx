@@ -22,12 +22,16 @@ import { api, authHeaders } from "@/lib/api";
 import { clearSignupRole } from "@/lib/storage";
 import { Picker } from "@react-native-picker/picker";
 import PasswordInput from "../components/PasswordInput";
+import SuccessAlert from "../components/SuccessAlert";
+import { useAuth } from "@/app/context/AuthContext";
 
 type ExperienceLevel =
     | "beginner"
     | "intermediate"
     | "advanced"
     | "professional";
+
+type Gender = "male" | "female";    
 
 const getPasswordChecks = (password: string) => ({
   minLength: password.length >= 8,
@@ -70,12 +74,15 @@ const PasswordRule = ({
 
 const CreateAccount = () => {
   const router = useRouter();
+  const { refreshUser } = useAuth();
   const loadingRole = useRequireSignupRole("athlete");
 
   const [isChecked, setIsChecked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
   const [passwordTouched, setPasswordTouched] = useState(false);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const SPORT_OPTIONS = ["Badminton", "Cricket"] as const;
   const [sports, setSports] = useState<string[]>([]);
@@ -93,6 +100,9 @@ const CreateAccount = () => {
     email: "",
     password: "",
     age: "",
+    weight: "",
+    height: "",
+    gender: "male" as Gender,
     experienceLevel: "intermediate" as ExperienceLevel,
   });
 
@@ -116,16 +126,24 @@ const CreateAccount = () => {
 
   const isFormValid = () => {
     const ageNum = Number(formData.age);
+    const weightNum = Number(formData.weight);
+    const heightNum = Number(formData.height);
+    
     const validAge = Number.isInteger(ageNum) && ageNum >= 5 && ageNum <= 120;
+    const validWeight = Number.isInteger(weightNum) && weightNum >= 20 && weightNum <= 200;
+    const validHeight = Number.isInteger(heightNum) && heightNum >= 10 && heightNum <= 250;
 
-    const { firstName, lastName, email, experienceLevel } = formData;
+    const { firstName, lastName, gender, email, experienceLevel } = formData;
 
     return (
         firstName.trim() !== "" &&
         lastName.trim() !== "" &&
+        ["male", "female"].includes(gender) &&
         emailRegex.test(email) &&
         isPasswordValid &&
         validAge &&
+        validWeight &&
+        validHeight &&
         sports.length > 0 &&
         ["beginner", "intermediate", "advanced", "professional"].includes(
             experienceLevel,
@@ -163,24 +181,33 @@ const CreateAccount = () => {
       const token = await cred.user.getIdToken(true);
 
       await api.post(
-          "/api/auth/register",
-          {
-            firebaseUid: cred.user.uid,
-            email: formData.email.trim(),
-            firstName: formData.firstName.trim(),
-            lastName: formData.lastName.trim(),
-            role: "athlete",
-            authProvider: "email",
-            athleteData: {
-              sport: sportString,
-              age: Number(formData.age),
-              experienceLevel: formData.experienceLevel,
-              bio: "",
-              goals: [],
-            },
+      "/api/auth/register",
+      {
+        firebaseUid: cred.user.uid,
+        email: formData.email.trim(),
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        gender: formData.gender,
+        role: "athlete",
+        authProvider: "email",
+        athleteData: {
+          sport: sportString,
+          age: Number(formData.age),
+          weight: {
+            value: Number(formData.weight),
+            unit: "kg",
           },
-          { headers: await authHeaders(token) },
-      );
+          height: {
+            value: Number(formData.height),
+            unit: "cm",
+          },
+          experienceLevel: formData.experienceLevel,
+          bio: "",
+          goals: [],
+        },
+      },
+      { headers: await authHeaders(token) },
+    );
 
       await api.post(
           "/api/auth/complete-onboarding",
@@ -189,7 +216,11 @@ const CreateAccount = () => {
       );
 
       await clearSignupRole();
-      router.replace("/(screens)/(profile)");
+      await refreshUser();
+
+      setSuccessMessage("Account created successfully");
+      setShowSuccessAlert(true);
+
     } catch (e: any) {
       console.log("SIGNUP FAILED", {
         message: e?.message,
@@ -216,6 +247,17 @@ const CreateAccount = () => {
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View className="flex-1 bg-white">
+            {/* Success Alert */}
+          <SuccessAlert
+            visible={showSuccessAlert}
+            message={successMessage}
+            autoHide={true}
+            duration={3000}
+            onHide={() => {
+              setShowSuccessAlert(false)
+              router.replace("/(screens)/(profile)");
+            }}
+          />
             <ScrollView
                 contentContainerStyle={{ flexGrow: 1 }}
                 showsVerticalScrollIndicator={false}
@@ -223,7 +265,7 @@ const CreateAccount = () => {
             >
               <View className="bg-accent-yellow w-full h-80 relative overflow-hidden pt-14 pb-8 px-6">
                 <View className="absolute right-0 top-48 opacity-10 overflow-hidden pointer-events-none">
-                  <Text className="text-[115px] font-bebas font-bold text-primary-dark leading-none tracking-tighter">
+                  <Text className="text-[115px] font-bebas text-primary-dark leading-none tracking-tighter">
                     JOIN
                   </Text>
                 </View>
@@ -237,7 +279,7 @@ const CreateAccount = () => {
                 </View>
 
                 <View className="w-full h-full flex-col justify-start items-start gap-2 mt-10 ml-2">
-                  <Text className="font-bebas text-primary-dark uppercase tracking-tight mb-2">
+                  <Text className="font-bebas text-4xl text-primary-dark uppercase tracking-tight mb-2">
                     Create Account
                   </Text>
                   <Text className="text-zinc-800 text-sm font-semibold leading-5">
@@ -273,6 +315,35 @@ const CreateAccount = () => {
                         returnKeyType="next"
                     />
                   </View>
+
+                  <View className="mb-2">
+
+  <View className="bg-gray-100 rounded-2xl border border-gray-200 overflow-hidden">
+    <View className="flex-row items-center justify-between px-4 pt-3">
+      <Text className="text-xs uppercase tracking-wide text-neutral-500 font-semibold">
+        Select your gender
+      </Text>
+      <Feather name="chevron-down" size={18} color="#6B7280" />
+    </View>
+
+    <Picker
+      selectedValue={formData.gender}
+      onValueChange={(val) =>
+        setFormData({
+          ...formData,
+          gender: val as Gender,
+        })
+      }
+      style={{
+        color: "#111827",
+        marginTop: -6,
+      }}
+    >
+      <Picker.Item label="Male" value="male" />
+      <Picker.Item label="Female" value="female" />
+    </Picker>
+  </View>
+</View>
 
                   <View className="bg-gray-100 rounded-lg px-4 py-4">
                     <TextInput
@@ -377,6 +448,42 @@ const CreateAccount = () => {
                     />
                   </View>
 
+                  <View className="bg-gray-100 rounded-lg px-4 py-4">
+                    <TextInput
+                        placeholder="Weight (kg)"
+                        placeholderTextColor="#D6D5D5"
+                        keyboardType="number-pad"
+                        className="text-base text-primary-dark font-medium"
+                        value={formData.weight}
+                        onChangeText={(val) =>
+                            setFormData({
+                              ...formData,
+                              weight: val.replace(/[^0-9]/g, ""),
+                            })
+                        }
+                        returnKeyType="done"
+                    />
+                    <Text className="absolute right-4 top-8 -mt-30 text-sm font-semibold text-primary-dark">Kg</Text>
+                  </View>
+
+                  <View className="bg-gray-100 rounded-lg px-4 py-4">
+                    <TextInput
+                        placeholder="Height (cm)"
+                        placeholderTextColor="#D6D5D5"
+                        keyboardType="number-pad"
+                        className="text-base text-primary-dark font-medium"
+                        value={formData.height}
+                        onChangeText={(val) =>
+                            setFormData({
+                              ...formData,
+                              height: val.replace(/[^0-9]/g, ""),
+                            })
+                        }
+                        returnKeyType="done"
+                    />
+                    <Text className="absolute right-4 top-8 -mt-30 text-sm font-semibold text-primary-dark">Cm</Text>
+                  </View>
+
                   <Text className="text-sm text-neutral-700 mb-2 ml-1">
                     Sport(s)
                   </Text>
@@ -411,26 +518,39 @@ const CreateAccount = () => {
                     })}
                   </View>
 
-                  <View className="bg-gray-100 rounded-lg overflow-hidden">
-                    <Text className="text-sm text-neutral-700 mt-3 ml-4 mb-1">
-                      Experience Level
-                    </Text>
+                  <View className="mb-2">
+  <Text className="text-sm text-neutral-700 mb-2 ml-1 font-medium">
+    Experience Level
+  </Text>
 
-                    <Picker
-                        selectedValue={formData.experienceLevel}
-                        onValueChange={(val) =>
-                            setFormData({
-                              ...formData,
-                              experienceLevel: val as ExperienceLevel,
-                            })
-                        }
-                    >
-                      <Picker.Item label="Beginner" value="beginner" />
-                      <Picker.Item label="Intermediate" value="intermediate" />
-                      <Picker.Item label="Advanced" value="advanced" />
-                      <Picker.Item label="Professional" value="professional" />
-                    </Picker>
-                  </View>
+  <View className="bg-gray-100 rounded-2xl border border-gray-200 overflow-hidden">
+    <View className="flex-row items-center justify-between px-4 pt-3">
+      <Text className="text-xs uppercase tracking-wide text-neutral-500 font-semibold">
+        Select your level
+      </Text>
+      <Feather name="chevron-down" size={18} color="#6B7280" />
+    </View>
+
+    <Picker
+      selectedValue={formData.experienceLevel}
+      onValueChange={(val) =>
+        setFormData({
+          ...formData,
+          experienceLevel: val as ExperienceLevel,
+        })
+      }
+      style={{
+        color: "#111827",
+        marginTop: -6,
+      }}
+    >
+      <Picker.Item label="Beginner" value="beginner" />
+      <Picker.Item label="Intermediate" value="intermediate" />
+      <Picker.Item label="Advanced" value="advanced" />
+      <Picker.Item label="Professional" value="professional" />
+    </Picker>
+  </View>
+</View>
 
                   <Text className="text-xs text-neutral-500 mt-2 ml-1">
                     Select one or both. (Badminton / Cricket)

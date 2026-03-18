@@ -1,5 +1,6 @@
 import { Tabs } from "expo-router";
 import { Pressable, StatusBar, View } from "react-native";
+import { useProtectedRoute } from "@/app/hooks/useProtectedRoute";
 
 // SVG Icons
 import HomeIcon from "../../assets/navbarIcons/homeIcon.svg";
@@ -9,6 +10,9 @@ import CoachIcon from "../../assets/navbarIcons/coachIcon.svg";
 import ProfileIcon from "../../assets/navbarIcons/profileIcon.svg";
 
 export default function ScreensTabsLayout() {
+
+  useProtectedRoute();
+
   const ACTIVE_COLOR = "#F8FE11";
   const INACTIVE_COLOR = "#000000";
 

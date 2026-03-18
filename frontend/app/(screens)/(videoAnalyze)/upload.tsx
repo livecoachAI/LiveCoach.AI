@@ -1,4 +1,4 @@
-import {View, TextInput, ActivityIndicator, Alert} from 'react-native'
+import {View, TextInput, ActivityIndicator, Alert, Text} from 'react-native'
 import React, {useState, useEffect} from 'react'
 import ButtonYellow from '@/app/components/buttonYellow';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -120,19 +120,30 @@ const Upload = () => {
 
     return (
         <View className="flex-1">
+            {/* Instructions Section */}
+            <View className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <Text className="text-black font-abeezee text-base mb-3">VIDEO UPLOAD INSTRUCTIONS</Text>
+                <View className="space-y-2">
+                    <Text className="text-black text-sm">• <Text className="font-abeezee">DURATION:</Text> Keep videos between 5-30 seconds</Text>
+                    <Text className="text-black text-sm">• <Text className="font-abeezee">SINGLE SHOT:</Text> Video should contain only ONE complete shot</Text>
+                    <Text className="text-black text-sm">• <Text className="font-abeezee">QUALITY:</Text> Use clear, well-lit videos for best analysis</Text>
+                    <Text className="text-black text-sm">• <Text className="font-abeezee">ANGLE:</Text> Capture the full body motion of the player</Text>
+                </View>
+            </View>
+
             {/* Form Fields */}
             <View>
             <TextInput
                 placeholder="Session title"
                 placeholderTextColor="#ADABAB"
-                className="bg-neutral-50 p-4 rounded-sm text-base mb-8"
+                className="bg-neutral-50 p-4 rounded-sm font-abeezee mb-8"
             />
                 
             <TextInput
                 placeholder="Session Details"
                 placeholderTextColor="#ADABAB"
                 numberOfLines={4}
-                className="bg-neutral-50 p-4 rounded-sm text-base"
+                className="bg-neutral-50 p-4 rounded-sm font-abeezee"
             />
 
             <View className="z-50 my-4 w-40">

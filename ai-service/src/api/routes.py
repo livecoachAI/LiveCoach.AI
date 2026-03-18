@@ -10,6 +10,7 @@ from src.core.sports_config import SPORTS_CONFIG
 from src.services.skeleton_extractor import SkeletonExtractor
 from src.services.model_manager import ModelManager
 from src.services.analyzer import Analyzer
+from src.services.gemini_feedback import GeminiFeedbackService
 from src.api.schemas import AnalysisResponse, SportsListResponse
 
 router = APIRouter()
@@ -17,6 +18,7 @@ router = APIRouter()
 # Initialize services
 extractor = SkeletonExtractor()
 model_manager = ModelManager()
+gemini_feedback = GeminiFeedbackService()
 
 # Security middleware
 async def verify_api_key(x_api_key: str = Header(...)):
@@ -40,7 +42,10 @@ async def analyze_technique(
     sport: str,
     shot: str,
     video: UploadFile = File(...),
-    x_api_key: str = Header(...)
+    x_api_key: str = Header(...),
+    age: int = None,
+    weight: str = None,
+    height: str = None,
 ):
     await verify_api_key(x_api_key)
     
@@ -48,6 +53,24 @@ async def analyze_technique(
         raise HTTPException(400, f"Unknown sport: {sport}")
     if shot not in SPORTS_CONFIG[sport]["shots"]:
         raise HTTPException(400, f"Unknown shot: {shot}")
+    
+    # Parse weight and height JSON if provided
+    weight_data = None
+    height_data = None
+    
+    if weight:
+        try:
+            import json
+            weight_data = json.loads(weight)
+        except:
+            pass
+    
+    if height:
+        try:
+            import json
+            height_data = json.loads(height)
+        except:
+            pass
     
     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=Path(video.filename).suffix)
     try:
@@ -67,7 +90,27 @@ async def analyze_technique(
         results['shot'] = shot
         results['shot_display_name'] = SPORTS_CONFIG[sport]["shots"][shot]["display_name"]
         results['frames_analyzed'] = len(sequence)
-        
+
+        # ── Gemini AI feedback & improvement suggestions ──────────────────
+        ai_result = gemini_feedback.generate_feedback(
+            sport=sport,
+            shot=shot,
+            shot_display_name=results['shot_display_name'],
+            overall_score=results['overall_score'],
+            performance_level=results['performance_level'],
+            avg_similarity=results['avg_similarity'],
+            max_similarity=results['max_similarity'],
+            distance_to_expert=results['distance_to_expert'],
+            frames_analyzed=results['frames_analyzed'],
+            age=age,
+            weight=weight_data,
+            height=height_data,
+        )
+        results['feedback'] = ai_result.get('feedback', '')
+        results['improvements'] = ai_result.get('improvements', '')
+        results['ai_feedback_enabled'] = bool(settings.GEMINI_API_KEY)
+        # ─────────────────────────────────────────────────────────────────
+
         return results
     finally:
         try:

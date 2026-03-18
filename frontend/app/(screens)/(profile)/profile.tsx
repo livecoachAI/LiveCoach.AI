@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { 
-  View, Text, ScrollView, Image, Pressable, StyleSheet, 
+  View, Text, ScrollView, Image, Pressable, StyleSheet, ActivityIndicator,
   Modal, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform 
 } from 'react-native';
 import { 
   ChevronRight, Camera, SlidersHorizontal, 
-  RotateCw, Trash2 
+  RotateCw, LogOut 
 } from 'lucide-react-native';
-import { useRouter } from 'expo-router'; // <--- IMPORT ROUTER
+import { useRouter } from 'expo-router';
 import ImagePickerSheet from '../../components/ImagePickerSheet';
+
+// ---> IMPORT YOUR AUTH CONTEXT HERE <---
+// Note: Adjust this import path if your AuthContext is saved in a different folder
+import { useAuth } from '../../context/AuthContext'; 
 
 export interface AthleteData {
   name: string;
@@ -17,10 +21,15 @@ export interface AthleteData {
 
 interface ProfileAthleteProps {
   data: AthleteData;
+  profileImage?: string | null;
   onPressSessions: () => void;
   onUpdateName: (name: string) => Promise<void>;
+  onUpdateProfileImage: (localUri: string | null) => Promise<void>;
   isSavingName?: boolean;
+  isSavingImage?: boolean;
 }
+
+const fallbackProfileImage = require("../../../assets/Profile/fallback_Athlete.jpg");
 
 // --- SHARED HEXAGON BUTTON ---
 const HexButton = ({ title, onPress, color, icon: Icon }: any) => {
@@ -30,7 +39,7 @@ const HexButton = ({ title, onPress, color, icon: Icon }: any) => {
       <View className="flex-row items-center justify-center">
         <View style={{ width: 0, height: 0, borderTopWidth: pointSize, borderTopColor: 'transparent', borderBottomWidth: pointSize, borderBottomColor: 'transparent', borderRightWidth: pointSize, borderRightColor: color }} />
         <View style={{ backgroundColor: color, height: pointSize * 2 }} className="flex-row items-center justify-center px-4 min-w-[200px]">
-          <Text className="font-bebas text-2xl font-black text-black uppercase">{title}</Text>
+          <Text className="font-bebas text-2xl text-black uppercase">{title}</Text>
           {Icon && <View className="ml-3"><Icon size={20} color="black" strokeWidth={2.5} /></View>}
         </View>
         <View style={{ width: 0, height: 0, borderTopWidth: pointSize, borderTopColor: 'transparent', borderBottomWidth: pointSize, borderBottomColor: 'transparent', borderLeftWidth: pointSize, borderLeftColor: color }} />
@@ -41,14 +50,19 @@ const HexButton = ({ title, onPress, color, icon: Icon }: any) => {
 
 const ProfileAthlete = ({
   data,
+  profileImage,
   onPressSessions,
   onUpdateName,
+  onUpdateProfileImage,
   isSavingName = false,
+  isSavingImage = false,
 }: ProfileAthleteProps) => {
   const router = useRouter();
-  const [sheetVisible, setSheetVisible] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  
+  // ---> INITIALIZE LOGOUT FROM YOUR CONTEXT <---
+  const { logout } = useAuth(); 
 
+  const [sheetVisible, setSheetVisible] = useState(false);
   const [isOptionsVisible, setIsOptionsVisible] = useState(false);
   const [isEditVisible, setIsEditVisible] = useState(false);
   const [nameInput, setNameInput] = useState(data.name);
@@ -58,7 +72,7 @@ const ProfileAthlete = ({
     setNameInput(data.name);
   }, [data.name]);
 
-  //Update the name in the backend
+  // Update the name in the backend
   const handleSaveName = async () => {
     const trimmed = nameInput.trim();
     if (!trimmed || isSavingName) return;
@@ -66,13 +80,25 @@ const ProfileAthlete = ({
     setIsEditVisible(false);
   };
 
+  // ---> UPDATED LOGOUT LOGIC <---
+  const handleLogout = async () => {
+    setIsOptionsVisible(false); // Close the modal first
+    try {
+      await logout(); // Calls the Firebase signout from your context
+      // If your app doesn't automatically redirect on auth state change, force it to login screen:
+      // router.replace('/login'); 
+    } catch (error) {
+      console.error("Failed to log out:", error);
+    }
+  };
+
   return (
     <>
       <ScrollView bounces={false} showsVerticalScrollIndicator={false} className="flex-1">
         {/* Header Section */}
-        <View className="h-[400px] w-full relative">
+        <View className="w-full relative" style={{ aspectRatio: 1 }}>
           <Image 
-            source={selectedImage ? { uri: selectedImage } : require("../../../assets/BrowseCoachImages/cricketCoach3.jpg")}
+            source={profileImage ? { uri: profileImage } : fallbackProfileImage}
             className="w-full h-full"
             resizeMode="cover"
           />
@@ -84,8 +110,17 @@ const ProfileAthlete = ({
             <SlidersHorizontal size={24} color="white" strokeWidth={2} />
           </TouchableOpacity>
           
-          <Pressable onPress={() => setSheetVisible(true)} className="absolute bottom-7 right-3 bg-white p-2.5 rounded-full shadow-md active:scale-95" style={{ elevation: 10, zIndex: 10 }}>
-            <Camera size={22} color="black" strokeWidth={2} />
+          <Pressable
+            disabled={isSavingImage}
+            onPress={() => setSheetVisible(true)}
+            className="absolute bottom-7 right-3 bg-white p-2.5 rounded-full shadow-md active:scale-95"
+            style={{ elevation: 10, zIndex: 10, opacity: isSavingImage ? 0.7 : 1 }}
+          >
+            {isSavingImage ? (
+              <ActivityIndicator size="small" color="black" />
+            ) : (
+              <Camera size={22} color="black" strokeWidth={2} />
+            )}
           </Pressable>
 
           <View className="absolute bottom-6 left-6">
@@ -97,19 +132,17 @@ const ProfileAthlete = ({
 
         <View className="mt-1 px-4">
           <Pressable onPress={onPressSessions} className="px-4 py-6 border-b border-neutral-100 flex-row justify-between items-center active:opacity-50">
-            <Text className="text-xl font-manrope text-black uppercase">SESSIONS</Text>
+            <Text className="text-xl font-manrope font-bold text-black uppercase">SESSIONS</Text>
             <ChevronRight size={22} color="#ADABAB" strokeWidth={1.5} />
           </Pressable>
           
-          {/* --- THIS IS THE FIX --- */}
           <Pressable 
             onPress={() => {
-               // This path matches your folder structure exactly: app/(screens)/(profile)/prograssChart.tsx
                router.push("/(screens)/(profile)/prograssChart" as any); 
             }}
             className="px-4 py-6 border-b border-neutral-100 flex-row justify-between items-center active:opacity-50"
           >
-            <Text className="text-xl font-manrope text-black uppercase">PROGRESS CHART</Text>
+            <Text className="text-xl font-manrope font-bold text-black uppercase">PROGRESS CHART</Text>
             <ChevronRight size={22} color="#ADABAB" strokeWidth={1.5} />
           </Pressable>
         </View>
@@ -118,9 +151,10 @@ const ProfileAthlete = ({
       {/* Options Modal */}
       <Modal visible={isOptionsVisible} transparent animationType="fade">
         <TouchableOpacity className="flex-1 justify-center items-center bg-black/60 px-8" activeOpacity={1} onPress={() => setIsOptionsVisible(false)}>
-          <View className="bg-white w-full rounded-[40px] p-10 items-center shadow-2xl">
+          <View className="bg-white font-bebas w-full rounded-[40px] p-10 items-center shadow-2xl">
             <HexButton title="EDIT NAME" color="#F8FE11" icon={RotateCw} onPress={() => { setIsOptionsVisible(false); setIsEditVisible(true); }} />
-            <HexButton title="DELETE PROFILE" color="#FF3B3B" icon={Trash2} onPress={() => setIsOptionsVisible(false)} />
+            {/* LOGOUT BUTTON IS NOW CONNECTED */}
+            <HexButton title="LOGOUT" color="#FF3B3B" icon={LogOut} onPress={handleLogout} />
           </View>
         </TouchableOpacity>
       </Modal>
@@ -129,9 +163,9 @@ const ProfileAthlete = ({
       <Modal visible={isEditVisible} transparent animationType="slide">
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
           <TouchableOpacity className="flex-1 justify-center items-center bg-black/50 px-6" activeOpacity={1} onPress={() => setIsEditVisible(false)}>
-            <View className=" w-full rounded-[35px] p-8 shadow-2xl items-center">
-              <Text className="font-bebas text-2xl font-black mb-6 italic uppercase">EDIT ATHLETE NAME</Text>
-              <TextInput value={nameInput} onChangeText={setNameInput} className="border-2 border-[#F8FE11] rounded-2xl w-full p-4 text-center uppercase text-lg font-bold" autoFocus />
+            <View className=" w-full rounded-[35px] p-8 shadow-2xl items-center bg-white">
+              <Text className="font-bebas text-2xl font-black mb-6 italic uppercase">EDIT NAME</Text>
+              <TextInput value={nameInput} onChangeText={setNameInput} className="border-2 border-neutral-200 rounded-2xl w-full p-4 text-center uppercase text-lg font-bold" autoFocus />
               <View className="w-full mt-6">
                 
                 <HexButton
@@ -146,7 +180,17 @@ const ProfileAthlete = ({
         </KeyboardAvoidingView>
       </Modal>
 
-      <ImagePickerSheet visible={sheetVisible} onClose={() => setSheetVisible(false)} onImageSelected={(uri) => setSelectedImage(uri)} />
+      <ImagePickerSheet
+        visible={sheetVisible}
+        onClose={() => setSheetVisible(false)}
+        canRemoveImage={!!profileImage}
+        onImageSelected={(uri) => {
+          void onUpdateProfileImage(uri);
+        }}
+        onRemoveImage={() => {
+          void onUpdateProfileImage(null);
+        }}
+      />
     </>
   );
 };

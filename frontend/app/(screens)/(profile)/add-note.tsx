@@ -10,6 +10,7 @@ import {
 } from "lucide-react-native";
 import axios from "axios";
 import { auth } from "../../../lib/firebase";
+import { authHeaders } from "@/lib/api";
 
 interface AddNoteProps {
   onClose: () => void;
@@ -20,11 +21,13 @@ interface AddNoteProps {
 const BASE = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 async function authConfig() {
-  const user = auth.currentUser;
-  if (!user) throw new Error("Not logged in");
+  const idToken = await auth.currentUser?.getIdToken();
 
-  const idToken = await user.getIdToken();
-  return { headers: { Authorization: `Bearer ${idToken}` } };
+  if (!idToken) {
+    throw new Error("Unable to authorize request.");
+  }
+
+  return { headers: await authHeaders(idToken) };
 }
 
 async function loadNoteById(noteId: string) {
@@ -127,7 +130,7 @@ const AddNoteScreen: React.FC<AddNoteProps> = ({
               {saving ? (
                 <ActivityIndicator size="small" color="#000000" />
               ) : (
-                <Text className="font-bebas text-[#000000] text-2xl font-bold">Done</Text>
+                <Text className="font-bebas text-[#000000] text-2xl">Done</Text>
               )}
             </TouchableOpacity>
           </View>

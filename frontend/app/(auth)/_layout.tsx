@@ -1,5 +1,10 @@
 import { Stack } from "expo-router";
+import { useAuth } from "@/app/context/AuthContext";
 
 export default function AuthLayout() {
-    return <Stack screenOptions={{ headerShown: false }} />;
+  const { initializing } = useAuth();
+
+  if (initializing) return null;
+
+  return <Stack screenOptions={{ headerShown: false }} />;
 }

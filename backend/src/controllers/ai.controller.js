@@ -36,11 +36,19 @@ exports.analyzeTechnique = async (req, res) => {
   try {
     console.log(`[DEBUG] Analyzing ${sport}/${shot} `);
     
-    // Call AI service
+    // Get user profile data for better AI feedback
+    const userProfile = {
+      age: req.user.age,
+      weight: req.user.weight,
+      height: req.user.height,
+    };
+    
+    // Call AI service with user profile data
     const aiResult = await AIService.analyzeTechnique(
       videoFile.path,
       sport,
-      shot
+      shot,
+      userProfile
     );
 
     console.log('[DEBUG] AI analysis completed:', aiResult.overall_score);
@@ -57,6 +65,9 @@ exports.analyzeTechnique = async (req, res) => {
       avgSimilarity: aiResult.avg_similarity,
       maxSimilarity: aiResult.max_similarity,
       framesAnalyzed: aiResult.frames_analyzed,
+      feedback: aiResult.feedback || '',
+      improvements: aiResult.improvements || '',
+      aiFeedbackEnabled: aiResult.ai_feedback_enabled || false,
       timestamp: new Date(),
     });
 
