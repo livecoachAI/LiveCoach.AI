@@ -5,7 +5,8 @@ import {
 } from 'react-native';
 import { 
   ChevronRight, Camera, SlidersHorizontal, 
-  RotateCw, LogOut 
+  RotateCw, LogOut, 
+  PencilIcon
 } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import ImagePickerSheet from '../../components/ImagePickerSheet';
@@ -32,15 +33,15 @@ interface ProfileAthleteProps {
 const fallbackProfileImage = require("../../../assets/Profile/fallback_Athlete.jpg");
 
 // --- SHARED HEXAGON BUTTON ---
-const HexButton = ({ title, onPress, color, icon: Icon }: any) => {
+const HexButton = ({ title, onPress, color, textColor = "black", icon: Icon }: any) => {
   const pointSize = 24;
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.8} className="my-2 w-full items-center">
       <View className="flex-row items-center justify-center">
         <View style={{ width: 0, height: 0, borderTopWidth: pointSize, borderTopColor: 'transparent', borderBottomWidth: pointSize, borderBottomColor: 'transparent', borderRightWidth: pointSize, borderRightColor: color }} />
         <View style={{ backgroundColor: color, height: pointSize * 2 }} className="flex-row items-center justify-center px-4 min-w-[200px]">
-          <Text className="font-bebas text-2xl text-black uppercase">{title}</Text>
-          {Icon && <View className="ml-3"><Icon size={20} color="black" strokeWidth={2.5} /></View>}
+          <Text className="font-bebas text-2xl text-black uppercase" style={{color: textColor }}>{title}</Text>
+          {Icon && <View className="ml-3"><Icon color={textColor} size={20} strokeWidth={2.5} /></View>}
         </View>
         <View style={{ width: 0, height: 0, borderTopWidth: pointSize, borderTopColor: 'transparent', borderBottomWidth: pointSize, borderBottomColor: 'transparent', borderLeftWidth: pointSize, borderLeftColor: color }} />
       </View>
@@ -152,9 +153,9 @@ const ProfileAthlete = ({
       <Modal visible={isOptionsVisible} transparent animationType="fade">
         <TouchableOpacity className="flex-1 justify-center items-center bg-black/60 px-8" activeOpacity={1} onPress={() => setIsOptionsVisible(false)}>
           <View className="bg-white font-bebas w-full rounded-[40px] p-10 items-center shadow-2xl">
-            <HexButton title="EDIT NAME" color="#F8FE11" icon={RotateCw} onPress={() => { setIsOptionsVisible(false); setIsEditVisible(true); }} />
+            <HexButton title="EDIT NAME" textColor="black" color="#F8FE11" icon={PencilIcon} onPress={() => { setIsOptionsVisible(false); setIsEditVisible(true); }} />
             {/* LOGOUT BUTTON IS NOW CONNECTED */}
-            <HexButton title="LOGOUT" color="#FF3B3B" icon={LogOut} onPress={handleLogout} />
+            <HexButton title="LOGOUT" textColor="white" color="#FF3B3B" icon={LogOut} onPress={handleLogout} />
           </View>
         </TouchableOpacity>
       </Modal>

@@ -4,7 +4,7 @@ import {
   TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ActivityIndicator,
 } from "react-native";
 import { MaterialIcons, Entypo } from "@expo/vector-icons";
-import { SlidersHorizontal, RotateCw, LogOut } from "lucide-react-native"; // <--- Imported LogOut
+import { SlidersHorizontal, RotateCw, LogOut, Pencil, PencilIcon } from "lucide-react-native"; // <--- Imported LogOut
 import ImagePickerSheet from "../../components/ImagePickerSheet";
 
 export interface Player {
@@ -34,7 +34,7 @@ interface ProfileCoachProps {
 const fallbackProfileImage = require("../../../assets/Profile/fallback_Coach.jpg");
 
 // --- SHARED HEXAGON BUTTON ---
-const HexButton = ({ title, onPress, color, icon: Icon }: any) => {
+const HexButton = ({ title, onPress, color, textColor, icon: Icon }: any) => {
   const pointSize = 24;
   return (
     <TouchableOpacity
@@ -50,12 +50,12 @@ const HexButton = ({ title, onPress, color, icon: Icon }: any) => {
           style={{ backgroundColor: color, height: pointSize * 2 }}
           className="flex-row items-center justify-center px-4 min-w-[200px]"
         >
-          <Text className="font-bebas text-2xl font-black text-black uppercase">
+          <Text className="font-bebas text-2xl text-black uppercase" style={{color: textColor }}>
             {title}
           </Text>
           {Icon && (
             <View className="ml-3">
-              <Icon size={20} color="black" strokeWidth={2.5} />
+              <Icon size={20} color={textColor} strokeWidth={2.5} />
             </View>
           )}
         </View>
@@ -277,7 +277,7 @@ const ProfileCoach = ({
             <HexButton
               title="EDIT NAME"
               color="#F8FE11"
-              icon={RotateCw}
+              icon={PencilIcon}
               onPress={() => {
                 setIsOptionsVisible(false);
                 setIsEditVisible(true);
@@ -287,6 +287,7 @@ const ProfileCoach = ({
             <HexButton
               title="LOGOUT"
               color="#FF3B3B"
+              textColor="white"
               icon={LogOut}
               onPress={handleLogoutClick}
             />
@@ -323,6 +324,7 @@ const ProfileCoach = ({
                 />
                 <HexButton
                   title="CANCEL"
+                  textColor="white"
                   color="#9E9E9E"
                   onPress={() => setIsEditVisible(false)}
                 />
@@ -364,6 +366,7 @@ const ProfileCoach = ({
                 <HexButton
                   title="CANCEL"
                   color="#FF3B3B"
+                  textColor="white"
                   onPress={() => setIsAddPlayerVisible(false)}
                 />
               </View>
