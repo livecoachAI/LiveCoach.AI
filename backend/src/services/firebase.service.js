@@ -1,11 +1,11 @@
 //Firebase Service - Handles interactions with Firebase Authentication
-const { getFirebaseAuth } = require('../config/firebase');
+const admin = require('../config/firebaseAdmin');
 const logger = require('../utils/logger');
 
 //Verify Firebase ID Token
 const verifyIdToken = async (token) => {
     try {
-        const decodedToken = await getFirebaseAuth().verifyIdToken(token);
+        const decodedToken = await admin.auth().verifyIdToken(token);
         return { success: true, data: decodedToken };
     } catch (error) {
         logger.error('Token verification failed:', error.message);
@@ -16,7 +16,7 @@ const verifyIdToken = async (token) => {
 //Get Firebase User by UID
 const getUserByUid = async (uid) => {
     try {
-        const userRecord = await getFirebaseAuth().getUser(uid);
+        const userRecord = await admin.auth().getUser(uid);
         return { success: true, data: userRecord };
     } catch (error) {
         logger.error('Error fetching Firebase user:', error.message);
@@ -27,7 +27,7 @@ const getUserByUid = async (uid) => {
 //Update Email Verification Status
 const updateEmailVerification = async (uid, verified) => {
     try {
-        await getFirebaseAuth().updateUser(uid, {
+        await admin.auth().updateUser(uid, {
             emailVerified: verified,
         });
         return { success: true };
@@ -40,7 +40,7 @@ const updateEmailVerification = async (uid, verified) => {
 //Delete Firebase User
 const deleteFirebaseUser = async (uid) => {
     try {
-        await getFirebaseAuth().deleteUser(uid);
+        await admin.auth().deleteUser(uid);
         logger.success('Firebase user deleted:', uid);
         return { success: true };
     } catch (error) {
@@ -52,7 +52,7 @@ const deleteFirebaseUser = async (uid) => {
 //Create Custom Token for Firebase Authentication
 const createCustomToken = async (uid) => {
     try {
-        const customToken = await getFirebaseAuth().createCustomToken(uid);
+        const customToken = await admin.auth().createCustomToken(uid);
         return { success: true, token: customToken };
     } catch (error) {
         logger.error('Error creating custom token:', error.message);
