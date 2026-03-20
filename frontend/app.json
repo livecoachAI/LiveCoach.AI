@@ -2,6 +2,7 @@
   "expo": {
     "name": "LiveCoach.AI",
     "slug": "frontend",
+    "packageManager": "pnpm",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/LiveCoach.AI-logonew.png",
