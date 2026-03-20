@@ -3,7 +3,6 @@
 const app = require('./src/app');
 const config = require('./src/config/environment');
 const connectDB = require('./src/config/database');
-const { initializeFirebase } = require('./src/config/firebase');
 const logger = require('./src/utils/logger');
 
 // Handle uncaught exceptions
@@ -20,11 +19,7 @@ const startServer = async () => {
         logger.info('Connecting to MongoDB...');
         await connectDB();
 
-        // 2. Initialize Firebase Admin
-        logger.info('Initializing Firebase Admin...');
-        initializeFirebase();
-
-        // 3. Start Express server
+        // 2. Start Express server (Firebase Admin auto-initializes on first import)
         const PORT = config.port;
         const server = app.listen(PORT,"0.0.0.0", () => {
             logger.success(`Server running on port ${PORT}`);

@@ -1,4 +1,4 @@
-const { getFirebaseAuth } = require('../config/firebase');
+const admin = require('../config/firebaseAdmin');
 const { errorResponse } = require('../utils/response');
 const logger = require('../utils/logger');
 const User = require('../models/User');
@@ -27,7 +27,7 @@ const verifyFirebaseToken = async (req, res, next) => {
         }
 
         // Verify the token with Firebase
-        const decodedToken = await getFirebaseAuth().verifyIdToken(token);
+        const decodedToken = await admin.auth().verifyIdToken(token);
 
         // Token is valid, attach decoded data to request
         req.firebaseUser = {

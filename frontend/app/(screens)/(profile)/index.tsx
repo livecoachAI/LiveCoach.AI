@@ -382,6 +382,24 @@ const Index = () => {
     [applyRequestError, getAuthToken, profile, updatingImage],
   );
 
+  //API handling for delte profile and logout logic
+  const handleDeleteProfile = useCallback(async () => {
+    try {
+      const token = await getAuthToken();
+
+      await api.delete("/api/user/profile", {
+        headers: await authHeaders(token),
+      });
+
+      // Navigate to login after successful deletion
+      router.replace("/(auth)" as any);
+    } catch (error) {
+      const parsed = applyRequestError(error, "Unable to delete profile.");
+      Alert.alert("Deletion failed", parsed.message);
+      throw error;
+    }
+  }, [applyRequestError, getAuthToken]);
+
   if (loading && !profile) {
     return (
       <SafeAreaView className="flex-1 bg-primary">
@@ -430,6 +448,7 @@ const Index = () => {
             onUpdatePlayers={handleUpdatePlayers}
             onUpdateProfileImage={handleUpdateProfileImage}
             onLogout={logout}
+            onDeleteProfile={handleDeleteProfile}
             isSavingName={updatingName}
             isSavingImage={updatingImage}
           />
@@ -443,6 +462,7 @@ const Index = () => {
             onPressSessions={() => router.push("/(screens)/(profile)/sessions")}
             onUpdateName={handleUpdateName}
             onUpdateProfileImage={handleUpdateProfileImage}
+            onDeleteProfile={handleDeleteProfile}
             isSavingName={updatingName}
           />
         )}
