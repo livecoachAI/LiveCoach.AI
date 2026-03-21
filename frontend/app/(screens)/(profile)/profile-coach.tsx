@@ -56,8 +56,7 @@ const HexButton = ({ title, onPress, color, icon: Icon, textColor = 'black', ico
           </Text>
           {Icon && (
             <View className="ml-3">
-              <Icon size={20} color={textColor} strokeWidth={2.5} />
-              <Icon size={20} color={iconColor} strokeWidth={2.5} />
+              <Icon size={20} color={iconColor || textColor} strokeWidth={2.5} />
             </View>
           )}
         </View>
@@ -85,6 +84,9 @@ const ProfileCoach = ({
   const [isOptionsVisible, setIsOptionsVisible] = useState(false);
   const [isEditVisible, setIsEditVisible] = useState(false);
   const [isAddPlayerVisible, setIsAddPlayerVisible] = useState(false);
+  const [isRenamePlayerVisible, setIsRenamePlayerVisible] = useState(false);
+  const [isPlayerOptionsVisible, setIsPlayerOptionsVisible] = useState(false);
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const [playerNameInput, setPlayerNameInput] = useState("");
   const [isSavingPlayers, setIsSavingPlayers] = useState(false);
   const [players, setPlayers] = useState<Player[]>(data.players ?? []);
@@ -107,22 +109,30 @@ const ProfileCoach = ({
     setIsEditVisible(false);
   };
 
-  // Add and check players
-  const handleAddPlayer = async () => {
+  // Add or rename player
+  const handleCreateOrRenamePlayer = async () => {
     const trimmed = playerNameInput.trim().toUpperCase();
     if (!trimmed || isSavingPlayers) return;
 
-    if (players.some((player) => player.name === trimmed)) {
+    const isDuplicate = players.some((player) => {
+      if (isRenamePlayerVisible && selectedPlayer) {
+        return player.id !== selectedPlayer.id && player.name === trimmed;
+      }
+
+      return player.name === trimmed;
+    });
+
+    if (isDuplicate) {
       Alert.alert("Duplicate player", "That player already exists.");
       return;
     }
 
-    const newPlayer: Player = {
-      id: `local-${Date.now()}`,
-      name: trimmed,
-    };
     const previousPlayers = players;
-    const nextPlayers = [...players, newPlayer];
+    const nextPlayers = isRenamePlayerVisible && selectedPlayer
+      ? players.map((player) =>
+          player.id === selectedPlayer.id ? { ...player, name: trimmed } : player,
+        )
+      : [...players, { id: `local-${Date.now()}`, name: trimmed }];
 
     setPlayers(nextPlayers);
     setIsSavingPlayers(true);
@@ -131,10 +141,41 @@ const ProfileCoach = ({
       await onUpdatePlayers(nextPlayers);
       setPlayerNameInput("");
       setIsAddPlayerVisible(false);
+      setIsRenamePlayerVisible(false);
+      setSelectedPlayer(null);
     } catch (error: any) {
       setPlayers(previousPlayers);
       Alert.alert(
-        "Failed to add player",
+        isRenamePlayerVisible ? "Failed to rename player" : "Failed to add player",
+        error?.response?.data?.message || "Please try again.",
+      );
+    } finally {
+      setIsSavingPlayers(false);
+    }
+  };
+
+  const handleLongPressPlayer = (player: Player) => {
+    setSelectedPlayer(player);
+    setIsPlayerOptionsVisible(true);
+  };
+
+  const handleDeletePlayer = async () => {
+    if (!selectedPlayer || isSavingPlayers) return;
+
+    const previousPlayers = players;
+    const nextPlayers = players.filter((player) => player.id !== selectedPlayer.id);
+
+    setPlayers(nextPlayers);
+    setIsPlayerOptionsVisible(false);
+    setIsSavingPlayers(true);
+
+    try {
+      await onUpdatePlayers(nextPlayers);
+      setSelectedPlayer(null);
+    } catch (error: any) {
+      setPlayers(previousPlayers);
+      Alert.alert(
+        "Failed to delete player",
         error?.response?.data?.message || "Please try again.",
       );
     } finally {
@@ -251,7 +292,12 @@ const ProfileCoach = ({
         <View className="px-4 py-4 bg-neutral-100 border-b border-neutral-100 flex-row items-center justify-between">
           <Text className="font-bebas px-3 text-3xl text-black">PLAYERS</Text>
           <TouchableOpacity
-            onPress={() => setIsAddPlayerVisible(true)}
+            onPress={() => {
+              setPlayerNameInput("");
+              setIsRenamePlayerVisible(false);
+              setSelectedPlayer(null);
+              setIsAddPlayerVisible(true);
+            }}
             className="bg-black px-4 py-2 rounded-full active:opacity-80"
           >
             <Text className="text-white text-sm font-manrope font-bold uppercase">+ Add Player</Text>
@@ -263,6 +309,8 @@ const ProfileCoach = ({
             <Pressable
               key={player.id}
               onPress={onPressPlayer}
+              onLongPress={() => handleLongPressPlayer(player)}
+              delayLongPress={500}
               className="px-4 py-5 border-b border-neutral-100 flex-row justify-between items-center active:opacity-50"
             >
               <View className="flex-1">
@@ -382,7 +430,7 @@ const ProfileCoach = ({
           >
             <View className="w-full rounded-[35px] p-8 shadow-2xl items-center bg-white">
               <Text className="font-bebas text-3xl text-primary-dark mb-6 uppercase">
-                ADD PLAYER
+                {isRenamePlayerVisible ? "EDIT NAME" : "ADD PLAYER"}
               </Text>
               <TextInput
                 value={playerNameInput}
@@ -394,20 +442,55 @@ const ProfileCoach = ({
               />
               <View className="w-full mt-10">
                 <HexButton
-                  title={isSavingPlayers ? "SAVING..." : "ADD"}
+                  title={isSavingPlayers ? "SAVING..." : isRenamePlayerVisible ? "SAVE" : "ADD"}
                   color="#F8FE11"
-                  onPress={handleAddPlayer}
+                  onPress={handleCreateOrRenamePlayer}
                 />
                 <HexButton
                   title="CANCEL"
                   color="#FF3B3B"
                   textColor="white"
-                  onPress={() => setIsAddPlayerVisible(false)}
+                  onPress={() => {
+                    setIsAddPlayerVisible(false);
+                    setIsRenamePlayerVisible(false);
+                    setSelectedPlayer(null);
+                    setPlayerNameInput("");
+                  }}
                 />
               </View>
             </View>
           </TouchableOpacity>
         </KeyboardAvoidingView>
+      </Modal>
+
+      {/* Player Options Modal */}
+      <Modal visible={isPlayerOptionsVisible} transparent animationType="fade">
+        <TouchableOpacity
+          className="flex-1 justify-center items-center bg-black/60 px-8"
+          activeOpacity={1}
+          onPress={() => setIsPlayerOptionsVisible(false)}
+        >
+          <View className="bg-white w-full rounded-[40px] p-10 items-center shadow-2xl">
+            <HexButton
+              title="EDIT NAME"
+              color="#EAFF00"
+              icon={RotateCw}
+              onPress={() => {
+                setIsPlayerOptionsVisible(false);
+                setIsRenamePlayerVisible(true);
+                setPlayerNameInput(selectedPlayer?.name || "");
+                setIsAddPlayerVisible(true);
+              }}
+            />
+            <HexButton
+              title={isSavingPlayers ? "DELETING..." : "DELETE PLAYER"}
+              color="#FF3B3B"
+              textColor="white"
+              icon={Trash2}
+              onPress={handleDeletePlayer}
+            />
+          </View>
+        </TouchableOpacity>
       </Modal>
     </>
   );
