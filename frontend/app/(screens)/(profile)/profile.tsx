@@ -17,7 +17,7 @@ import { useAuth } from '../../context/AuthContext';
 
 export interface AthleteData {
   name: string;
-  role: 'Athlete1';
+  role: 'Athlete';
 }
 
 interface ProfileAthleteProps {
