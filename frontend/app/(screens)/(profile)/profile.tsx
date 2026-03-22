@@ -161,7 +161,7 @@ const ProfileAthlete = ({
 
         <View className="mt-1 px-4">
           <Pressable onPress={onPressSessions} className="px-4 py-6 border-b border-neutral-100 flex-row justify-between items-center active:opacity-50">
-            <Text className="text-xl font-manrope font-bold text-black uppercase">SESSIONS</Text>
+            <Text className="text-xl font-manrope font-bold text-black uppercase">SESSIONS1</Text>
             <ChevronRight size={22} color="#ADABAB" strokeWidth={1.5} />
           </Pressable>
           
