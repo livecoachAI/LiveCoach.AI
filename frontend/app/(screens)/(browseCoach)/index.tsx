@@ -122,7 +122,7 @@ const Index = () => {
       {userRole === 'coach' && (
         <View>
           {hasExistingGig ? (
-            <MyGigButton onPress={() => setIsCreateModalVisible(true)} />
+            <MyGigButton onPress={() => setIsCreateModalVisible(true)} sport={selectedSport}/>
           ) : (
             <CreateGigCard onPress={() => setIsCreateModalVisible(true)} />
           )}
