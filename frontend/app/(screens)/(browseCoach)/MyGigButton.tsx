@@ -1,48 +1,49 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 type Props = {
   onPress: () => void;
+  sport: 'Cricket' | 'Badminton';
 };
 
-const MyGigButton = ({ onPress }: Props) => {
+const MyGigButton = ({ onPress, sport }: Props) => {
   return (
-    /* Added mx-4 to reduce the full width of the card */
-    <View className="bg-neutral-100 rounded-[24px] p-5 mt-6 mx-4 shadow-sm border border-neutral-200 overflow-hidden relative">
+    <View className="bg-neutral-100 rounded-[32px] p-5 mt-4 mx-4 shadow-md border border-white overflow-hidden relative min-h-[90px] justify-center">
       
-      {/* Background Watermark Checkmark - Scaled down for the smaller card */}
-      <View 
-        className="absolute -right-4 -top-2 "
-        style={{ transform: [{ rotate: '15deg' }] }}
-      >
-        <Feather name="check-circle" size={100} color="#b3da9db6" />
+      {/* 1. Simple Icon Background (Replaces all that SVG code) */}
+      <View className="absolute -right-1 -bottom-2 opacity-[0.07]">
+        <MaterialCommunityIcons 
+          name={sport === 'Cricket' ? "cricket" : "badminton"} 
+          size={90} 
+          color="#1f2937" 
+        />
       </View>
 
-      <View className="flex-col">
-        {/* Status Row */}
-        <View className="flex-row items-center">
-          <View className="relative w-3.5 h-3.5 items-center justify-center mr-1">
-            <View className="absolute w-full h-full bg-green-500/20 rounded-full" />
-            <View className="w-2 h-2 bg-green-500 rounded-full border border-neutral-50" />
+      {/* 2. Content */}
+      <View className="relative z-10">
+        <View className="flex-row items-center gap-3">
+          {/* Status Circle */}
+          <View className="h-10 w-10 items-center justify-center rounded-full bg-green-500 shadow-sm">
+            <View className="absolute inset-0 rounded-full bg-white opacity-20 scale-125" />
+            <Text className="text-[8px] font-bold text-white uppercase">Active</Text>
           </View>
-          
-          {/* Reduced text size from text-2xl to text-lg/xl */}
-          <Text className="font-manrope text-black font-extrabold text-lg tracking-tight uppercase">
-            Gig is active
+
+          <Text className="text-lg font-bold uppercase tracking-tight text-gray-900">
+            Gig Created
           </Text>
         </View>
 
-        {/* Action Link - Aligned with the smaller text */}
+        {/* Aligned Link */}
         <TouchableOpacity 
-          activeOpacity={0.6}
           onPress={onPress}
-          className="flex-row items-center mt-2 ml-5.5 self-start"
+          activeOpacity={0.7}
+          className="flex-row items-center  ml-[46px] self-start"
         >
-          <Text className="font-manrope text-neutral-700 font-bold text-xs ml-5 mr-1 uppercase tracking-wider">
+          <Text className="font-semibold text-gray-600 text-xs mr-1 uppercase">
             Go to My Gig
           </Text>
-          <Feather name="arrow-right" size={14} color="#525252" />
+          <MaterialCommunityIcons name="arrow-right" size={16} color="#22c55e" />
         </TouchableOpacity>
       </View>
     </View>
